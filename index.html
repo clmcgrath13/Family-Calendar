@@ -1,0 +1,1877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Family Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sidebar-w: 88px;
+  --bg: #ffffff;
+  --sidebar-bg: #f0f0ee;
+  --border: #e2e2de;
+  --text: #1c1c1a;
+  --muted: #92928d;
+  --header-bg: #fafaf8;
+  --font: 'DM Sans', sans-serif;
+  --shadow: 0 2px 16px rgba(0,0,0,0.09);
+  --today-ring: #2c6bed;
+  --mom: #d44b8a;
+  --mom-bg: #fceef6;
+  --dad: #2c6bed;
+  --dad-bg: #e8f0fd;
+  --kids: #22a06b;
+  --kids-bg: #e2f5ee;
+  --family: #7c52c8;
+  --family-bg: #f0ebfc;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 0;
+  gap: 2px;
+  flex-shrink: 0;
+  z-index: 20;
+  height: 100vh;
+  overflow: hidden;
+}
+
+
+.nav-btn {
+  width: 72px; height: 58px;
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  transition: background 0.13s, color 0.13s;
+}
+.nav-btn:hover { background: rgba(0,0,0,0.04); }
+.nav-btn.active { background: #fff; color: var(--today-ring); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.nav-btn svg { width: 20px; height: 20px; }
+.nav-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.member-legend {
+  margin-top: auto;
+  display: flex; flex-direction: column;
+  gap: 7px; align-items: center;
+  padding-top: 10px;
+}
+.mdot {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.12s, opacity 0.12s;
+  position: relative;
+}
+.mdot:hover { transform: scale(1.12); }
+.mdot.off { opacity: 0.28; }
+.mdot-tip {
+  position: absolute; left: 34px;
+  background: #1c1c1a; color: white;
+  font-size: 10px; font-weight: 500;
+  padding: 3px 8px; border-radius: 5px;
+  white-space: nowrap; pointer-events: none;
+  opacity: 0; transition: opacity 0.15s; z-index: 99;
+}
+.mdot:hover .mdot-tip { opacity: 1; }
+
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+.topbar {
+  height: 80px;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 14px; gap: 10px;
+  flex-shrink: 0;
+}
+.tb-left { display: flex; flex-direction: column; justify-content: center; min-width: 240px; gap: 1px; }
+.tb-season { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 5px; }
+.tb-season-icon { font-size: 14px; line-height: 1; }
+.tb-title { font-size: 26px; font-weight: 400; line-height: 1.1; font-family: 'DM Serif Display', serif; letter-spacing: -0.01em; }
+.tb-space { flex: 1; }
+
+.vpills {
+  display: flex; background: var(--sidebar-bg);
+  border-radius: 8px; padding: 3px; gap: 2px;
+}
+.vpill {
+  padding: 10px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none;
+  background: transparent; color: var(--muted);
+  transition: all 0.12s; white-space: nowrap;
+}
+.vpill.active { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+
+.arr-btn {
+  width: 44px; height: 44px;
+  border-radius: 10px; border: 1px solid var(--border);
+  background: var(--bg); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text); transition: background 0.11s; flex-shrink: 0;
+}
+.arr-btn:hover { background: var(--sidebar-bg); }
+
+.today-btn {
+  padding: 10px 16px; border-radius: 10px;
+  border: 1px solid var(--border); background: var(--bg);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; color: var(--text);
+  transition: background 0.11s; white-space: nowrap;
+}
+.today-btn:hover { background: var(--sidebar-bg); }
+
+.content { flex: 1; overflow: auto; position: relative; }
+
+/* MONTH */
+.mwrap { display: flex; flex-direction: column; height: 100%; }
+.dow-row {
+  display: grid; grid-template-columns: repeat(7,1fr);
+  border-bottom: 1px solid var(--border);
+  background: var(--header-bg); flex-shrink: 0;
+}
+.dow-cell {
+  text-align: center; padding: 6px 0;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted);
+}
+.mcells { display: grid; grid-template-columns: repeat(7,1fr); flex: 1; }
+.mcell {
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 5px 6px; cursor: pointer;
+  transition: background 0.1s; overflow: hidden;
+}
+.mcell:hover { background: #f6f6f3; }
+.mcell:nth-child(7n) { border-right: none; }
+.mcell.other { background: #fafaf8; }
+.mcell.other .dnum { color: #ccc; }
+.mcell.is-today { background: #fffbf0; }
+
+/* Month view wrapper with overlay support */
+.month-rows-wrap { flex: 1; display: flex; flex-direction: column; }
+.month-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  flex: 1;
+}
+/* Multi-day event overlay layer sits on top of cells */
+.mday-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.mday-bar {
+  position: absolute;
+  height: 18px;
+  font-size: 10px; font-weight: 600;
+  display: flex; align-items: center;
+  padding: 0 5px 0 6px;
+  border-radius: 6px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  pointer-events: all; cursor: pointer;
+  box-sizing: border-box;
+  min-width: 8px;
+  border-left: 3px solid;
+}
+.dnum {
+  font-size: 12px; font-weight: 500;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; margin-bottom: 3px;
+}
+.is-today .dnum { background: var(--today-ring); color: #fff; font-weight: 600; }
+.epill {
+  font-size: 12px; font-weight: 500;
+  padding: 3px 7px 3px 6px; border-radius: 6px;
+  margin-bottom: 3px; white-space: nowrap;
+  display: flex; align-items: center; gap: 4px;
+  overflow: visible;
+}
+.edot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.emore { font-size: 9px; color: var(--muted); font-weight: 500; }
+
+/* WEEK */
+.wwrap { display: flex; flex-direction: column; height: 100%; }
+.whead {
+  display: grid; border-bottom: 1px solid var(--border);
+  background: var(--header-bg); flex-shrink: 0;
+}
+.wh-sp { border-right: 1px solid var(--border); }
+.wh-cell {
+  padding: 8px 6px; text-align: center;
+  border-right: 1px solid var(--border);
+}
+.wh-cell:last-child { border-right: none; }
+.wh-dow { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.wh-date {
+  font-size: 18px; font-weight: 300;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; margin: 3px auto 0;
+}
+.wh-date.tod { background: var(--today-ring); color: #fff; font-weight: 600; }
+
+.wbody { flex: 1; overflow-y: auto; display: flex; }
+.tcol { width: 46px; flex-shrink: 0; border-right: 1px solid var(--border); }
+.tlbl {
+  height: 104px; display: flex;
+  align-items: flex-start; justify-content: flex-end;
+  padding: 2px 7px 0 0;
+  font-size: 9px; color: var(--muted); font-weight: 600;
+}
+.dcols { flex: 1; display: grid; }
+.dcol { border-right: 1px solid var(--border); position: relative; }
+.dcol:last-child { border-right: none; }
+.hslot { height: 104px; border-bottom: 1px solid #f0f0ec; position: relative; }
+.hslot:last-child { border-bottom: none; }
+.wev {
+  position: absolute; left: 2px; right: 2px;
+  border-radius: 12px; padding: 5px 7px;
+  font-size: 15px; font-weight: 600;
+  overflow: hidden; cursor: pointer; z-index: 2;
+  line-height: 1.3;
+}
+.wev-t { font-size: 13px; font-weight: 400; color: rgba(0,0,0,0.55); }
+.wev-loc { font-size: 12px; font-weight: 400; color: rgba(0,0,0,0.45); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.now-line {
+  position: absolute; left: 0; right: 0;
+  height: 2px; z-index: 5; pointer-events: none;
+}
+.now-dot {
+  position: absolute; left: -4px; top: -4px;
+  width: 10px; height: 10px; border-radius: 50%;
+}
+
+/* DAY */
+.daywrap { display: flex; flex-direction: column; height: 100%; }
+.dayhero {
+  padding: 12px 18px 10px;
+  border-bottom: 1px solid var(--border);
+  background: var(--header-bg);
+  display: flex; align-items: baseline; gap: 10px; flex-shrink: 0;
+}
+.dayhero-n { font-family: 'DM Serif Display', serif; font-size: 38px; line-height: 1; }
+.dayhero-dow { font-size: 14px; font-weight: 500; }
+.dayhero-sub { font-size: 11px; color: var(--muted); }
+.daybody { flex: 1; overflow-y: auto; display: flex; }
+.dayinner { flex: 1; position: relative; }
+
+/* AGENDA */
+.agwrap { height: 100%; overflow-y: auto; }
+.ag-hdr {
+  position: sticky; top: 0;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 10px; z-index: 5;
+}
+.ag-num {
+  font-size: 20px; font-weight: 500;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; flex-shrink: 0;
+}
+.ag-num.tod { background: var(--today-ring); color: #fff; }
+.ag-dow { font-size: 12px; font-weight: 500; }
+.ag-mon { font-size: 10px; color: var(--muted); }
+.ag-evs { padding: 4px 16px; }
+.ag-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border); cursor: pointer;
+}
+.ag-row:last-child { border-bottom: none; }
+.ag-bar { width: 3px; border-radius: 2px; align-self: stretch; min-height: 32px; flex-shrink: 0; }
+.ag-time { font-size: 10px; color: var(--muted); font-weight: 600; min-width: 80px; padding-top: 2px; }
+.ag-title { font-size: 12px; font-weight: 500; }
+.ag-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.ag-who { display: inline-block; font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 3px; margin-top: 3px; }
+.ag-empty { font-size: 11px; color: var(--muted); font-style: italic; padding: 8px 0; }
+
+/* TASKS */
+.taskwrap { height: 100%; overflow-y: auto; padding: 16px; }
+.sec-hd {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  margin-bottom: 8px; margin-top: 4px;
+}
+.task-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 12px; background: var(--bg);
+  border: 1px solid var(--border); border-radius: 9px;
+  margin-bottom: 5px; cursor: pointer; transition: box-shadow 0.12s;
+}
+.task-row:hover { box-shadow: var(--shadow); }
+.tck {
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1.5px solid var(--border); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.13s;
+}
+.tck.done { border-color: var(--kids); background: var(--kids); }
+.ttxt { flex: 1; font-size: 12px; }
+.ttxt.done { text-decoration: line-through; color: var(--muted); }
+.tdue { font-size: 10px; color: var(--muted); font-weight: 500; }
+.tdue.late { color: #d44b4b; }
+.twho {
+  width: 22px; height: 22px; border-radius: 50%;
+  font-size: 9px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  color: white; flex-shrink: 0;
+}
+
+/* LISTS */
+.listwrap {
+  height: 100%; overflow-y: auto; padding: 16px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start;
+}
+.lcard { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.lcard-hd {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+}
+.lcard-icon { font-size: 16px; }
+.lcard-name { font-size: 13px; font-weight: 500; flex: 1; }
+.lcard-ct { font-size: 10px; color: var(--muted); font-weight: 600; }
+.lcard-bd { padding: 6px 0; }
+.litem { display: flex; align-items: center; gap: 8px; padding: 6px 14px; }
+.licheck {
+  width: 15px; height: 15px; border-radius: 4px;
+  border: 1.5px solid var(--border); flex-shrink: 0;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.13s;
+}
+.licheck.done { background: var(--kids); border-color: var(--kids); }
+.litxt { font-size: 12px; }
+.litxt.done { text-decoration: line-through; color: var(--muted); }
+
+/* MEALS */
+.mealwrap { height: 100%; overflow-y: auto; padding: 14px 16px; }
+.meal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; }
+.meal-day { display: flex; flex-direction: column; gap: 5px; }
+.meal-day-lbl {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.07em; color: var(--muted);
+  text-align: center; padding-bottom: 5px; border-bottom: 1px solid var(--border);
+}
+.meal-day-lbl.tod-lbl { color: var(--today-ring); border-color: var(--today-ring); }
+.mslot {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 7px; padding: 6px 8px;
+  cursor: pointer; transition: box-shadow 0.12s; min-height: 52px;
+}
+.mslot:hover { box-shadow: var(--shadow); }
+.mslot.tod-slot { border-color: #c5d8f8; background: #f5f8ff; }
+.mtype { font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 3px; }
+.mname { font-size: 11px; font-weight: 500; line-height: 1.3; }
+.mempty { font-size: 10px; color: #ccc; font-style: italic; }
+
+/* FAB */
+.fab {
+  position: fixed; bottom: 20px; right: 20px;
+  width: 50px; height: 50px; border-radius: 50%;
+  background: var(--today-ring); color: white; border: none;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 18px rgba(44,107,237,.42);
+  font-size: 26px; font-weight: 300; line-height: 1;
+  z-index: 100; transition: transform 0.14s, box-shadow 0.14s;
+}
+.fab:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(44,107,237,.52); }
+.fab:active { transform: scale(0.96); }
+
+/* MODAL */
+.overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.28);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.18s;
+}
+.overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--bg); border-radius: 16px;
+  width: 340px; max-width: 88vw;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.18); overflow: hidden;
+  transform: translateY(6px) scale(0.98); transition: transform 0.18s;
+}
+.overlay.open .modal { transform: none; }
+.modal-hd {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 18px; border-bottom: 1px solid var(--border);
+}
+.modal-ttl { font-size: 14px; font-weight: 600; }
+.modal-x {
+  width: 26px; height: 26px; border-radius: 6px; border: none;
+  background: var(--sidebar-bg); cursor: pointer;
+  font-size: 14px; color: var(--muted);
+  display: flex; align-items: center; justify-content: center;
+}
+.modal-bd { padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+.fld { display: flex; flex-direction: column; gap: 4px; }
+.flbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.fin {
+  padding: 8px 11px; border: 1px solid var(--border);
+  border-radius: 8px; font-size: 13px;
+  font-family: var(--font); color: var(--text);
+  background: var(--bg); outline: none;
+  transition: border-color 0.13s; width: 100%;
+}
+.fin:focus { border-color: var(--today-ring); }
+.frow { display: flex; gap: 10px; }
+.frow .fld { flex: 1; }
+.ppicker { display: flex; gap: 8px; flex-wrap: wrap; }
+.ppick {
+  width: 32px; height: 32px; border-radius: 50%;
+  cursor: pointer; border: 3px solid transparent;
+  transition: transform 0.1s, border-color 0.1s;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: white;
+}
+.ppick.sel { border-color: #1c1c1a; transform: scale(1.1); }
+.modal-ft {
+  padding: 12px 18px; border-top: 1px solid var(--border);
+  display: flex; justify-content: flex-end; gap: 8px; align-items: center;
+}
+.btn { padding: 7px 16px; border-radius: 7px; font-size: 12px; font-weight: 500; font-family: var(--font); cursor: pointer; border: none; }
+.btn-s { background: var(--sidebar-bg); color: var(--text); }
+.btn-p { background: var(--today-ring); color: white; }
+.btn:hover { opacity: 0.85; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Edit / Add event modal — larger and finger-friendly */
+#ov .modal {
+  width: min(580px, 92vw);
+  max-height: 88vh;
+  display: flex; flex-direction: column;
+}
+#ov .modal-hd { padding: 18px 22px; }
+#ov .modal-ttl { font-size: 18px; font-weight: 600; }
+#ov .modal-x { width: 36px; height: 36px; font-size: 18px; }
+#ov .modal-bd { padding: 20px 22px; flex: 1; overflow-y: auto; gap: 16px; }
+#ov .modal-ft { padding: 16px 22px; gap: 12px; }
+#ov .fld { gap: 6px; }
+#ov .flbl { font-size: 12px; }
+#ov .fin { padding: 12px 14px; font-size: 15px; border-radius: 10px; }
+#ov .frow { gap: 14px; }
+#ov .btn { padding: 14px 20px; font-size: 14px; border-radius: 10px; }
+#ov .ppick { width: 44px; height: 44px; font-size: 14px; border-width: 3px; }
+#ov .ppicker { gap: 10px; }
+
+/* Google Calendar Sync */
+.sync-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 10px; border-radius: 7px;
+  border: 1px solid var(--border); background: var(--bg);
+  font-size: 11px; font-weight: 500; font-family: var(--font);
+  cursor: pointer; color: var(--text); white-space: nowrap;
+  transition: background 0.12s;
+}
+.sync-btn:hover { background: var(--sidebar-bg); }
+.sync-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.sync-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--border); flex-shrink: 0;
+}
+.sync-dot.connected { background: #22a06b; }
+.sync-dot.syncing { background: #c87d12; animation: pulse 1s infinite; }
+.sync-dot.error { background: #e05b30; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+/* SETTINGS */
+.setwrap { height: 100%; overflow-y: auto; padding: 24px 28px; max-width: 600px; }
+.set-section-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+  margin-bottom: 12px; margin-top: 28px;
+}
+.set-section-title:first-child { margin-top: 0; }
+.member-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 6px;
+}
+.member-row-swatch {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white;
+  flex-shrink: 0;
+}
+.member-row-name { flex: 1; font-size: 13px; font-weight: 500; }
+.member-row-del {
+  width: 28px; height: 28px; border-radius: 7px; border: none;
+  background: #fdeaea; color: #c44; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; transition: background 0.12s;
+}
+.member-row-del:hover { background: #f8c8c8; }
+.add-member-row {
+  display: flex; gap: 8px; align-items: flex-end; margin-top: 10px;
+}
+.add-member-row .fin { flex: 1; }
+.color-swatches {
+  display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 4px;
+}
+.cswatch {
+  width: 24px; height: 24px; border-radius: 50%;
+  cursor: pointer; border: 2px solid transparent;
+  transition: transform 0.1s, border-color 0.1s;
+}
+.cswatch.sel { border-color: #1c1c1a; transform: scale(1.15); }
+
+/* mday-bar defined above */
+
+/* Event detail modal */
+.det-who {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 3px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; margin-bottom: 4px;
+}
+.det-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+}
+/* Detail modal — much larger than edit modal */
+#det-modal {
+  width: min(680px, 92vw);
+  max-height: 85vh;
+  display: flex; flex-direction: column;
+}
+#det-modal .modal-hd { padding: 20px 24px; }
+#det-modal .modal-ttl { font-size: 20px; font-weight: 600; line-height: 1.2; }
+#det-modal .modal-bd { padding: 20px 24px; flex: 1; overflow-y: auto; gap: 0; }
+#det-modal .modal-ft { padding: 16px 24px; }
+.det-desc {
+  font-size: 14px; color: var(--text); line-height: 1.6;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+  white-space: pre-wrap;
+}
+.det-row:last-child { border-bottom: none; }
+.det-row-icon { width: 16px; flex-shrink: 0; opacity: 0.5; margin-top: 1px; }
+.det-row-val { color: var(--text); line-height: 1.4; }
+</style>
+</head>
+<body>
+
+<nav class="sidebar">
+  <button class="nav-btn" data-v="calendar" onclick="sv('calendar')">
+    <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 2v3M13 2v3M3 8h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="6" y="11" width="2" height="2" rx=".5" fill="currentColor"/><rect x="9" y="11" width="2" height="2" rx=".5" fill="currentColor"/><rect x="12" y="11" width="2" height="2" rx=".5" fill="currentColor"/></svg>
+    <span class="nav-lbl">Calendar</span>
+  </button>
+  <button class="nav-btn" data-v="tasks" onclick="sv('tasks')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h12M4 14h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span class="nav-lbl">Tasks</span>
+  </button>
+  <button class="nav-btn" data-v="lists" onclick="sv('lists')">
+    <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M13 6h4M13 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span class="nav-lbl">Lists</span>
+  </button>
+  <button class="nav-btn" data-v="meals" onclick="sv('meals')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M6 3v5a3 3 0 006 0V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 8v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 3v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span class="nav-lbl">Meals</span>
+  </button>
+  <div class="member-legend" id="member-legend-wrap"></div>
+  <button class="nav-btn" data-v="settings" onclick="_draft=members.map(m=>({...m}));window._draftNewColor=PALETTE[0];sv('settings')" style="margin-top:4px;flex-shrink:0">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
+    <span class="nav-lbl">Settings</span>
+  </button>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div class="tb-left">
+      <div class="tb-season" id="tb-season"><span class="tb-season-icon" id="tb-sicon"></span><span id="tb-slabel"></span></div>
+      <div class="tb-title" id="tb-title">March 2026</div>
+    </div>
+    <div class="tb-space"></div>
+    <div class="vpills" id="cal-tabs">
+      <button class="vpill" onclick="scv('month')">Month</button>
+      <button class="vpill" onclick="scv('week')">Week</button>
+      <button class="vpill active" onclick="scv('workweek')">5 Day</button>
+      <button class="vpill" onclick="scv('day')">Day</button>
+      <button class="vpill" onclick="scv('agenda')">Agenda</button>
+    </div>
+    <button class="arr-btn" onclick="navP()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="arr-btn" onclick="navN()">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="today-btn" onclick="gotoday()">Today</button>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<button class="fab" onclick="openAdd()">+</button>
+
+<div class="overlay" id="ov" onclick="ovClick(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <span class="modal-ttl" id="mttl">New Event</span>
+      <button class="modal-x" onclick="closeM()">✕</button>
+    </div>
+    <div class="modal-bd" id="mbd"></div>
+    <div class="modal-ft">
+      <button class="btn btn-s" onclick="closeM()">Cancel</button>
+      <button class="btn btn-p" onclick="doSave()">Add</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event detail overlay -->
+<div class="overlay" id="det-ov" onclick="detOvClick(event)">
+  <div class="modal" id="det-modal">
+    <div class="modal-hd">
+      <span class="modal-ttl" id="det-title">Event</span>
+      <button class="modal-x" onclick="closeDet()">✕</button>
+    </div>
+    <div class="modal-bd" id="det-body"></div>
+    <div class="modal-ft">
+      <button class="btn btn-s" style="color:#c44;border:1px solid #f5c5c5" onclick="deleteEvFromDet()">Delete</button>
+      <div style="flex:1"></div>
+      <button class="btn btn-s" onclick="closeDet()">Close</button>
+      <button class="btn btn-p" onclick="editEvFromDet()">Edit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const T=new Date();
+let cur=new Date(T), appV='calendar', calV='workweek';
+// Family members — edit via Settings screen
+let members = [
+  {name:'Mom',   color:'#d44b8a', bg:'#fceef6'},
+  {name:'Dad',   color:'#0ea5b0', bg:'#e0f5f7'},
+  {name:'Collin',color:'#22a06b', bg:'#e2f5ee'},
+  {name:'Ava',   color:'#7c52c8', bg:'#f0ebfc'},
+  {name:'Zorro', color:'#c87d12', bg:'#fdf3e0'},
+];
+let active=new Set(members.map(m=>m.name));
+
+const PALETTE=[
+  '#d44b8a','#22a06b','#7c52c8',
+  '#c87d12','#e05b30','#0ea5b0','#6b7280',
+  '#b45309','#16a34a','#9333ea',
+];
+
+function mColor(name){ const m=members.find(m=>m.name===name); return m?m.color:'#888'; }
+function mBg(name){ const m=members.find(m=>m.name===name); return m?m.bg:'#eee'; }
+function colorToBg(hex){
+  // lighten hex to a pastel bg
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  const lr=Math.round(r+(255-r)*0.82),lg=Math.round(g+(255-g)*0.82),lb=Math.round(b+(255-b)*0.82);
+  return '#'+[lr,lg,lb].map(v=>v.toString(16).padStart(2,'0')).join('');
+}
+
+const MOS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const DF=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+let evs=[
+  {id:1,title:'Baseball practice',date:'2026-03-28',endDate:'2026-03-28',time:'15:00',end:'16:30',who:['Collin'],loc:'City Field'},
+  {id:2,title:'Dentist',date:'2026-03-30',endDate:'2026-03-30',time:'09:00',end:'10:00',who:['Collin'],loc:"Dr. Smith's Office"},
+  {id:3,title:'Date night',date:'2026-04-04',endDate:'2026-04-04',time:'19:00',end:'22:00',who:['Mom','Dad'],loc:''},
+  {id:4,title:'School play',date:'2026-04-01',endDate:'2026-04-01',time:'18:00',end:'20:00',who:['Mom','Dad','Collin','Ava'],loc:'Lincoln Middle School'},
+  {id:5,title:'Book club',date:'2026-03-31',endDate:'2026-03-31',time:'19:30',end:'21:00',who:['Mom'],loc:'Library'},
+  {id:6,title:'Little League game',date:'2026-04-05',endDate:'2026-04-05',time:'10:00',end:'12:00',who:['Collin'],loc:'Riverside Park'},
+  {id:7,title:'WFH day',date:'2026-03-27',endDate:'2026-03-27',time:'09:00',end:'17:00',who:['Dad'],loc:''},
+  {id:8,title:'Morning run',date:'2026-03-28',endDate:'2026-03-28',time:'06:30',end:'07:15',who:['Mom'],loc:''},
+  {id:9,title:'Stand-up call',date:'2026-03-31',endDate:'2026-03-31',time:'10:00',end:'10:30',who:['Dad'],loc:''},
+  {id:10,title:'Trip to San Francisco',date:'2026-03-30',endDate:'2026-04-02',time:'20:00',end:'09:00',who:['Dad'],loc:'San Francisco, CA'},
+  {id:11,title:'Dance recital',date:'2026-04-03',endDate:'2026-04-03',time:'14:00',end:'15:30',who:['Ava'],loc:'Arts Center'},
+  {id:12,title:'Vet appointment',date:'2026-04-02',endDate:'2026-04-02',time:'11:00',end:'12:00',who:['Zorro'],loc:'City Pet Clinic'},
+];
+let tasks=[
+  {id:1,title:'Schedule oil change',done:false,due:'2026-03-29',who:['Dad']},
+  {id:2,title:'Sign permission slip',done:false,due:'2026-03-28',who:['Collin'],late:true},
+  {id:3,title:'Order birthday cake',done:false,due:'2026-04-02',who:['Mom']},
+  {id:4,title:'Call insurance',done:true,due:'2026-03-25',who:['Dad']},
+  {id:5,title:'Pick up dry cleaning',done:false,due:'2026-03-30',who:['Mom']},
+  {id:6,title:'Buy dog food',done:false,due:'2026-04-01',who:['Zorro']},
+];
+let lists=[
+  {id:1,name:'Grocery',icon:'🛒',items:[{t:'Milk',d:false},{t:'Eggs',d:false},{t:'Bread',d:true},{t:'Chicken',d:false},{t:'Apples',d:false},{t:'Pasta',d:false}]},
+  {id:2,name:'Home Projects',icon:'🔧',items:[{t:'Fix porch light',d:false},{t:'Caulk master bath',d:false},{t:'Touch up hallway paint',d:true}]},
+  {id:3,name:'Costco Run',icon:'📦',items:[{t:'Paper towels',d:false},{t:'Laundry pods',d:false},{t:'Olive oil',d:false},{t:'Granola bars',d:false}]},
+  {id:4,name:'Amazon',icon:'📬',items:[{t:'Phone case – Colin',d:false},{t:'AA batteries',d:false}]},
+];
+const MDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+let meals={
+  Sun:{breakfast:'Pancakes & bacon',lunch:'',dinner:'Pasta night'},
+  Mon:{breakfast:'',lunch:'Sandwiches',dinner:'Chicken stir-fry'},
+  Tue:{breakfast:'',lunch:'',dinner:'Taco Tuesday'},
+  Wed:{breakfast:'Eggs & toast',lunch:'Leftovers',dinner:'Salmon & veggies'},
+  Thu:{breakfast:'',lunch:'',dinner:'Pizza night'},
+  Fri:{breakfast:'',lunch:'',dinner:'Burgers on the grill'},
+  Sat:{breakfast:'Waffles',lunch:'',dinner:'BBQ'},
+};
+
+const fmt=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+// Convert HH:MM(:SS) stored time to 12-hour display string e.g. "8pm", "9:30am"
+function fmt12(t){
+  if(!t) return '';
+  const [h,m] = t.split(':').map(Number);
+  const ampm = h < 12 ? 'am' : 'pm';
+  const h12 = h % 12 || 12;
+  return m === 0 ? h12+ampm : h12+':'+String(m).padStart(2,'0')+ampm;
+}
+const same=(a,b)=>a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate();
+// who can be a string (legacy) or array — normalise to array
+function whoArr(e){ return Array.isArray(e.who) ? e.who : [e.who]; }
+// Event is visible if ANY of its people are in the active set
+const vev=()=>evs.filter(e=>whoArr(e).some(w=>active.has(w)));
+// Primary color = first person's color
+// Single-person: use their color. Multi-person: neutral gray so no one "owns" it.
+// Reserved group-event color — not available for individual members
+const GROUP_BG   = '#dceeff';
+const GROUP_TEXT = '#1a6bb5';
+const ec=e=>whoArr(e).length>1?GROUP_TEXT:mColor(whoArr(e)[0]);
+const eb=e=>whoArr(e).length>1?GROUP_BG:mBg(whoArr(e)[0]);
+// For border accents: always use first person's color (gives multi-person bars a meaningful stripe)
+const eprimary=e=>mColor(whoArr(e)[0]);
+
+// Striped left accent for multi-person events.
+// Uses background-image gradient instead of border-image so border-radius is preserved on all corners.
+function multiLeftBorder(ev, width){
+  const people = whoArr(ev);
+  const w = width || 3;
+  const bg = eb(ev);
+  if(people.length <= 1){
+    // Single person — solid border-left, plain background
+    return `border-left:${w}px solid ${mColor(people[0])};background:${bg}`;
+  }
+  const colors = people.map(p=>mColor(p));
+  const pct = 100 / colors.length;
+  const stops = colors.map((c,i)=>`${c} ${(i*pct).toFixed(1)}% ${((i+1)*pct).toFixed(1)}%`).join(',');
+  const stripe = `linear-gradient(to bottom,${stops}) left / ${w}px 100% no-repeat`;
+  const fill   = `linear-gradient(${bg},${bg}) ${w}px 0 / calc(100% - ${w}px) 100% no-repeat`;
+  return `border-left:none;background:${stripe}, ${fill};padding-left:${w+2}px`;
+}
+
+// Multi-person avatar cluster — shows stacked colored circles when event has >1 person
+function multiWhoHtml(ev, size){
+  const people = whoArr(ev);
+  if(people.length <= 1) return '';
+  const sz = size || 10;
+  const overlap = Math.round(sz * 0.35);
+  const dots = people.map((w,i) =>
+    `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${mColor(w)};border:1.5px solid #fff;margin-left:${i===0?0:-overlap}px;flex-shrink:0;z-index:${i}" title="${w}"></div>`
+  ).join('');
+  return `<div style="display:flex;align-items:center;margin-left:4px;flex-shrink:0">${dots}</div>`;
+}
+
+// Person dot(s) for bottom-right of wev pills — shows ALL people (single or multi)
+function whoFooter(ev, size){
+  const people = whoArr(ev);
+  const sz = size || 22;
+  const overlap = Math.round(sz * 0.35);
+  const fontSize = Math.round(sz * 0.45);
+  const dots = people.map((w,i) =>
+    `<div style="width:${sz}px;height:${sz}px;border-radius:50%;background:${mColor(w)};border:1.5px solid rgba(255,255,255,0.8);margin-left:${i===0?0:-overlap}px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;font-weight:700;color:#fff" title="${w}">${w.charAt(0).toUpperCase()}</div>`
+  ).join('');
+  return `<div style="display:flex;align-items:center;justify-content:flex-end;margin-top:2px">${dots}</div>`;
+}
+// Multi-day helpers
+function isMultiDay(ev){ return ev.endDate && ev.endDate !== ev.date; }
+// Parse 'YYYY-MM-DD' safely in local timezone (avoids UTC-midnight shift bug)
+function parseDate(s){ const p=s.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+function evSpansDate(ev, ds){
+  if(!ev.endDate || ev.endDate===ev.date) return ev.date===ds;
+  return ds >= ev.date && ds <= ev.endDate;
+}
+function evStartsOn(ev, ds){ return ev.date===ds; }
+function evEndsOn(ev, ds){ return (ev.endDate||ev.date)===ds; }
+
+// Returns array of {ev, top, height, timeLabel} for all timed events on a given date
+function timedEvLayout(ds){
+  const dayEvs = vev().filter(e=>{
+    if(!evSpansDate(e,ds)) return false;
+    if(!isMultiDay(e)) return true;
+    return evStartsOn(e,ds) || evEndsOn(e,ds);
+  });
+  return dayEvs.map(ev=>{
+    const multi=isMultiDay(ev);
+    let top,ht,timeLabel;
+    if(multi && evEndsOn(ev,ds) && !evStartsOn(ev,ds)){
+      const eh=parseInt(ev.end.split(':')[0]),em=parseInt(ev.end.split(':')[1]);
+      top=0; ht=Math.max(22,(eh*60+em)/60*104);
+      timeLabel=`Arrives ${fmt12(ev.end)}`;
+    } else {
+      const sh=parseInt(ev.time.split(':')[0]),sm=parseInt(ev.time.split(':')[1]);
+      top=(sh*60+sm)/60*104;
+      if(multi && evStartsOn(ev,ds) && !evEndsOn(ev,ds)){
+        // Extend from start time to midnight (hour 24)
+        ht = Math.max(22, (24 - sh - sm/60) * 104);
+        timeLabel=`Departs ${fmt12(ev.time)}`;
+      } else {
+        const eh=parseInt(ev.end.split(':')[0]),em=parseInt(ev.end.split(':')[1]);
+        const dur=(eh*60+em)-(sh*60+sm);
+        ht=Math.max(22,dur/60*104);
+        timeLabel=`${fmt12(ev.time)} – ${fmt12(ev.end)}`;
+      }
+    }
+    return {ev, top, ht, timeLabel};
+  });
+}
+
+// Given array of {top,ht,...}, assign each a {col, totalCols} for side-by-side layout
+function assignOverlapCols(items){
+  // Sort by top
+  const sorted=[...items].sort((a,b)=>a.top-b.top);
+  const cols=[]; // each col is array of items placed there
+  sorted.forEach(item=>{
+    let placed=false;
+    for(let c=0;c<cols.length;c++){
+      const last=cols[c][cols[c].length-1];
+      if(item.top >= last.top+last.ht-2){ cols[c].push(item); item._col=c; placed=true; break; }
+    }
+    if(!placed){ item._col=cols.length; cols.push([item]); }
+  });
+  // Second pass: totalCols = max overlapping at any point
+  sorted.forEach(item=>{
+    let max=1;
+    sorted.forEach(other=>{
+      if(other===item) return;
+      const overlap = item.top < other.top+other.ht && item.top+item.ht > other.top;
+      if(overlap) max=Math.max(max, other._col+1, item._col+1);
+    });
+    item._totalCols=max;
+  });
+  return sorted;
+}
+
+function renderTimedEvs(items, extraRight){
+  const laid=assignOverlapCols(items);
+  return laid.map(({ev,top,ht,timeLabel,_col,_totalCols})=>{
+    const tc=_totalCols||1, c=_col||0;
+    const pct=100/tc;
+    const left=`${c*pct}%`;
+    const right=`calc(${100-(c+1)*pct}% + ${extraRight||2}px)`;
+    const loc = ev.loc ? `<div class="wev-loc">${ev.loc}</div>` : '';
+    const footer = whoFooter(ev, 22);
+    const titleRow = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.title}</div>`;
+    const borderStyle = multiLeftBorder(ev, 3);
+    return `<div class="wev" onclick="showEventDetail(${ev.id})" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column">${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}</div>`;
+  }).join('');
+}
+function toggleM(m){
+  const allNames = new Set(members.map(x=>x.name));
+  if(active.size === 1 && active.has(m)){
+    allNames.forEach(n=>active.add(n));
+  } else {
+    allNames.forEach(n=>active.delete(n));
+    active.add(m);
+  }
+  rebuildSidebarDots();
+  // Capture scroll before render, restore after (beats the scrollToHour setTimeout)
+  const scrollBody = document.querySelector('.wbody') || document.querySelector('.daybody');
+  const savedScroll = scrollBody ? scrollBody.scrollTop : null;
+  render();
+  if(savedScroll !== null){
+    setTimeout(()=>{
+      const restored = document.querySelector('.wbody') || document.querySelector('.daybody');
+      if(restored) restored.scrollTop = savedScroll;
+    }, 0);
+  }
+}
+
+function rebuildSidebarDots(){
+  document.querySelectorAll('#member-legend-wrap .mdot').forEach(el => {
+    el.classList.toggle('off', !active.has(el.dataset.m));
+  });
+}
+
+function rebuildFullSidebarDots(){
+  const legend = document.getElementById('member-legend-wrap');
+  if(!legend) return;
+  legend.innerHTML = '';
+  legend.className = 'member-legend';
+  members.forEach(m => {
+    const d = document.createElement('div');
+    d.className = 'mdot' + (active.has(m.name) ? '' : ' off');
+    d.style.background = m.color;
+    d.dataset.m = m.name;
+    d.onclick = () => toggleM(m.name);
+    d.innerHTML = `${m.name.charAt(0).toUpperCase()}<span class="mdot-tip">${m.name}</span>`;
+    legend.appendChild(d);
+  });
+}
+
+function sv(v){
+  appV=v;
+  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.toggle('active',el.dataset.v===v));
+  const calTabs=document.getElementById('cal-tabs');
+  if(calTabs) calTabs.style.display=v==='calendar'?'flex':'none';
+  const fab=document.getElementById('fab');
+  if(fab) fab.style.display=v==='settings'?'none':'flex';
+  render();
+}
+
+function scv(v){
+  calV=v;
+  const order=['month','week','workweek','day','agenda'];
+  document.querySelectorAll('.vpill').forEach((p,i)=>p.classList.toggle('active',order[i]===v));
+  render();
+}
+
+function navP(){
+  if(appV==='calendar'){
+    if(calV==='month'||calV==='agenda') cur.setMonth(cur.getMonth()-1);
+    else if(calV==='week') cur.setDate(cur.getDate()-7);
+    else if(calV==='workweek') cur.setDate(cur.getDate()-5);
+    else if(calV==='day') cur.setDate(cur.getDate()-1);
+  } else cur.setMonth(cur.getMonth()-1);
+  render();
+}
+function navN(){
+  if(appV==='calendar'){
+    if(calV==='month'||calV==='agenda') cur.setMonth(cur.getMonth()+1);
+    else if(calV==='week') cur.setDate(cur.getDate()+7);
+    else if(calV==='workweek') cur.setDate(cur.getDate()+5);
+    else if(calV==='day') cur.setDate(cur.getDate()+1);
+  } else cur.setMonth(cur.getMonth()+1);
+  render();
+}
+function gotoday(){ cur=new Date(T); render(); }
+
+function getSeason(mo){
+  // mo is 0-indexed. Northern hemisphere seasons.
+  if(mo>=2&&mo<=4) return {name:'Spring',icon:'🌸',color:'#c04e8a'};
+  if(mo>=5&&mo<=7) return {name:'Summer',icon:'☀️',color:'#c87d12'};
+  if(mo>=8&&mo<=10) return {name:'Autumn',icon:'🍂',color:'#b85520'};
+  return {name:'Winter',icon:'❄️',color:'#2c6bed'};
+}
+
+function utb(){
+  const el=document.getElementById('tb-title');
+  const sEl=document.getElementById('tb-slabel');
+  const sIcon=document.getElementById('tb-sicon');
+  const sRow=document.getElementById('tb-season');
+  // Season is always based on current real month for the display month
+  const displayMo = (appV==='calendar') ? cur.getMonth() : cur.getMonth();
+  const season=getSeason(displayMo);
+  if(sEl){ sEl.textContent=season.name; sEl.style.color=season.color; }
+  if(sIcon){ sIcon.textContent=season.icon; }
+  if(sRow){ sRow.style.color=season.color; }
+
+  // Hide season row for non-calendar views, show simple label instead
+  const showSeason = true;
+  if(appV==='settings'){ el.textContent='Settings'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='⚙️'; return; }
+  if(appV==='tasks'){ el.textContent='Tasks'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='📋'; return; }
+  if(appV==='lists'){ el.textContent='Lists'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='📝'; return; }
+  if(appV==='meals'){ el.textContent='Meal Planner'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='🍽️'; return; }
+  if(calV==='month'||calV==='agenda'){ el.textContent=MOS[cur.getMonth()]+' '+cur.getFullYear(); return; }
+  if(calV==='day'){ el.textContent=DF[cur.getDay()]+', '+MOS[cur.getMonth()]+' '+cur.getDate(); return; }
+  const s=wstart(cur,calV==='workweek');
+  const e2=new Date(s); e2.setDate(s.getDate()+(calV==='workweek'?4:6));
+  el.textContent=MOS[s.getMonth()]+' '+s.getDate()+' – '+MOS[e2.getMonth()]+' '+e2.getDate()+', '+e2.getFullYear();
+}
+
+function wstart(d,ww){
+  if(ww) return new Date(d); // 5 Day: start from current day
+  const s=new Date(d), day=d.getDay();
+  s.setDate(d.getDate()-day);
+  return s;
+}
+
+function render(){
+  utb();
+  const c=document.getElementById('content');
+  if(appV==='settings'){ c.innerHTML=rSettings(); return; }
+  if(appV==='tasks'){ c.innerHTML=rTasks(); return; }
+  if(appV==='lists'){ c.innerHTML=rLists(); return; }
+  if(appV==='meals'){ c.innerHTML=rMeals(); return; }
+  if(calV==='month'){ c.innerHTML=rMonth(); return; }
+  if(calV==='week'||calV==='workweek'){ c.innerHTML=rWeek(calV==='workweek'); setTimeout(()=>{ drawNow(); scrollToHour(6); },0); return; }
+  if(calV==='day'){ c.innerHTML=rDay(); setTimeout(()=>{ drawNow(); scrollToHour(6); },0); return; }
+  if(calV==='agenda'){ c.innerHTML=rAgenda(); return; }
+}
+
+function rMonth(){
+  const yr=cur.getFullYear(), mo=cur.getMonth();
+  const first=new Date(yr,mo,1);
+  const startD=new Date(first); startD.setDate(startD.getDate()-first.getDay());
+
+  // Build 6 rows of 7 days
+  const rows=[];
+  const d=new Date(startD);
+  for(let r=0;r<6;r++){
+    const row=[];
+    for(let c=0;c<7;c++){
+      row.push(new Date(d));
+      d.setDate(d.getDate()+1);
+    }
+    rows.push(row);
+  }
+
+  // Get all visible multi-day events that appear in this month view range
+  const viewStart=fmt(startD);
+  const viewEnd=fmt(rows[5][6]);
+  const multiEvs=vev().filter(e=>isMultiDay(e) && e.date<=viewEnd && (e.endDate||e.date)>=viewStart);
+
+  // For each row, compute which multi-day events appear and their bar geometry
+  // Bar position: left% and width% within the row (0% = left edge of col 0, 100% = right edge of col 6)
+  // Start day: leftFrac = (col + timeOfDay/24) / 7
+  // End day:   rightFrac = (col + timeOfDay/24) / 7
+  // Time fraction: hours+mins out of 24
+  function timeFrac(timeStr){ // "HH:MM:SS" or "HH:MM"
+    const parts=timeStr.split(':');
+    return (parseInt(parts[0])*60+parseInt(parts[1]))/(24*60);
+  }
+
+  // DNUM_H = approx pixel height of the day number row inside a cell
+  // We position bars at top: DNUM_H + barIndex*(barH+2)
+  // We'll use CSS top% within the row height — but we don't know cell height at render time.
+  // Instead we use a fixed pixel offset from top of cell, matching dnum height ~30px
+  const DNUM_H = 30; // px — matches padding(5) + dnum(24) + gap(1)
+  const BAR_H = 18;
+  const BAR_GAP = 2;
+
+  let rowsHtml='';
+
+  rows.forEach((rowDays,ri)=>{
+    // Which multi-day events overlap this row?
+    const rowStart=fmt(rowDays[0]), rowEnd=fmt(rowDays[6]);
+    const rowMulti=multiEvs.filter(e=> e.date<=rowEnd && (e.endDate||e.date)>=rowStart);
+
+    // Build cell HTML (no multi-day pills inside cells)
+    let cellsHtml='';
+    rowDays.forEach(day=>{
+      const other=day.getMonth()!==mo, isToday=same(day,T), ds=fmt(day);
+      const singleEvs=vev().filter(e=>!isMultiDay(e)&&e.date===ds);
+      // Reserve space for multi-day bars — add invisible spacers
+      const multiOnThisDay=rowMulti.length;
+      let spacers='';
+      for(let i=0;i<Math.min(multiOnThisDay,3);i++){
+        spacers+=`<div style="height:${BAR_H}px;margin-bottom:${BAR_GAP}px"></div>`;
+      }
+      const show=singleEvs.slice(0,Math.max(0,3-multiOnThisDay));
+      const pills=show.map(e=>`<div class="epill" onclick="event.stopPropagation();showEventDetail(${e.id})" style="${multiLeftBorder(e,3)};cursor:pointer;color:#1c1c1a"><div class="edot" style="background:${ec(e)};flex-shrink:0"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${e.title}</span></div>`).join('');
+      const moreCount=(singleEvs.length-show.length);
+      const more=moreCount>0?`<div class="emore">+${moreCount} more</div>`:'';
+      cellsHtml+=`<div class="mcell${other?' other':''}${isToday?' is-today':''}" onclick="mcc('${ds}')"><div class="dnum">${day.getDate()}</div>${spacers}${pills}${more}</div>`;
+    });
+
+    // Build overlay bars for multi-day events
+    let overlayHtml='';
+    rowMulti.forEach((ev,barIdx)=>{
+      // Clamp event to this row
+      const evStartInRow = ev.date >= rowStart ? ev.date : rowStart;
+      const evEndInRow   = (ev.endDate||ev.date) <= rowEnd ? (ev.endDate||ev.date) : rowEnd;
+
+      // Column index within this row (0-6)
+      const colStart = rowDays.findIndex(d=>fmt(d)===evStartInRow);
+      const colEnd   = rowDays.findIndex(d=>fmt(d)===evEndInRow);
+
+      // Time fractions — only applied on the actual event start/end dates
+      const startFrac = ev.date===evStartInRow ? timeFrac(ev.time) : 0;
+      const endFrac   = (ev.endDate||ev.date)===evEndInRow ? timeFrac(ev.end) : 1;
+
+      const leftPct  = (colStart + startFrac) / 7 * 100;
+      const rightPct = (colEnd   + endFrac)   / 7 * 100;
+      // Enforce minimum width of 0.4 columns so thin start slivers are always visible
+      const minWidth = (0.4 / 7 * 100);
+      const widthPct = Math.max(minWidth, rightPct - leftPct);
+
+      // Vertical position: below dnum, stacked by barIdx
+      const topPx = DNUM_H + barIdx*(BAR_H+BAR_GAP);
+
+      // Show title on first day bar is at least 30% of a cell wide
+      const barWidthInStartCell = Math.min(rightPct, (colStart+1)/7*100) - leftPct;
+      const oneCellPct = 100/7;
+      const startsInRow = ev.date >= rowStart;
+      // Find first day in this row where bar covers >= 30% of cell
+      let labelDayCol = -1;
+      for(let c=colStart; c<=colEnd; c++){
+        const cellLeft=c/7*100, cellRight=(c+1)/7*100;
+        const overlap=Math.min(rightPct,cellRight)-Math.max(leftPct,cellLeft);
+        if(overlap/oneCellPct >= 0.30){ labelDayCol=c; break; }
+      }
+      const label = (labelDayCol === colStart && startsInRow) ? ev.title
+                  : (labelDayCol > colStart && labelDayCol >= 0) ? ev.title
+                  : '';
+
+      // Border radius: round left if starts here, round right if ends here
+      const rleft  = startsInRow ? '6px' : '0';
+      const rright = (ev.endDate||ev.date) <= rowEnd ? '6px' : '0';
+      const borderRadius = `${rleft} ${rright} ${rright} ${rleft}`;
+      const borderLeftStyle = startsInRow
+        ? multiLeftBorder(ev, 3)+';padding-left:5px'
+        : 'border-left:none;padding-left:5px';
+
+      const barContent = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}`;
+      overlayHtml+=`<div class="mday-bar" onclick="event.stopPropagation();showEventDetail(${ev.id})" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;background:${eb(ev)};color:#1c1c1a;border-radius:${borderRadius};${borderLeftStyle};display:flex;align-items:center">${barContent}</div>`;
+    });
+
+    rowsHtml+=`<div class="month-row">${cellsHtml}<div class="mday-overlay">${overlayHtml}</div></div>`;
+  });
+
+  return `<div class="mwrap">
+    <div class="dow-row">${DS.map(d=>`<div class="dow-cell">${d}</div>`).join('')}</div>
+    <div class="month-rows-wrap">${rowsHtml}</div>
+  </div>`;
+}
+
+function rWeek(ww){
+  const s=wstart(cur,ww);
+  const days=Array.from({length:ww?5:7},(_,i)=>{const d=new Date(s);d.setDate(s.getDate()+i);return d;});
+  const cols=days.length;
+
+  // Column headers
+  let hd=`<div class="wh-sp" style="width:46px"></div>`;
+  days.forEach(d=>{
+    const isT=same(d,T);
+    hd+=`<div class="wh-cell"><div class="wh-dow">${DS[d.getDay()]}</div><div class="wh-date${isT?' tod':''}">${d.getDate()}</div></div>`;
+  });
+
+  // All-day / multi-day proportional pill row
+  const weekMultiEvs = vev().filter(e=>isMultiDay(e) && e.date<=fmt(days[days.length-1]) && (e.endDate||e.date)>=fmt(days[0]));
+  const hasMulti = weekMultiEvs.length > 0;
+  let allDayRow = '';
+  if(hasMulti){
+    const rowStart=fmt(days[0]), rowEnd=fmt(days[days.length-1]);
+    function wTimeFrac(t){ const p=t.split(':'); return (parseInt(p[0])*60+parseInt(p[1]))/(24*60); }
+    const BAR_H=20, BAR_GAP=2;
+    let barsHtml='';
+    weekMultiEvs.forEach((ev,barIdx)=>{
+      const evStartInRow = ev.date >= rowStart ? ev.date : rowStart;
+      const evEndInRow   = (ev.endDate||ev.date) <= rowEnd ? (ev.endDate||ev.date) : rowEnd;
+      const colStart = days.findIndex(d=>fmt(d)===evStartInRow);
+      const colEnd   = days.findIndex(d=>fmt(d)===evEndInRow);
+      const startFrac = ev.date===evStartInRow ? wTimeFrac(ev.time) : 0;
+      const endFrac   = (ev.endDate||ev.date)===evEndInRow ? wTimeFrac(ev.end) : 1;
+      const leftPct  = (colStart + startFrac) / cols * 100;
+      const rightPct = (colEnd   + endFrac)   / cols * 100;
+      const widthPct = Math.max(0.4/cols*100, rightPct - leftPct);
+      const topPx = barIdx*(BAR_H+BAR_GAP)+3;
+      // Title on first cell where bar >= 30% wide
+      const oneCellPct = 100/cols;
+      let labelCol=-1;
+      for(let c=colStart;c<=colEnd;c++){
+        const ov=Math.min(rightPct,(c+1)/cols*100)-Math.max(leftPct,c/cols*100);
+        if(ov/oneCellPct>=0.30){labelCol=c;break;}
+      }
+      const startsInRow = ev.date>=rowStart;
+      const label = labelCol>=0 ? ev.title : '';
+      const rleft = startsInRow?'6px':'0';
+      const rright = (ev.endDate||ev.date)<=rowEnd?'6px':'0';
+      const bl = startsInRow ? multiLeftBorder(ev,3)+';padding-left:5px' : 'border-left:none;padding-left:5px';
+      barsHtml+=`<div onclick="showEventDetail(${ev.id})" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}</div>`;
+    });
+    const rowH = weekMultiEvs.length*(BAR_H+BAR_GAP)+4;
+    allDayRow=`<div style="display:grid;grid-template-columns:46px 1fr;border-bottom:1px solid var(--border);background:var(--header-bg)">
+      <div style="border-right:1px solid var(--border);padding:4px 6px;font-size:9px;color:var(--muted);font-weight:600;display:flex;align-items:flex-start;justify-content:flex-end;padding-top:6px">all day</div>
+      <div style="position:relative;height:${rowH}px">${barsHtml}</div>
+    </div>`;
+  }
+
+  // Time grid — hour slot lines + events per column
+  let tlbls='';
+  for(let h=0;h<24;h++){
+    const l=h===0?'12am':h===12?'noon':h<12?h+'am':(h-12)+'pm';
+    tlbls+=`<div class="tlbl">${l}</div>`;
+  }
+  // Build hour-line grid (visual only) and overlay events per column
+  const hourLines=Array.from({length:24},()=>'<div class="hslot"></div>').join('');
+  const dcHtml=days.map((d,ci)=>{
+    const ds=fmt(d);
+    const items=timedEvLayout(ds);
+    const evHtml=renderTimedEvs(items, 2);
+    return `<div class="dcol" id="dc${ci}" data-date="${ds}"><div style="position:relative">${hourLines}${evHtml}</div></div>`;
+  }).join('');
+  return `<div class="wwrap">
+    <div class="whead" style="grid-template-columns:46px repeat(${cols},1fr)">${hd}</div>
+    ${allDayRow}
+    <div class="wbody"><div class="tcol">${tlbls}</div><div class="dcols" style="grid-template-columns:repeat(${cols},1fr)" id="dcols">${dcHtml}</div></div>
+  </div>`;
+}
+
+function rDay(){
+  const ds=fmt(cur);
+  const allDayEvs=vev().filter(e=>isMultiDay(e)&&evSpansDate(e,ds)&&!evStartsOn(e,ds)&&!evEndsOn(e,ds));
+  const allDayBanner=allDayEvs.length?`<div style="padding:4px 8px;border-bottom:1px solid var(--border);background:var(--header-bg)">
+    ${allDayEvs.map(ev=>`<div onclick="showEventDetail(${ev.id})" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${multiWhoHtml(ev,9)}</div>`).join('')}
+  </div>`:'';
+
+  let tlbls='';
+  for(let h=0;h<24;h++){
+    const l=h===0?'12am':h===12?'noon':h<12?h+'am':(h-12)+'pm';
+    tlbls+=`<div class="tlbl">${l}</div>`;
+  }
+  const hourLines=Array.from({length:24},()=>'<div class="hslot"></div>').join('');
+  const items=timedEvLayout(ds);
+  const evHtml=renderTimedEvs(items, 8);
+
+  return `<div class="daywrap">
+    <div class="dayhero"><div class="dayhero-n">${cur.getDate()}</div><div><div class="dayhero-dow">${DF[cur.getDay()]}</div><div class="dayhero-sub">${MOS[cur.getMonth()]} ${cur.getFullYear()}</div></div></div>
+    ${allDayBanner}
+    <div class="daybody"><div class="tcol">${tlbls}</div><div class="dayinner" id="dayinner"><div style="position:relative">${hourLines}${evHtml}</div></div></div>
+  </div>`;
+}
+
+function rAgenda(){
+  const yr=cur.getFullYear(),mo=cur.getMonth();
+  const nd=new Date(yr,mo+1,0).getDate();
+  let html='<div class="agwrap">';
+  for(let day=1;day<=nd;day++){
+    const d=new Date(yr,mo,day),ds=fmt(d),isT=same(d,T);
+    const de=vev().filter(e=>evSpansDate(e,ds)).sort((a,b)=>a.time>b.time?1:-1);
+    html+=`<div><div class="ag-hdr"><div class="ag-num${isT?' tod':''}">${day}</div><div><div class="ag-dow">${DF[d.getDay()]}</div><div class="ag-mon">${MOS[mo]} ${yr}</div></div></div><div class="ag-evs">`;
+    if(!de.length) html+=`<div class="ag-empty">No events</div>`;
+    de.forEach(ev=>{
+      const multi=isMultiDay(ev);
+      const timeStr=multi
+        ? (evStartsOn(ev,ds)?`Starts ${fmt12(ev.time)}`:evEndsOn(ev,ds)?`Ends ${fmt12(ev.end)}`:'All day')
+        : `${fmt12(ev.time)} – ${fmt12(ev.end)}`;
+      const whoBadges = whoArr(ev).map(w=>`<span class="ag-who" style="background:${mBg(w)};color:${mColor(w)}">${w}</span>`).join('');
+      html+=`<div class="ag-row" onclick="showEventDetail(${ev.id})"><div class="ag-bar" style="background:${eprimary(ev)}"></div><div class="ag-time">${timeStr}</div><div><div class="ag-title">${ev.title}${multi?' 📅':''}</div>${ev.loc?`<div class="ag-sub">${ev.loc}</div>`:''}<div style="display:flex;gap:3px;margin-top:3px">${whoBadges}</div></div></div>`;
+    });
+    html+=`</div></div>`;
+  }
+  return html+'</div>';
+}
+
+function rTasks(){
+  const p=tasks.filter(t=>!t.done), dn=tasks.filter(t=>t.done);
+  const row=t=>{
+    const people = whoArr(t);
+    const badges = people.map(w=>`<div class="twho" style="background:${mColor(w)}" title="${w}">${w.charAt(0)}</div>`).join('');
+    return `<div class="task-row"><div class="tck${t.done?' done':''}" onclick="toggleT(${t.id})">${t.done?`<svg width="10" height="10" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5 3.5-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="ttxt${t.done?' done':''}">${t.title}</div><div class="tdue${t.late?' late':''}">${t.due}</div><div style="display:flex;gap:3px">${badges}</div></div>`;
+  };
+  return `<div class="taskwrap"><div class="sec-hd">Upcoming (${p.length})</div>${p.map(row).join('')}${dn.length?`<div class="sec-hd" style="margin-top:16px">Completed (${dn.length})</div>${dn.map(row).join('')}`:''}</div>`;
+}
+
+function toggleT(id){ const t=tasks.find(t=>t.id===id); if(t) t.done=!t.done; render(); }
+
+function rLists(){
+  return `<div class="listwrap">${lists.map(l=>{
+    const rem=l.items.filter(i=>!i.d).length;
+    return `<div class="lcard"><div class="lcard-hd"><div class="lcard-icon">${l.icon}</div><div class="lcard-name">${l.name}</div><div class="lcard-ct">${rem} left</div></div><div class="lcard-bd">${l.items.map((it,i)=>`<div class="litem"><div class="licheck${it.d?' done':''}" onclick="toggleI(${l.id},${i})">${it.d?`<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="litxt${it.d?' done':''}">${it.t}</div></div>`).join('')}</div></div>`;
+  }).join('')}</div>`;
+}
+
+function toggleI(lid,idx){ const l=lists.find(l=>l.id===lid); if(l) l.items[idx].d=!l.items[idx].d; render(); }
+
+function rMeals(){
+  const todLbl=DS[T.getDay()];
+  return `<div class="mealwrap"><div class="meal-grid">${MDAYS.map(day=>{
+    const m=meals[day],isT=day===todLbl;
+    const slots=['breakfast','lunch','dinner'].map(tp=>`<div class="mslot${isT?' tod-slot':''}" onclick="mealEdit('${day}','${tp}')"><div class="mtype">${tp}</div>${m[tp]?`<div class="mname">${m[tp]}</div>`:`<div class="mempty">+ add</div>`}</div>`).join('');
+    return `<div class="meal-day"><div class="meal-day-lbl${isT?' tod-lbl':''}">${day}</div>${slots}</div>`;
+  }).join('')}</div></div>`;
+}
+
+function scrollToHour(h){
+  const body = document.querySelector('.wbody') || document.querySelector('.daybody');
+  if(!body) return;
+  // Center current time in viewport — scroll so the given hour is ~1/3 from top
+  const viewH = body.clientHeight || 400;
+  const targetTop = h * 104 - Math.round(viewH / 3);
+  body.scrollTop = Math.max(0, targetTop);
+}
+
+function drawNow(){
+  const n=new Date(), h=n.getHours(), m=n.getMinutes();
+  const pct=(h+m/60)/24, top=pct*24*104;
+  const clr='#e05b30';
+  const line=`<div class="now-line" style="top:${top}px;background:${clr}"><div class="now-dot" style="background:${clr}"></div></div>`;
+  // Day view — single column
+  const dayInner=document.getElementById('dayinner');
+  if(dayInner&&dayInner.firstChild){ dayInner.firstChild.insertAdjacentHTML('beforeend',line); return; }
+  // Week/5-day — find column matching today's date
+  const todayStr=fmt(n);
+  const todayCol=document.querySelector(`.dcol[data-date="${todayStr}"]`);
+  if(todayCol&&todayCol.firstChild) todayCol.firstChild.insertAdjacentHTML('beforeend',line);
+}
+
+function mcc(ds){ if(calV==='month'){ cur=new Date(ds+'T12:00:00'); scv('day'); } }
+
+function ppHtml(sel){
+  // sel can be a string or array
+  const selArr = Array.isArray(sel) ? sel : (sel ? [sel] : []);
+  return `<div class="ppicker" style="flex-wrap:wrap;gap:6px">${members.map(m=>`<div class="ppick${selArr.includes(m.name)?' sel':''}" style="background:${selArr.includes(m.name)?m.color:m.bg};color:${selArr.includes(m.name)?'#fff':m.color};border:2px solid ${m.color}" data-p="${m.name}" onclick="pickP(this,'${m.name}')" title="${m.name}">${m.name.charAt(0)}</div>`).join('')}</div>
+  <div style="font-size:10px;color:var(--muted);margin-top:4px">Tap to toggle — multiple allowed</div>`;
+}
+window._selPeople = ['Mom'];
+function pickP(el, n){
+  if(window._selPeople.includes(n)){
+    if(window._selPeople.length > 1) window._selPeople = window._selPeople.filter(x=>x!==n);
+  } else {
+    window._selPeople = [...window._selPeople, n];
+  }
+  // Refresh picker visuals
+  document.querySelectorAll('.ppick').forEach(p=>{
+    const m = members.find(x=>x.name===p.dataset.p);
+    if(!m) return;
+    const sel = window._selPeople.includes(p.dataset.p);
+    p.classList.toggle('sel', sel);
+    p.style.background = sel ? m.color : m.bg;
+    p.style.color = sel ? '#fff' : m.color;
+  });
+}
+
+// Settings draft — changes buffered until Save is clicked
+let _draft = null;
+
+function rSettings(){
+  if(!_draft) _draft = members.map(m=>({...m}));
+  if(window._draftNewColor===undefined) window._draftNewColor = PALETTE[0];
+  const newSwatches = PALETTE.map(c=>`<div class="cswatch${c===window._draftNewColor?' sel':''}" style="background:${c}" onclick="draftSetNewColor('${c}')"></div>`).join('');
+  const rows = _draft.map((m,i)=>`
+    <div class="member-row" id="mrow-${i}">
+      <div class="member-row-swatch" style="background:${m.color};cursor:pointer" onclick="draftToggleColorPicker(${i})">${m.name.charAt(0).toUpperCase()}</div>
+      <input class="fin" style="flex:1;font-size:12px;padding:5px 8px" value="${m.name}" id="mname-${i}" oninput="draftRename(${i},this.value)">
+      <button class="member-row-del" onclick="draftDel(${i})" title="Remove">✕</button>
+    </div>
+    <div id="mcp-${i}" style="display:none;padding:6px 14px 10px;margin-top:-4px;background:var(--sidebar-bg);border-radius:0 0 10px 10px;margin-bottom:6px">
+      <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Color</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">${PALETTE.map(c=>`<div class="cswatch${m.color===c?' sel':''}" style="background:${c}" onclick="draftSetColor(${i},'${c}')"></div>`).join('')}</div>
+    </div>`).join('');
+  return `<div class="setwrap">
+    <div class="set-section-title">Family Members</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Tap the circle to change color. Edit a name to rename. Changes are not saved until you tap Save.</p>
+    <div id="member-rows">${rows}</div>
+    <div class="set-section-title" style="margin-top:24px">Add New Member</div>
+    <div class="color-swatches" id="new-swatches" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${newSwatches}</div>
+    <div class="add-member-row" style="margin-bottom:28px">
+      <input class="fin" id="new-member-name" type="text" placeholder="Name (e.g. Grandma, Coach)">
+      <button class="btn btn-p" onclick="draftAdd()">Add</button>
+    </div>
+    <div class="set-section-title" style="margin-top:24px">Google Calendar Sync</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Connect your personal Gmail calendar to pull events automatically. Bracket tags like [Collin] or [Ava] in event titles will map to the right family member.</p>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <button class="sync-btn" id="sync-btn" onclick="handleSyncClick()" style="flex:1;justify-content:center;padding:8px 12px">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-label">Connect Google</span>
+      </button>
+    </div>
+    <p style="font-size:10px;color:var(--muted)">Requires a Google OAuth Client ID — see setup instructions in the app code.</p>
+    <div style="display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--border);margin-top:20px">
+      <button class="btn btn-s" style="flex:1" onclick="cancelSettings()">Cancel</button>
+      <button class="btn btn-p" style="flex:2" onclick="saveSettings()">Save Changes</button>
+    </div>
+  </div>`;
+}
+
+function draftRename(idx, val){
+  if(_draft && _draft[idx]) _draft[idx].name = val;
+}
+function draftSetColor(idx, color){
+  if(!_draft || !_draft[idx]) return;
+  _draft[idx].color = color;
+  _draft[idx].bg = colorToBg(color);
+  document.getElementById('content').innerHTML = rSettings();
+  const el = document.getElementById('mcp-'+idx);
+  if(el) el.style.display = 'block';
+}
+function draftToggleColorPicker(idx){
+  const el = document.getElementById('mcp-'+idx);
+  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+function draftSetNewColor(c){
+  window._draftNewColor = c;
+  document.querySelectorAll('#new-swatches .cswatch').forEach(s=>{
+    s.classList.toggle('sel', s.style.background===c || s.style.backgroundColor===c);
+  });
+}
+function draftAdd(){
+  const nameEl = document.getElementById('new-member-name');
+  const name = nameEl ? nameEl.value.trim() : '';
+  if(!name || !_draft) return;
+  if(_draft.find(m=>m.name.toLowerCase()===name.toLowerCase())) return;
+  const color = window._draftNewColor || PALETTE[_draft.length % PALETTE.length];
+  _draft.push({ name, color, bg: colorToBg(color) });
+  window._draftNewColor = PALETTE[0];
+  document.getElementById('content').innerHTML = rSettings();
+}
+function draftDel(idx){
+  if(!_draft || _draft.length <= 1) return;
+  _draft.splice(idx, 1);
+  document.getElementById('content').innerHTML = rSettings();
+}
+
+function saveSettings(){
+  if(!_draft) { sv('calendar'); return; }
+  // Sync names: match by original index for existing members, apply renames
+  const originalMembers = members.map(m=>({...m}));
+  const keepCount = Math.min(originalMembers.length, _draft.length);
+  for(let i=0; i<keepCount; i++){
+    const oldName = originalMembers[i].name;
+    const newName = (_draft[i].name||'').trim() || oldName;
+    _draft[i].name = newName;
+    if(oldName !== newName){
+      evs.forEach(e=>{ e.who = whoArr(e).map(w=>w===oldName?newName:w); });
+      tasks.forEach(t=>{ t.who = whoArr(t).map(w=>w===oldName?newName:w); });
+      if(active.has(oldName)){ active.delete(oldName); active.add(newName); }
+    }
+  }
+  // Remove deleted members from active set
+  originalMembers.forEach(m=>{
+    if(!_draft.find(d=>d.name===m.name)) active.delete(m.name);
+  });
+  // Add brand-new members to active set
+  _draft.forEach(m=>{ if(!originalMembers.find(o=>o.name===m.name)) active.add(m.name); });
+  // Commit
+  members = _draft.map(m=>({...m}));
+  _draft = null;
+  window._draftNewColor = undefined;
+  rebuildFullSidebarDots();
+  sv('calendar');
+}
+
+function cancelSettings(){
+  _draft = null;
+  window._draftNewColor = undefined;
+  sv('calendar');
+}
+
+// Legacy stub kept so any residual calls don't throw
+function setNewColor(el, c){ window._draftNewColor = c; }
+function addMember(){ draftAdd(); }
+function delMember(idx){ draftDel(idx); }
+
+function openAdd(){
+  if(appV==='tasks') addTask();
+  else if(appV==='lists') addListItem();
+  else if(appV==='meals') addMealModal();
+  else addEvent();
+}
+
+function addEvent(){
+  window._selPeople = ['Mom'];
+  const ds=fmt(cur);
+  document.getElementById('mttl').textContent='New Event';
+  document.getElementById('mbd').innerHTML=`
+    <div class="fld"><label class="flbl">Title</label><input class="fin" id="etitle" type="text" placeholder="What's happening?" autofocus></div>
+    <div class="fld"><label class="flbl">Date</label><input class="fin" id="edate" type="date" value="${ds}"></div>
+    <div class="frow">
+      <div class="fld"><label class="flbl">Start time</label><input class="fin" id="es" type="time" value="09:00"></div>
+      <div class="fld"><label class="flbl">End time</label><input class="fin" id="ee" type="time" value="10:00"></div>
+    </div>
+    <div style="margin-top:2px">
+      <button type="button" onclick="toggleMultiDay()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--today-ring);font-weight:600;padding:0;display:flex;align-items:center;gap:4px">
+        <span id="multiday-arrow" style="font-size:10px">▶</span> Multi-day trip or event
+      </button>
+      <div id="multiday-fields" style="display:none;margin-top:8px">
+        <div class="frow">
+          <div class="fld"><label class="flbl">Start date</label><input class="fin" id="edate2" type="date" value="${ds}"></div>
+          <div class="fld"><label class="flbl">End date</label><input class="fin" id="eenddate" type="date" value="${ds}"></div>
+        </div>
+        <p style="font-size:10px;color:var(--muted);margin-top:4px">Start date overrides the date field above.</p>
+      </div>
+    </div>
+    <div class="fld"><label class="flbl">Location</label><input class="fin" id="eloc2" type="text" placeholder="Optional"></div>
+    <div class="fld"><label class="flbl">Description</label><textarea class="fin" id="edesc" rows="3" placeholder="Notes, details…" style="resize:vertical;min-height:60px"></textarea></div>
+    <div class="fld"><label class="flbl">Who</label>${ppHtml(['Mom'])}</div>`;
+  // Wire start time → end time auto-advance after modal renders
+  setTimeout(()=>{
+    const es = document.getElementById('es');
+    const ee = document.getElementById('ee');
+    if(!es||!ee) return;
+    function syncEnd(){
+      const [sh,sm] = es.value.split(':').map(Number);
+      ee.min = es.value;
+      const [eh,em] = ee.value.split(':').map(Number);
+      if(eh*60+em <= sh*60+sm){
+        const newMins = sh*60+sm+60;
+        const nh = Math.floor(newMins/60)%24;
+        const nm = newMins%60;
+        ee.value = String(nh).padStart(2,'0')+':'+String(nm).padStart(2,'0');
+      }
+    }
+    es.addEventListener('change', syncEnd);
+  }, 0);
+  window._save=()=>{
+    const t=document.getElementById('etitle').value.trim();
+    if(!t) return;
+    const multiOpen = document.getElementById('multiday-fields').style.display!=='none';
+    const startDate = multiOpen ? (document.getElementById('edate2').value||document.getElementById('edate').value) : document.getElementById('edate').value;
+    const endDate = multiOpen ? (document.getElementById('eenddate').value||startDate) : startDate;
+    evs.push({
+      id:Date.now(), title:t,
+      date:startDate, endDate:endDate,
+      time:document.getElementById('es').value+':00',
+      end:document.getElementById('ee').value+':00',
+      who:[...window._selPeople],
+      loc: (document.getElementById('eloc2')?.value||'').trim(),
+      desc:(document.getElementById('edesc')?.value||'').trim(),
+    });
+    closeM(); render();
+  };
+  openM();
+}
+
+function toggleMultiDay(){
+  const f=document.getElementById('multiday-fields');
+  const a=document.getElementById('multiday-arrow');
+  const open=f.style.display==='none';
+  f.style.display=open?'block':'none';
+  a.textContent=open?'▼':'▶';
+  // Sync the date field into the multi-day start date when expanding
+  if(open){
+    const d=document.getElementById('edate').value;
+    const sd=document.getElementById('edate2');
+    const ed=document.getElementById('eenddate');
+    if(sd&&d) sd.value=d;
+    if(ed&&d) ed.value=d;
+    // Keep end date in sync with start
+    if(sd&&ed) sd.addEventListener('change',()=>{ if(ed.value<sd.value) ed.value=sd.value; });
+  }
+}
+
+function addTask(){
+  window._selPeople = ['Mom'];
+  document.getElementById('mttl').textContent='New Task';
+  document.getElementById('mbd').innerHTML=`
+    <div class="fld"><label class="flbl">Task</label><input class="fin" id="ttl" type="text" placeholder="What needs doing?"></div>
+    <div class="fld"><label class="flbl">Due date</label><input class="fin" id="tdue" type="date" value="${fmt(T)}"></div>
+    <div class="fld"><label class="flbl">Who</label>${ppHtml(['Mom'])}</div>`;
+  window._save=()=>{
+    const t=document.getElementById('ttl').value.trim();
+    if(!t) return;
+    tasks.push({id:Date.now(),title:t,done:false,due:document.getElementById('tdue').value,who:[...window._selPeople]});
+    closeM(); render();
+  };
+  openM();
+}
+
+function addListItem(){
+  document.getElementById('mttl').textContent='Add to List';
+  document.getElementById('mbd').innerHTML=`
+    <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}">${l.icon} ${l.name}</option>`).join('')}</select></div>
+    <div class="fld"><label class="flbl">Item</label><input class="fin" id="litem" type="text" placeholder="Add item…"></div>`;
+  window._save=()=>{
+    const lid=parseInt(document.getElementById('lsel').value);
+    const t=document.getElementById('litem').value.trim();
+    if(!t) return;
+    const l=lists.find(l=>l.id===lid);
+    if(l) l.items.push({t,d:false});
+    closeM(); render();
+  };
+  openM();
+}
+
+function addMealModal(){
+  document.getElementById('mttl').textContent='Add Meal';
+  const todDay=DS[T.getDay()];
+  document.getElementById('mbd').innerHTML=`
+    <div class="frow">
+      <div class="fld"><label class="flbl">Day</label><select class="fin" id="mday">${MDAYS.map(d=>`<option${d===todDay?' selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="fld"><label class="flbl">Meal</label><select class="fin" id="mtp"><option>breakfast</option><option>lunch</option><option selected>dinner</option></select></div>
+    </div>
+    <div class="fld"><label class="flbl">What's cooking?</label><input class="fin" id="mname" type="text" placeholder="e.g. Chicken tacos"></div>`;
+  window._save=()=>{
+    const day=document.getElementById('mday').value;
+    const tp=document.getElementById('mtp').value;
+    const n=document.getElementById('mname').value.trim();
+    if(!n) return;
+    meals[day][tp]=n;
+    closeM(); render();
+  };
+  openM();
+}
+
+function mealEdit(day,tp){
+  document.getElementById('mttl').textContent=`${tp.charAt(0).toUpperCase()+tp.slice(1)} – ${day}`;
+  document.getElementById('mbd').innerHTML=`
+    <div class="fld"><label class="flbl">What's cooking?</label><input class="fin" id="medit" type="text" value="${meals[day][tp]||''}" placeholder="e.g. Spaghetti"></div>`;
+  window._save=()=>{ meals[day][tp]=document.getElementById('medit').value.trim(); closeM(); render(); };
+  openM();
+}
+
+function openM(){ document.getElementById('ov').classList.add('open'); }
+function closeM(){ document.getElementById('ov').classList.remove('open'); }
+function ovClick(e){ if(e.target.id==='ov') closeM(); }
+function doSave(){ if(window._save) window._save(); }
+
+// ── Event detail modal ──
+let _detEvId = null;
+
+function showEventDetail(id){
+  const ev = evs.find(e=>e.id===id);
+  if(!ev) return;
+  _detEvId = id;
+  const color = ec(ev), bg = eb(ev);
+  const multi = isMultiDay(ev);
+
+  // Date/time string
+  let when = '';
+  if(multi){
+    when = `${ev.date} at ${fmt12(ev.time)} → ${ev.endDate} at ${fmt12(ev.end)}`;
+  } else {
+    when = `${ev.date} · ${fmt12(ev.time)} – ${fmt12(ev.end)}`;
+  }
+
+  document.getElementById('det-title').textContent = ev.title;
+  const whoBadges = whoArr(ev).map(w=>`<span class="det-who" style="background:${mBg(w)};color:${mColor(w)}">${w}</span>`).join('');
+  document.getElementById('det-body').innerHTML = `
+    <div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap">${whoBadges}</div>
+    <div class="det-row">
+      <div class="det-row-icon">
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v2M9 1v2M1 6h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="det-row-val">${when}</div>
+    </div>
+    ${ev.loc ? `<div class="det-row">
+      <div class="det-row-icon">
+        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M7 1a4 4 0 014 4c0 3-4 8-4 8S3 8 3 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="5" r="1.3" stroke="currentColor" stroke-width="1.3"/></svg>
+      </div>
+      <div class="det-row-val">${ev.loc}</div>
+    </div>` : ''}
+    ${ev.desc ? `<div class="det-desc">${ev.desc}</div>` : ''}
+  `;
+  document.getElementById('det-ov').classList.add('open');
+}
+
+function closeDet(){
+  document.getElementById('det-ov').classList.remove('open');
+  _detEvId = null;
+}
+
+function detOvClick(e){ if(e.target.id==='det-ov') closeDet(); }
+
+function deleteEvFromDet(){
+  if(_detEvId===null) return;
+  const deleteId = _detEvId;
+  closeDet();
+  evs = evs.filter(e=>e.id!==deleteId);
+  render();
+}
+
+function editEvFromDet(){
+  const ev = evs.find(e=>e.id===_detEvId);
+  if(!ev) return;
+  const editId = _detEvId; // capture before closeDet() nulls it
+  closeDet();
+  const multi = isMultiDay(ev);
+  window._selPeople = [...whoArr(ev)];
+  document.getElementById('mttl').textContent = 'Edit Event';
+  document.getElementById('mbd').innerHTML = `
+    <div class="fld"><label class="flbl">Title</label><input class="fin" id="etitle" type="text" value="${ev.title}"></div>
+    <div class="fld"><label class="flbl">Date</label><input class="fin" id="edate" type="date" value="${ev.date}"></div>
+    <div class="frow">
+      <div class="fld"><label class="flbl">Start time</label><input class="fin" id="es" type="time" value="${ev.time.slice(0,5)}"></div>
+      <div class="fld"><label class="flbl">End time</label><input class="fin" id="ee" type="time" value="${ev.end.slice(0,5)}"></div>
+    </div>
+    <div style="margin-top:2px">
+      <button type="button" onclick="toggleMultiDay()" style="background:none;border:none;cursor:pointer;font-size:11px;color:var(--today-ring);font-weight:600;padding:0;display:flex;align-items:center;gap:4px">
+        <span id="multiday-arrow" style="font-size:10px">${multi?'▼':'▶'}</span> Multi-day trip or event
+      </button>
+      <div id="multiday-fields" style="display:${multi?'block':'none'};margin-top:8px">
+        <div class="frow">
+          <div class="fld"><label class="flbl">Start date</label><input class="fin" id="edate2" type="date" value="${ev.date}"></div>
+          <div class="fld"><label class="flbl">End date</label><input class="fin" id="eenddate" type="date" value="${ev.endDate||ev.date}"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fld"><label class="flbl">Location</label><input class="fin" id="eloc" type="text" value="${ev.loc||''}" placeholder="Optional"></div>
+    <div class="fld"><label class="flbl">Description</label><textarea class="fin" id="edesc" rows="3" placeholder="Notes, details…" style="resize:vertical;min-height:60px">${ev.desc||''}</textarea></div>
+    <div class="fld"><label class="flbl">Who</label>${ppHtml(whoArr(ev))}</div>`;
+  document.querySelector('#ov .btn-p').textContent = 'Save';
+  window._save = () => {
+    const t = document.getElementById('etitle').value.trim();
+    if(!t) return;
+    const multiOpen = document.getElementById('multiday-fields').style.display !== 'none';
+    const startDate = multiOpen ? (document.getElementById('edate2').value || document.getElementById('edate').value) : document.getElementById('edate').value;
+    const endDate = multiOpen ? (document.getElementById('eenddate').value || startDate) : startDate;
+    const idx = evs.findIndex(e=>e.id===editId);
+    if(idx > -1){
+      evs[idx] = { ...evs[idx], title:t, date:startDate, endDate:endDate,
+        time:document.getElementById('es').value+':00',
+        end:document.getElementById('ee').value+':00',
+        loc:document.getElementById('eloc').value,
+        desc:(document.getElementById('edesc')?.value||'').trim(),
+        who:[...window._selPeople] };
+    }
+    document.querySelector('#ov .btn-p').textContent = 'Add';
+    closeM(); render();
+  };
+  openM();
+}
+
+sv('calendar');
+document.querySelector('.nav-btn[data-v="calendar"]').classList.add('active');
+// Build sidebar member dots from the dynamic members array
+rebuildFullSidebarDots();
+
+// ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
+
+// PASTE YOUR CLIENT ID HERE after setting up Google Cloud project:
+const GCAL_CLIENT_ID = '';
+
+const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
+const GCAL_API    = 'https://www.googleapis.com/calendar/v3';
+
+// Tag → member mapping for bracket tags like [Collin], [Ava], [Amanda], [All]
+// Edit these to match your family members' real first names
+function buildTagMap(){
+  const map = {};
+  members.forEach(m=>{ map[m.name.toLowerCase()] = [m.name]; });
+  // First-name → member mappings — customise to match your family
+  map['collin']  = ['Collin'];
+  map['colin']   = ['Collin'];
+  map['ava']     = ['Ava'];
+  map['zorro']   = ['Zorro'];
+  map['amanda']  = ['Mom'];
+  map['all']     = members.map(m=>m.name);
+  map['family']  = members.map(m=>m.name);
+  return map;
+}
+
+function parseGcalWho(title, desc){
+  const tagMap = buildTagMap();
+  const text = (title||'') + ' ' + (desc||'');
+  const match = text.match(/\[([^\]]+)\]/i);
+  if(match){
+    const key = match[1].toLowerCase().trim();
+    if(tagMap[key]) return tagMap[key];
+  }
+  // No tag — default to first member (you, the calendar owner)
+  return [members[0]?.name || 'Dad'];
+}
+
+function cleanGcalTitle(title){
+  return (title||'').replace(/\[[^\]]+\]\s*/g,'').trim() || '(No title)';
+}
+
+function gcalToLocal(gev){
+  const id = 'gcal_'+gev.id;
+  const isAllDay = !!(gev.start?.date && !gev.start?.dateTime);
+  let date, endDate, time, end;
+  if(isAllDay){
+    date = gev.start.date;
+    // Google all-day end is exclusive — subtract one day
+    const ed = new Date(gev.end.date+'T12:00:00');
+    ed.setDate(ed.getDate()-1);
+    endDate = fmt(ed);
+    time = '00:00:00'; end = '23:59:00';
+  } else {
+    const s = new Date(gev.start.dateTime);
+    const e = new Date(gev.end.dateTime);
+    date    = fmt(s);
+    endDate = fmt(e);
+    time    = String(s.getHours()).padStart(2,'0')+':'+String(s.getMinutes()).padStart(2,'0')+':00';
+    end     = String(e.getHours()).padStart(2,'0')+':'+String(e.getMinutes()).padStart(2,'0')+':00';
+  }
+  return {
+    id, fromGcal: true,
+    title   : cleanGcalTitle(gev.summary),
+    date, endDate, time, end,
+    who     : parseGcalWho(gev.summary, gev.description),
+    loc     : gev.location || '',
+    desc    : gev.description || '',
+  };
+}
+
+let gcalToken     = null;
+let gcalAutoTimer = null;
+let gcalClient    = null;
+
+function syncStatusSet(state, label){
+  const dot = document.getElementById('sync-dot');
+  const lbl = document.getElementById('sync-label');
+  if(dot) dot.className = 'sync-dot'+(state?' '+state:'');
+  if(lbl) lbl.textContent = label;
+}
+
+function gcalInit(){
+  if(!GCAL_CLIENT_ID){ syncStatusSet('','Add Client ID'); return; }
+  if(!window.google?.accounts?.oauth2) return;
+  gcalClient = google.accounts.oauth2.initTokenClient({
+    client_id : GCAL_CLIENT_ID,
+    scope     : GCAL_SCOPES,
+    callback  : (resp) => {
+      if(resp.error){ syncStatusSet('error','Auth failed'); return; }
+      gcalToken = resp.access_token;
+      gcalFetch();
+    },
+  });
+  syncStatusSet('','Connect Google');
+}
+
+function handleSyncClick(){
+  if(!GCAL_CLIENT_ID){
+    alert('Open the app code and paste your Google OAuth Client ID into the GCAL_CLIENT_ID variable near the bottom of the script.');
+    return;
+  }
+  if(gcalToken){ gcalFetch(); return; }
+  if(!gcalClient) gcalInit();
+  if(gcalClient) gcalClient.requestAccessToken({ prompt:'consent' });
+}
+
+async function gcalFetch(){
+  if(!gcalToken) return;
+  syncStatusSet('syncing','Syncing…');
+  try {
+    const now  = new Date();
+    const tMin = new Date(now); tMin.setMonth(tMin.getMonth()-1); tMin.setDate(1);
+    const tMax = new Date(now); tMax.setMonth(tMax.getMonth()+3); tMax.setDate(0);
+    const p = new URLSearchParams({
+      timeMin      : tMin.toISOString(),
+      timeMax      : tMax.toISOString(),
+      maxResults   : '500',
+      singleEvents : 'true',
+      orderBy      : 'startTime',
+    });
+    const r = await fetch(`${GCAL_API}/calendars/primary/events?${p}`,
+      { headers: { Authorization: `Bearer ${gcalToken}` } });
+    if(r.status===401){ gcalToken=null; syncStatusSet('','Connect Google'); return; }
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    // Remove old synced events, keep manual ones
+    evs = evs.filter(e=>!e.fromGcal);
+    (data.items||[]).filter(e=>e.status!=='cancelled').forEach(e=>evs.push(gcalToLocal(e)));
+    const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+    syncStatusSet('connected','Synced '+t);
+    render();
+    // Auto-refresh every 15 min
+    clearTimeout(gcalAutoTimer);
+    gcalAutoTimer = setTimeout(gcalFetch, 15*60*1000);
+  } catch(err){
+    syncStatusSet('error','Sync failed');
+    console.error('GCal error:', err);
+  }
+}
+
+// Wait for GIS library to load then initialise
+(function waitForGIS(){
+  if(window.google?.accounts?.oauth2) gcalInit();
+  else setTimeout(waitForGIS, 300);
+})();
+
+// ─── END GOOGLE CALENDAR SYNC ───────────────────────────────────────────────
+</script>
+</body>
+</html>
