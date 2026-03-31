@@ -804,7 +804,7 @@ function whoFooter(ev, size){
   return `<div style="display:flex;align-items:center;justify-content:flex-end;margin-top:2px">${dots}</div>`;
 }
 // Multi-day helpers
-function isMultiDay(ev){ return ev.endDate && ev.endDate !== ev.date; }
+function isMultiDay(ev){ return !!(ev.allDay || (ev.endDate && ev.endDate !== ev.date)); }
 // Parse 'YYYY-MM-DD' safely in local timezone (avoids UTC-midnight shift bug)
 function parseDate(s){ const p=s.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
 function evSpansDate(ev, ds){
@@ -818,6 +818,7 @@ function evEndsOn(ev, ds){ return (ev.endDate||ev.date)===ds; }
 function timedEvLayout(ds){
   const dayEvs = vev().filter(e=>{
     if(!evSpansDate(e,ds)) return false;
+    if(e.allDay) return false;          // allDay events go in the all-day bar, not the grid
     if(!isMultiDay(e)) return true;
     return evStartsOn(e,ds) || evEndsOn(e,ds);
   });
@@ -883,7 +884,7 @@ function renderTimedEvs(items, extraRight){
     const footer = whoFooter(ev, 22);
     const titleRow = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.title}</div>`;
     const borderStyle = multiLeftBorder(ev, 3);
-    return `<div class="wev" onclick="showEventDetail(${ev.id})" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column">${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}</div>`;
+    return `<div class="wev" onclick="showEventDetail('${ev.id}')" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column">${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}</div>`;
   }).join('');
 }
 function toggleM(m){
@@ -1078,7 +1079,7 @@ function rMonth(){
         spacers+=`<div style="height:${BAR_H}px;margin-bottom:${BAR_GAP}px"></div>`;
       }
       const show=singleEvs.slice(0,Math.max(0,3-multiOnThisDay));
-      const pills=show.map(e=>`<div class="epill" onclick="event.stopPropagation();showEventDetail(${e.id})" style="${multiLeftBorder(e,3)};cursor:pointer;color:#1c1c1a"><div class="edot" style="background:${ec(e)};flex-shrink:0"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${e.title}</span></div>`).join('');
+      const pills=show.map(e=>`<div class="epill" onclick="event.stopPropagation();showEventDetail('${e.id}')" style="${multiLeftBorder(e,3)};cursor:pointer;color:#1c1c1a"><div class="edot" style="background:${ec(e)};flex-shrink:0"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${e.title}</span></div>`).join('');
       const moreCount=(singleEvs.length-show.length);
       const more=moreCount>0?`<div class="emore">+${moreCount} more</div>`:'';
       cellsHtml+=`<div class="mcell${other?' other':''}${isToday?' is-today':''}" onclick="mcc('${ds}')"><div class="dnum">${day.getDate()}</div>${spacers}${pills}${more}</div>`;
@@ -1132,7 +1133,7 @@ function rMonth(){
         : 'border-left:none;padding-left:5px';
 
       const barContent = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}`;
-      overlayHtml+=`<div class="mday-bar" onclick="event.stopPropagation();showEventDetail(${ev.id})" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;background:${eb(ev)};color:#1c1c1a;border-radius:${borderRadius};${borderLeftStyle};display:flex;align-items:center">${barContent}</div>`;
+      overlayHtml+=`<div class="mday-bar" onclick="event.stopPropagation();showEventDetail('${ev.id}')" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;background:${eb(ev)};color:#1c1c1a;border-radius:${borderRadius};${borderLeftStyle};display:flex;align-items:center">${barContent}</div>`;
     });
 
     rowsHtml+=`<div class="month-row">${cellsHtml}<div class="mday-overlay">${overlayHtml}</div></div>`;
@@ -1188,7 +1189,7 @@ function rWeek(ww){
       const rleft = startsInRow?'6px':'0';
       const rright = (ev.endDate||ev.date)<=rowEnd?'6px':'0';
       const bl = startsInRow ? multiLeftBorder(ev,3)+';padding-left:5px' : 'border-left:none;padding-left:5px';
-      barsHtml+=`<div onclick="showEventDetail(${ev.id})" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}</div>`;
+      barsHtml+=`<div onclick="showEventDetail('${ev.id}')" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}</div>`;
     });
     const rowH = weekMultiEvs.length*(BAR_H+BAR_GAP)+4;
     allDayRow=`<div style="display:grid;grid-template-columns:46px 1fr;border-bottom:1px solid var(--border);background:var(--header-bg)">
@@ -1220,9 +1221,9 @@ function rWeek(ww){
 
 function rDay(){
   const ds=fmt(cur);
-  const allDayEvs=vev().filter(e=>isMultiDay(e)&&evSpansDate(e,ds)&&!evStartsOn(e,ds)&&!evEndsOn(e,ds));
+  const allDayEvs=vev().filter(e=>isMultiDay(e)&&evSpansDate(e,ds)&&(e.allDay||(!evStartsOn(e,ds)&&!evEndsOn(e,ds))));
   const allDayBanner=allDayEvs.length?`<div style="padding:4px 8px;border-bottom:1px solid var(--border);background:var(--header-bg)">
-    ${allDayEvs.map(ev=>`<div onclick="showEventDetail(${ev.id})" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${multiWhoHtml(ev,9)}</div>`).join('')}
+    ${allDayEvs.map(ev=>`<div onclick="showEventDetail('${ev.id}')" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${multiWhoHtml(ev,9)}</div>`).join('')}
   </div>`:'';
 
   let tlbls='';
@@ -1256,7 +1257,7 @@ function rAgenda(){
         ? (evStartsOn(ev,ds)?`Starts ${fmt12(ev.time)}`:evEndsOn(ev,ds)?`Ends ${fmt12(ev.end)}`:'All day')
         : `${fmt12(ev.time)} – ${fmt12(ev.end)}`;
       const whoBadges = whoArr(ev).map(w=>`<span class="ag-who" style="background:${mBg(w)};color:${mColor(w)}">${w}</span>`).join('');
-      html+=`<div class="ag-row" onclick="showEventDetail(${ev.id})"><div class="ag-bar" style="background:${eprimary(ev)}"></div><div class="ag-time">${timeStr}</div><div><div class="ag-title">${ev.title}${multi?' 📅':''}</div>${ev.loc?`<div class="ag-sub">${ev.loc}</div>`:''}<div style="display:flex;gap:3px;margin-top:3px">${whoBadges}</div></div></div>`;
+      html+=`<div class="ag-row" onclick="showEventDetail('${ev.id}')"><div class="ag-bar" style="background:${eprimary(ev)}"></div><div class="ag-time">${timeStr}</div><div><div class="ag-title">${ev.title}${multi?' 📅':''}</div>${ev.loc?`<div class="ag-sub">${ev.loc}</div>`:''}<div style="display:flex;gap:3px;margin-top:3px">${whoBadges}</div></div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -1729,7 +1730,7 @@ rebuildFullSidebarDots();
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
 
 // PASTE YOUR CLIENT ID HERE after setting up Google Cloud project:
-const GCAL_CLIENT_ID = '697995087846-jb5286il5gl9c0osnvgbtjheu3u844ne.apps.googleusercontent.com';
+const GCAL_CLIENT_ID = '';
 
 const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const GCAL_API    = 'https://www.googleapis.com/calendar/v3';
@@ -1789,6 +1790,7 @@ function gcalToLocal(gev){
     id, fromGcal: true,
     title   : cleanGcalTitle(gev.summary),
     date, endDate, time, end,
+    allDay  : isAllDay,
     who     : parseGcalWho(gev.summary, gev.description),
     loc     : gev.location || '',
     desc    : gev.description || '',
