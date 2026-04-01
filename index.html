@@ -885,21 +885,21 @@ function renderTimedEvs(items, extraRight){
     const titleRow = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">${ev.title}</div>`;
 
     let inner;
-    if(ht >= 80){
+    if(ht >= 104){
       // Full layout: title + time + location + person footer
       const loc    = ev.loc ? `<div class="wev-loc">${ev.loc}</div>` : '';
       const footer = whoFooter(ev, 22);
       inner = `${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}`;
-    } else if(ht >= 44){
-      // Medium: title + time + small person footer
-      const footer = whoFooter(ev, 16);
+    } else if(ht >= 60){
+      // Medium: title + time only
+      const footer = whoFooter(ev, 14);
       inner = `${titleRow}<div class="wev-t">${timeLabel}</div>${footer}`;
     } else {
-      // Short: title only, single line, no padding waste
+      // Short: title only, vertically centered
       inner = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;line-height:${ht}px;padding:0 2px">${ev.title}</div>`;
     }
 
-    const padding = ht < 44 ? 'padding:0 4px' : '';
+    const padding = ht < 60 ? 'padding:0 4px' : '';
     return `<div class="wev" onclick="editEvent('${ev.id}')" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column;${padding}">${inner}</div>`;
   }).join('');
 }
