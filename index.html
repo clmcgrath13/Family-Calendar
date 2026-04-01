@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Family Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="config.js"></script>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -880,11 +881,26 @@ function renderTimedEvs(items, extraRight){
     const pct=100/tc;
     const left=`${c*pct}%`;
     const right=`calc(${100-(c+1)*pct}% + ${extraRight||2}px)`;
-    const loc = ev.loc ? `<div class="wev-loc">${ev.loc}</div>` : '';
-    const footer = whoFooter(ev, 22);
-    const titleRow = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${ev.title}</div>`;
     const borderStyle = multiLeftBorder(ev, 3);
-    return `<div class="wev" onclick="showEventDetail('${ev.id}')" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column">${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}</div>`;
+    const titleRow = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600">${ev.title}</div>`;
+
+    let inner;
+    if(ht >= 80){
+      // Full layout: title + time + location + person footer
+      const loc    = ev.loc ? `<div class="wev-loc">${ev.loc}</div>` : '';
+      const footer = whoFooter(ev, 22);
+      inner = `${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}`;
+    } else if(ht >= 44){
+      // Medium: title + time + small person footer
+      const footer = whoFooter(ev, 16);
+      inner = `${titleRow}<div class="wev-t">${timeLabel}</div>${footer}`;
+    } else {
+      // Short: title only, single line, no padding waste
+      inner = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;line-height:${ht}px;padding:0 2px">${ev.title}</div>`;
+    }
+
+    const padding = ht < 44 ? 'padding:0 4px' : '';
+    return `<div class="wev" onclick="editEvent('${ev.id}')" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column;${padding}">${inner}</div>`;
   }).join('');
 }
 function toggleM(m){
@@ -1079,7 +1095,7 @@ function rMonth(){
         spacers+=`<div style="height:${BAR_H}px;margin-bottom:${BAR_GAP}px"></div>`;
       }
       const show=singleEvs.slice(0,Math.max(0,3-multiOnThisDay));
-      const pills=show.map(e=>`<div class="epill" onclick="event.stopPropagation();showEventDetail('${e.id}')" style="${multiLeftBorder(e,3)};cursor:pointer;color:#1c1c1a"><div class="edot" style="background:${ec(e)};flex-shrink:0"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${e.title}</span></div>`).join('');
+      const pills=show.map(e=>`<div class="epill" onclick="event.stopPropagation();editEvent('${e.id}')" style="${multiLeftBorder(e,3)};cursor:pointer;color:#1c1c1a"><div class="edot" style="background:${ec(e)};flex-shrink:0"></div><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;min-width:0">${e.title}</span></div>`).join('');
       const moreCount=(singleEvs.length-show.length);
       const more=moreCount>0?`<div class="emore">+${moreCount} more</div>`:'';
       cellsHtml+=`<div class="mcell${other?' other':''}${isToday?' is-today':''}" onclick="mcc('${ds}')"><div class="dnum">${day.getDate()}</div>${spacers}${pills}${more}</div>`;
@@ -1133,7 +1149,7 @@ function rMonth(){
         : 'border-left:none;padding-left:5px';
 
       const barContent = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}`;
-      overlayHtml+=`<div class="mday-bar" onclick="event.stopPropagation();showEventDetail('${ev.id}')" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;background:${eb(ev)};color:#1c1c1a;border-radius:${borderRadius};${borderLeftStyle};display:flex;align-items:center">${barContent}</div>`;
+      overlayHtml+=`<div class="mday-bar" onclick="event.stopPropagation();editEvent('${ev.id}')" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;background:${eb(ev)};color:#1c1c1a;border-radius:${borderRadius};${borderLeftStyle};display:flex;align-items:center">${barContent}</div>`;
     });
 
     rowsHtml+=`<div class="month-row">${cellsHtml}<div class="mday-overlay">${overlayHtml}</div></div>`;
@@ -1189,7 +1205,7 @@ function rWeek(ww){
       const rleft = startsInRow?'6px':'0';
       const rright = (ev.endDate||ev.date)<=rowEnd?'6px':'0';
       const bl = startsInRow ? multiLeftBorder(ev,3)+';padding-left:5px' : 'border-left:none;padding-left:5px';
-      barsHtml+=`<div onclick="showEventDetail('${ev.id}')" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}</div>`;
+      barsHtml+=`<div onclick="editEvent('${ev.id}')" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}</div>`;
     });
     const rowH = weekMultiEvs.length*(BAR_H+BAR_GAP)+4;
     allDayRow=`<div style="display:grid;grid-template-columns:46px 1fr;border-bottom:1px solid var(--border);background:var(--header-bg)">
@@ -1223,7 +1239,7 @@ function rDay(){
   const ds=fmt(cur);
   const allDayEvs=vev().filter(e=>isMultiDay(e)&&evSpansDate(e,ds)&&(e.allDay||(!evStartsOn(e,ds)&&!evEndsOn(e,ds))));
   const allDayBanner=allDayEvs.length?`<div style="padding:4px 8px;border-bottom:1px solid var(--border);background:var(--header-bg)">
-    ${allDayEvs.map(ev=>`<div onclick="showEventDetail('${ev.id}')" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${multiWhoHtml(ev,9)}</div>`).join('')}
+    ${allDayEvs.map(ev=>`<div onclick="editEvent('${ev.id}')" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${multiWhoHtml(ev,9)}</div>`).join('')}
   </div>`:'';
 
   let tlbls='';
@@ -1257,7 +1273,7 @@ function rAgenda(){
         ? (evStartsOn(ev,ds)?`Starts ${fmt12(ev.time)}`:evEndsOn(ev,ds)?`Ends ${fmt12(ev.end)}`:'All day')
         : `${fmt12(ev.time)} – ${fmt12(ev.end)}`;
       const whoBadges = whoArr(ev).map(w=>`<span class="ag-who" style="background:${mBg(w)};color:${mColor(w)}">${w}</span>`).join('');
-      html+=`<div class="ag-row" onclick="showEventDetail('${ev.id}')"><div class="ag-bar" style="background:${eprimary(ev)}"></div><div class="ag-time">${timeStr}</div><div><div class="ag-title">${ev.title}${multi?' 📅':''}</div>${ev.loc?`<div class="ag-sub">${ev.loc}</div>`:''}<div style="display:flex;gap:3px;margin-top:3px">${whoBadges}</div></div></div>`;
+      html+=`<div class="ag-row" onclick="editEvent('${ev.id}')"><div class="ag-bar" style="background:${eprimary(ev)}"></div><div class="ag-time">${timeStr}</div><div><div class="ag-title">${ev.title}${multi?' 📅':''}</div>${ev.loc?`<div class="ag-sub">${ev.loc}</div>`:''}<div style="display:flex;gap:3px;margin-top:3px">${whoBadges}</div></div></div>`;
     });
     html+=`</div></div>`;
   }
@@ -1613,69 +1629,26 @@ function mealEdit(day,tp){
 }
 
 function openM(){ document.getElementById('ov').classList.add('open'); }
-function closeM(){ document.getElementById('ov').classList.remove('open'); }
+function closeM(){
+  document.getElementById('ov').classList.remove('open');
+  // Restore footer to default Add state
+  document.querySelector('#ov .modal-ft').innerHTML = `
+    <button class="btn btn-s" onclick="closeM()">Cancel</button>
+    <button class="btn btn-p" onclick="doSave()">Add</button>`;
+}
 function ovClick(e){ if(e.target.id==='ov') closeM(); }
 function doSave(){ if(window._save) window._save(); }
 
-// ── Event detail modal ──
-let _detEvId = null;
+// ── Edit & Delete events ──
+function deleteEvent(id){
+  if(!confirm('Delete this event?')) return;
+  evs = evs.filter(e=>e.id!==id);
+  closeM(); render();
+}
 
-function showEventDetail(id){
+function editEvent(id){
   const ev = evs.find(e=>e.id===id);
   if(!ev) return;
-  _detEvId = id;
-  const color = ec(ev), bg = eb(ev);
-  const multi = isMultiDay(ev);
-
-  // Date/time string
-  let when = '';
-  if(multi){
-    when = `${ev.date} at ${fmt12(ev.time)} → ${ev.endDate} at ${fmt12(ev.end)}`;
-  } else {
-    when = `${ev.date} · ${fmt12(ev.time)} – ${fmt12(ev.end)}`;
-  }
-
-  document.getElementById('det-title').textContent = ev.title;
-  const whoBadges = whoArr(ev).map(w=>`<span class="det-who" style="background:${mBg(w)};color:${mColor(w)}">${w}</span>`).join('');
-  document.getElementById('det-body').innerHTML = `
-    <div style="margin-bottom:12px;display:flex;gap:6px;flex-wrap:wrap">${whoBadges}</div>
-    <div class="det-row">
-      <div class="det-row-icon">
-        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><rect x="1" y="2" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M5 1v2M9 1v2M1 6h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
-      </div>
-      <div class="det-row-val">${when}</div>
-    </div>
-    ${ev.loc ? `<div class="det-row">
-      <div class="det-row-icon">
-        <svg width="16" height="16" viewBox="0 0 14 14" fill="none"><path d="M7 1a4 4 0 014 4c0 3-4 8-4 8S3 8 3 5a4 4 0 014-4z" stroke="currentColor" stroke-width="1.3"/><circle cx="7" cy="5" r="1.3" stroke="currentColor" stroke-width="1.3"/></svg>
-      </div>
-      <div class="det-row-val">${ev.loc}</div>
-    </div>` : ''}
-    ${ev.desc ? `<div class="det-desc">${ev.desc}</div>` : ''}
-  `;
-  document.getElementById('det-ov').classList.add('open');
-}
-
-function closeDet(){
-  document.getElementById('det-ov').classList.remove('open');
-  _detEvId = null;
-}
-
-function detOvClick(e){ if(e.target.id==='det-ov') closeDet(); }
-
-function deleteEvFromDet(){
-  if(_detEvId===null) return;
-  const deleteId = _detEvId;
-  closeDet();
-  evs = evs.filter(e=>e.id!==deleteId);
-  render();
-}
-
-function editEvFromDet(){
-  const ev = evs.find(e=>e.id===_detEvId);
-  if(!ev) return;
-  const editId = _detEvId; // capture before closeDet() nulls it
-  closeDet();
   const multi = isMultiDay(ev);
   window._selPeople = [...whoArr(ev)];
   document.getElementById('mttl').textContent = 'Edit Event';
@@ -1700,14 +1673,19 @@ function editEvFromDet(){
     <div class="fld"><label class="flbl">Location</label><input class="fin" id="eloc" type="text" value="${ev.loc||''}" placeholder="Optional"></div>
     <div class="fld"><label class="flbl">Description</label><textarea class="fin" id="edesc" rows="3" placeholder="Notes, details…" style="resize:vertical;min-height:60px">${ev.desc||''}</textarea></div>
     <div class="fld"><label class="flbl">Who</label>${ppHtml(whoArr(ev))}</div>`;
+  // Show Delete button in footer, hide the Add button label
   document.querySelector('#ov .btn-p').textContent = 'Save';
+  document.querySelector('#ov .modal-ft').innerHTML = `
+    <button class="btn btn-s" style="color:#c44;border:1px solid #f5c5c5;margin-right:auto" onclick="deleteEvent('${id}')">Delete</button>
+    <button class="btn btn-s" onclick="closeM()">Cancel</button>
+    <button class="btn btn-p" onclick="doSave()">Save</button>`;
   window._save = () => {
     const t = document.getElementById('etitle').value.trim();
     if(!t) return;
     const multiOpen = document.getElementById('multiday-fields').style.display !== 'none';
     const startDate = multiOpen ? (document.getElementById('edate2').value || document.getElementById('edate').value) : document.getElementById('edate').value;
     const endDate = multiOpen ? (document.getElementById('eenddate').value || startDate) : startDate;
-    const idx = evs.findIndex(e=>e.id===editId);
+    const idx = evs.findIndex(e=>e.id===id);
     if(idx > -1){
       evs[idx] = { ...evs[idx], title:t, date:startDate, endDate:endDate,
         time:document.getElementById('es').value+':00',
@@ -1716,11 +1694,17 @@ function editEvFromDet(){
         desc:(document.getElementById('edesc')?.value||'').trim(),
         who:[...window._selPeople] };
     }
-    document.querySelector('#ov .btn-p').textContent = 'Add';
     closeM(); render();
   };
   openM();
 }
+
+// Legacy aliases — keep so any residual calls don't throw
+function showEventDetail(id){ editEvent(id); }
+function editEvFromDet(){ }
+function deleteEvFromDet(){ }
+function closeDet(){ }
+
 
 sv('calendar');
 document.querySelector('.nav-btn[data-v="calendar"]').classList.add('active');
@@ -1729,8 +1713,8 @@ rebuildFullSidebarDots();
 
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
 
-// PASTE YOUR CLIENT ID HERE after setting up Google Cloud project:
-const GCAL_CLIENT_ID = '697995087846-jb5286il5gl9c0osnvgbtjheu3u844ne.apps.googleusercontent.com';
+// Client ID loaded from config.js (window.GCAL_CLIENT_ID) — never hardcode here
+const GCAL_CLIENT_ID = window.GCAL_CLIENT_ID || '';
 
 const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
 const GCAL_API    = 'https://www.googleapis.com/calendar/v3';
