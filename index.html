@@ -194,12 +194,12 @@ body {
 }
 .mday-bar {
   position: absolute;
-  height: 18px;
-  font-size: 10px; font-weight: 600;
+  height: 22px;
+  font-size: 11px; font-weight: 600;
   display: flex; align-items: center;
   padding: 0 5px 0 6px;
   border-radius: 6px;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap; overflow: visible;
   pointer-events: all; cursor: pointer;
   box-sizing: border-box;
   min-width: 8px;
@@ -894,16 +894,16 @@ function renderTimedEvs(items, extraRight){
       const footer = whoFooter(ev, 22);
       inner = `${titleRow}<div class="wev-t">${timeLabel}</div>${loc}${footer}`;
     } else if(ht >= 60){
-      // Medium: title + time only
-      const footer = whoFooter(ev, 14);
+      // Medium: title + time + person footer
+      const footer = whoFooter(ev, 20);
       inner = `${titleRow}<div class="wev-t">${timeLabel}</div>${footer}`;
     } else {
-      // Short: title only, vertically centered
-      inner = `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;font-weight:600;line-height:${ht}px;padding:0 2px">${ev.title}</div>`;
+      // Short: title + person circle right-aligned, single line
+      const footer = whoFooter(ev, 18);
+      inner = `<div style="display:flex;align-items:center;height:100%;gap:3px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600;flex:1">${ev.title}</div>${footer}</div>`;
     }
 
-    const padding = ht < 60 ? 'padding:0 4px' : '';
-    return `<div class="wev" onclick="editEvent('${ev.id}')" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column;${padding}">${inner}</div>`;
+    return `<div class="wev" onclick="editEvent('${ev.id}')" style="${borderStyle};top:${top}px;height:${ht}px;left:calc(${left} + 2px);right:calc(${right});color:#1c1c1a;display:flex;flex-direction:column">${inner}</div>`;
   }).join('');
 }
 function toggleM(m){
@@ -1026,7 +1026,7 @@ function wstart(d,ww){
   return s;
 }
 
-function render(){
+function render(preserveScroll){
   utb();
   const c=document.getElementById('content');
   if(appV==='settings'){ c.innerHTML=rSettings(); return; }
@@ -1034,8 +1034,18 @@ function render(){
   if(appV==='lists'){ c.innerHTML=rLists(); return; }
   if(appV==='meals'){ c.innerHTML=rMeals(); return; }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
-  if(calV==='week'||calV==='workweek'){ c.innerHTML=rWeek(calV==='workweek'); setTimeout(()=>{ drawNow(); scrollToHour(6); },0); return; }
-  if(calV==='day'){ c.innerHTML=rDay(); setTimeout(()=>{ drawNow(); scrollToHour(6); },0); return; }
+  if(calV==='week'||calV==='workweek'){
+    const saved = preserveScroll ? (document.querySelector('.wbody')?.scrollTop ?? null) : null;
+    c.innerHTML=rWeek(calV==='workweek');
+    setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.wbody').scrollTop=saved) : scrollToHour(6); },0);
+    return;
+  }
+  if(calV==='day'){
+    const saved = preserveScroll ? (document.querySelector('.daybody')?.scrollTop ?? null) : null;
+    c.innerHTML=rDay();
+    setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToHour(6); },0);
+    return;
+  }
   if(calV==='agenda'){ c.innerHTML=rAgenda(); return; }
 }
 
@@ -1076,7 +1086,7 @@ function rMonth(){
   // We'll use CSS top% within the row height — but we don't know cell height at render time.
   // Instead we use a fixed pixel offset from top of cell, matching dnum height ~30px
   const DNUM_H = 30; // px — matches padding(5) + dnum(24) + gap(1)
-  const BAR_H = 18;
+  const BAR_H = 22;
   const BAR_GAP = 2;
 
   let rowsHtml='';
@@ -1151,7 +1161,7 @@ function rMonth(){
         ? multiLeftBorder(ev, 3)+';padding-left:5px'
         : 'border-left:none;padding-left:5px';
 
-      const barContent = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}`;
+      const barContent = `<span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${whoFooter(ev,16)}`;
       overlayHtml+=`<div class="mday-bar" onclick="event.stopPropagation();editEvent('${ev.id}')" style="left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;background:${eb(ev)};color:#1c1c1a;border-radius:${borderRadius};${borderLeftStyle};display:flex;align-items:center">${barContent}</div>`;
     });
 
@@ -1183,7 +1193,7 @@ function rWeek(ww){
   if(hasMulti){
     const rowStart=fmt(days[0]), rowEnd=fmt(days[days.length-1]);
     function wTimeFrac(t){ const p=t.split(':'); return (parseInt(p[0])*60+parseInt(p[1]))/(24*60); }
-    const BAR_H=20, BAR_GAP=2;
+    const BAR_H=22, BAR_GAP=2;
     let barsHtml='';
     weekMultiEvs.forEach((ev,barIdx)=>{
       const evStartInRow = ev.date >= rowStart ? ev.date : rowStart;
@@ -1208,7 +1218,7 @@ function rWeek(ww){
       const rleft = startsInRow?'6px':'0';
       const rright = (ev.endDate||ev.date)<=rowEnd?'6px':'0';
       const bl = startsInRow ? multiLeftBorder(ev,3)+';padding-left:5px' : 'border-left:none;padding-left:5px';
-      barsHtml+=`<div onclick="editEvent('${ev.id}')" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:10px;font-weight:600;display:flex;align-items:center;overflow:hidden;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${multiWhoHtml(ev,8)}</div>`;
+      barsHtml+=`<div onclick="editEvent('${ev.id}')" style="position:absolute;left:${leftPct.toFixed(2)}%;width:${widthPct.toFixed(2)}%;top:${topPx}px;height:${BAR_H}px;background:${eb(ev)};color:#1c1c1a;border-radius:${rleft} ${rright} ${rright} ${rleft};${bl};font-size:11px;font-weight:600;display:flex;align-items:center;cursor:pointer;box-sizing:border-box"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1">${label}</span>${whoFooter(ev,16)}</div>`;
     });
     const rowH = weekMultiEvs.length*(BAR_H+BAR_GAP)+4;
     allDayRow=`<div style="display:grid;grid-template-columns:46px 1fr;border-bottom:1px solid var(--border);background:var(--header-bg)">
@@ -1242,7 +1252,7 @@ function rDay(){
   const ds=fmt(cur);
   const allDayEvs=vev().filter(e=>isMultiDay(e)&&evSpansDate(e,ds)&&(e.allDay||(!evStartsOn(e,ds)&&!evEndsOn(e,ds))));
   const allDayBanner=allDayEvs.length?`<div style="padding:4px 8px;border-bottom:1px solid var(--border);background:var(--header-bg)">
-    ${allDayEvs.map(ev=>`<div onclick="editEvent('${ev.id}')" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${multiWhoHtml(ev,9)}</div>`).join('')}
+    ${allDayEvs.map(ev=>`<div onclick="editEvent('${ev.id}')" style="background:${eb(ev)};color:#1c1c1a;${multiLeftBorder(ev,3)};font-size:11px;font-weight:600;padding:3px 8px 3px 6px;border-radius:0 6px 6px 0;margin-bottom:2px;cursor:pointer;display:flex;align-items:center">${ev.title} · all day${whoFooter(ev,16)}</div>`).join('')}
   </div>`:'';
 
   let tlbls='';
@@ -1647,9 +1657,21 @@ function mealEdit(day,tp){
   openM();
 }
 
-function openM(){ document.getElementById('ov').classList.add('open'); }
+function openM(){
+  // Save scroll position before modal opens so calendar doesn't jump on close
+  const body = document.querySelector('.wbody') || document.querySelector('.daybody');
+  window._savedModalScroll = body ? body.scrollTop : null;
+  document.getElementById('ov').classList.add('open');
+}
 function closeM(){
   document.getElementById('ov').classList.remove('open');
+  // Restore scroll position
+  if(window._savedModalScroll !== null && window._savedModalScroll !== undefined){
+    setTimeout(()=>{
+      const body = document.querySelector('.wbody') || document.querySelector('.daybody');
+      if(body) body.scrollTop = window._savedModalScroll;
+    }, 0);
+  }
   // Restore footer to default Add state
   document.querySelector('#ov .modal-ft').innerHTML = `
     <button class="btn btn-s" onclick="closeM()">Cancel</button>
@@ -1662,7 +1684,7 @@ function doSave(){ if(window._save) window._save(); }
 function deleteEvent(id){
   if(!confirm('Delete this event?')) return;
   evs = evs.filter(e=>e.id!=id);
-  closeM(); render();
+  closeM(); render(true);
 }
 
 function editEvent(id){
@@ -1713,7 +1735,7 @@ function editEvent(id){
         desc:(document.getElementById('edesc')?.value||'').trim(),
         who:[...window._selPeople] };
     }
-    closeM(); render();
+    closeM(); render(true);
   };
   openM();
 }
