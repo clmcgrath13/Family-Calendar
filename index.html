@@ -1642,12 +1642,12 @@ function doSave(){ if(window._save) window._save(); }
 // ── Edit & Delete events ──
 function deleteEvent(id){
   if(!confirm('Delete this event?')) return;
-  evs = evs.filter(e=>e.id!==id);
+  evs = evs.filter(e=>e.id!=id);
   closeM(); render();
 }
 
 function editEvent(id){
-  const ev = evs.find(e=>e.id===id);
+  const ev = evs.find(e=>e.id==id);
   if(!ev) return;
   const multi = isMultiDay(ev);
   window._selPeople = [...whoArr(ev)];
@@ -1685,7 +1685,7 @@ function editEvent(id){
     const multiOpen = document.getElementById('multiday-fields').style.display !== 'none';
     const startDate = multiOpen ? (document.getElementById('edate2').value || document.getElementById('edate').value) : document.getElementById('edate').value;
     const endDate = multiOpen ? (document.getElementById('eenddate').value || startDate) : startDate;
-    const idx = evs.findIndex(e=>e.id===id);
+    const idx = evs.findIndex(e=>e.id==id);
     if(idx > -1){
       evs[idx] = { ...evs[idx], title:t, date:startDate, endDate:endDate,
         time:document.getElementById('es').value+':00',
