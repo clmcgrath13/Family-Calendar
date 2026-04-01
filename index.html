@@ -511,31 +511,34 @@ body {
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
 /* SETTINGS */
-.setwrap { height: 100%; overflow-y: auto; padding: 24px 28px; max-width: 600px; }
+.setwrap { height: 100%; overflow-y: auto; padding: 20px 24px; }
 .set-section-title {
   font-size: 11px; font-weight: 700; text-transform: uppercase;
   letter-spacing: 0.08em; color: var(--muted);
-  margin-bottom: 12px; margin-top: 28px;
+  margin-bottom: 12px; margin-top: 0;
 }
-.set-section-title:first-child { margin-top: 0; }
+.set-cols { display: flex; gap: 20px; align-items: flex-start; }
+.set-col-left { flex: 1; min-width: 0; }
+.set-col-right { width: 240px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.set-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .member-row {
   display: flex; align-items: center; gap: 12px;
-  padding: 10px 14px;
+  padding: 10px 12px;
   background: var(--bg); border: 1px solid var(--border);
-  border-radius: 10px; margin-bottom: 6px;
+  border-radius: 12px; margin-bottom: 8px;
 }
 .member-row-swatch {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; color: white;
+  font-size: 16px; font-weight: 700; color: white;
   flex-shrink: 0;
 }
 .member-row-name { flex: 1; font-size: 13px; font-weight: 500; }
 .member-row-del {
-  width: 28px; height: 28px; border-radius: 7px; border: none;
+  width: 44px; height: 44px; border-radius: 10px; border: none;
   background: #fdeaea; color: #c44; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 14px; transition: background 0.12s;
+  font-size: 18px; transition: background 0.12s; flex-shrink: 0;
 }
 .member-row-del:hover { background: #f8c8c8; }
 .add-member-row {
@@ -543,10 +546,10 @@ body {
 }
 .add-member-row .fin { flex: 1; }
 .color-swatches {
-  display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 4px;
+  display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0 4px;
 }
 .cswatch {
-  width: 24px; height: 24px; border-radius: 50%;
+  width: 32px; height: 32px; border-radius: 50%;
   cursor: pointer; border: 2px solid transparent;
   transition: transform 0.1s, border-color 0.1s;
 }
@@ -1369,35 +1372,51 @@ function rSettings(){
   const rows = _draft.map((m,i)=>`
     <div class="member-row" id="mrow-${i}">
       <div class="member-row-swatch" style="background:${m.color};cursor:pointer" onclick="draftToggleColorPicker(${i})">${m.name.charAt(0).toUpperCase()}</div>
-      <input class="fin" style="flex:1;font-size:12px;padding:5px 8px" value="${m.name}" id="mname-${i}" oninput="draftRename(${i},this.value)">
+      <input class="fin" style="flex:1;font-size:15px;padding:10px 12px" value="${m.name}" id="mname-${i}" oninput="draftRename(${i},this.value)">
       <button class="member-row-del" onclick="draftDel(${i})" title="Remove">✕</button>
     </div>
-    <div id="mcp-${i}" style="display:none;padding:6px 14px 10px;margin-top:-4px;background:var(--sidebar-bg);border-radius:0 0 10px 10px;margin-bottom:6px">
-      <div style="font-size:10px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px">Color</div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap">${PALETTE.map(c=>`<div class="cswatch${m.color===c?' sel':''}" style="background:${c}" onclick="draftSetColor(${i},'${c}')"></div>`).join('')}</div>
+    <div id="mcp-${i}" style="display:none;padding:8px 14px 12px;margin-top:-6px;background:var(--sidebar-bg);border-radius:0 0 12px 12px;margin-bottom:8px">
+      <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Color</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">${PALETTE.map(c=>`<div class="cswatch${m.color===c?' sel':''}" style="background:${c}" onclick="draftSetColor(${i},'${c}')"></div>`).join('')}</div>
     </div>`).join('');
   return `<div class="setwrap">
-    <div class="set-section-title">Family Members</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Tap the circle to change color. Edit a name to rename. Changes are not saved until you tap Save.</p>
-    <div id="member-rows">${rows}</div>
-    <div class="set-section-title" style="margin-top:24px">Add New Member</div>
-    <div class="color-swatches" id="new-swatches" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px">${newSwatches}</div>
-    <div class="add-member-row" style="margin-bottom:28px">
-      <input class="fin" id="new-member-name" type="text" placeholder="Name (e.g. Grandma, Coach)">
-      <button class="btn btn-p" onclick="draftAdd()">Add</button>
+    <div class="set-cols">
+
+      <!-- Left: current members -->
+      <div class="set-col-left">
+        <div class="set-section-title">Family Members</div>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Tap the circle to change color. Changes are not saved until you tap Save.</p>
+        <div id="member-rows">${rows}</div>
+      </div>
+
+      <!-- Right: add member + google sync -->
+      <div class="set-col-right">
+
+        <div class="set-card">
+          <div class="set-section-title">Add Member</div>
+          <div class="color-swatches" id="new-swatches">${newSwatches}</div>
+          <div class="add-member-row">
+            <input class="fin" id="new-member-name" type="text" placeholder="Name" style="font-size:15px;padding:10px 12px">
+            <button class="btn btn-p" onclick="draftAdd()" style="padding:10px 16px;font-size:14px;white-space:nowrap">Add</button>
+          </div>
+        </div>
+
+        <div class="set-card">
+          <div class="set-section-title">Google Calendar</div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Connect your Gmail calendar. Use [Name] tags in event titles to assign family members.</p>
+          <button class="sync-btn" id="sync-btn" onclick="handleSyncClick()" style="width:100%;justify-content:center;padding:12px 16px;font-size:13px">
+            <div class="sync-dot" id="sync-dot"></div>
+            <span id="sync-label">Connect Google</span>
+          </button>
+        </div>
+
+      </div>
     </div>
-    <div class="set-section-title" style="margin-top:24px">Google Calendar Sync</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Connect your personal Gmail calendar to pull events automatically. Bracket tags like [Collin] or [Ava] in event titles will map to the right family member.</p>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
-      <button class="sync-btn" id="sync-btn" onclick="handleSyncClick()" style="flex:1;justify-content:center;padding:8px 12px">
-        <div class="sync-dot" id="sync-dot"></div>
-        <span id="sync-label">Connect Google</span>
-      </button>
-    </div>
-    <p style="font-size:10px;color:var(--muted)">Requires a Google OAuth Client ID — see setup instructions in the app code.</p>
+
+    <!-- Save / Cancel always visible at bottom -->
     <div style="display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--border);margin-top:20px">
-      <button class="btn btn-s" style="flex:1" onclick="cancelSettings()">Cancel</button>
-      <button class="btn btn-p" style="flex:2" onclick="saveSettings()">Save Changes</button>
+      <button class="btn btn-s" style="flex:1;padding:12px;font-size:14px" onclick="cancelSettings()">Cancel</button>
+      <button class="btn btn-p" style="flex:2;padding:12px;font-size:14px" onclick="saveSettings()">Save Changes</button>
     </div>
   </div>`;
 }
