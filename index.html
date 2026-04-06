@@ -106,10 +106,10 @@ body {
   padding: 0 14px; gap: 15px;
   flex-shrink: 0;
 }
-.tb-left { display: flex; flex-direction: column; justify-content: center; min-width: 240px; gap: 1px; }
-.tb-season { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 5px; }
-.tb-season-icon { font-size: 14px; line-height: 1; }
-.tb-title { font-size: 26px; font-weight: 400; line-height: 1.1; font-family: 'DM Serif Display', serif; letter-spacing: -0.01em; }
+.tb-left { display: flex; flex-direction: row; align-items: center; gap: 15px; }
+.tb-season { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; display: flex; align-items: center; gap: 5px; color: var(--muted); }
+.tb-season-icon { font-size: 18px; line-height: 1; }
+.tb-title { font-size: 26px; font-weight: 400; line-height: 1; font-family: 'DM Serif Display', serif; letter-spacing: -0.01em; }
 .tb-space { flex: 1; }
 
 /* View dropdown — custom (native select opens upward on Kindle) */
@@ -785,8 +785,8 @@ body {
 <div class="main">
   <div class="topbar">
     <div class="tb-left">
-      <div class="tb-season" id="tb-season"><span class="tb-season-icon" id="tb-sicon"></span><span id="tb-slabel"></span></div>
       <div class="tb-title" id="tb-title">March 2026</div>
+      <div class="tb-season" id="tb-season"><span class="tb-season-icon" id="tb-sicon"></span><span id="tb-slabel"></span></div>
     </div>
     <div class="tb-space"></div>
     <button class="today-btn" id="wx-btn" onclick="toggleWeather()"
@@ -1182,12 +1182,14 @@ function navN(){
 }
 function gotoday(){ cur=new Date(T); render(); }
 
-function getSeason(mo){
-  // mo is 0-indexed. Northern hemisphere seasons.
-  if(mo>=2&&mo<=4) return {name:'Spring',icon:'🌸',color:'#c04e8a'};
-  if(mo>=5&&mo<=7) return {name:'Summer',icon:'☀️',color:'#c87d12'};
-  if(mo>=8&&mo<=10) return {name:'Autumn',icon:'🍂',color:'#b85520'};
-  return {name:'Winter',icon:'❄️',color:'#2c6bed'};
+function getSeason(mo, day){
+  // Astronomical seasons — Northern hemisphere
+  // Spring: Mar 20, Summer: Jun 21, Autumn: Sep 22, Winter: Dec 21
+  const md = (mo + 1) * 100 + day; // mo is 0-indexed, so +1 for calendar month
+  if(md >= 320 && md < 621)  return {name:'Spring', icon:'🌸', color:'#c04e8a'};
+  if(md >= 621 && md < 922)  return {name:'Summer', icon:'☀️',  color:'#c87d12'};
+  if(md >= 922 && md < 1221) return {name:'Autumn', icon:'🍂', color:'#b85520'};
+  return {name:'Winter', icon:'❄️', color:'#2c6bed'};
 }
 
 function utb(){
@@ -1197,7 +1199,7 @@ function utb(){
   const sRow=document.getElementById('tb-season');
   // Season is always based on current real month for the display month
   const displayMo = (appV==='calendar') ? cur.getMonth() : cur.getMonth();
-  const season=getSeason(displayMo);
+  const season = getSeason(displayMo, cur.getDate());
   if(sEl){ sEl.textContent=season.name; sEl.style.color=season.color; }
   if(sIcon){ sIcon.textContent=season.icon; }
   if(sRow){ sRow.style.color=season.color; }
