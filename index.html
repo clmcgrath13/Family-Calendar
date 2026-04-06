@@ -1227,40 +1227,43 @@ function wstart(d,ww){
 function render(preserveScroll){
   utb();
   const c=document.getElementById('content');
+  // Always sync weather button visibility before any early return
+  const wxBtn = document.getElementById('wx-btn');
+  const isTimeView = calV==='week'||calV==='workweek'||calV==='day';
+  if(wxBtn && appV==='calendar' && isTimeView){
+    const wxMaxDate = new Date(T); wxMaxDate.setDate(wxMaxDate.getDate()+13);
+    const wxMaxStr  = fmt(wxMaxDate);
+    let wxViewDates;
+    if(calV==='day'){
+      wxViewDates = [fmt(cur)];
+    } else {
+      const ww = calV==='workweek';
+      const s  = wstart(cur, ww);
+      wxViewDates = Array.from({length:ww?5:7},(_,i)=>{
+        const d=new Date(s); d.setDate(s.getDate()+i); return fmt(d);
+      });
+    }
+    const allInRange = wxViewDates.every(d => d <= wxMaxStr);
+    wxBtn.style.display = allInRange ? 'flex' : 'none';
+    if(!allInRange && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
+  } else if(wxBtn){
+    wxBtn.style.display = 'none';
+    if(!isTimeView && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
+  }
   if(appV==='settings'){ c.innerHTML=rSettings(); return; }
   if(appV==='tasks'){ c.innerHTML=rTasks(); return; }
   if(appV==='lists'){ c.innerHTML=rLists(); return; }
   if(appV==='meals'){ c.innerHTML=rMeals(); return; }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
-  // Show/hide weather button — only for time-grid views AND all dates within 14-day forecast
-  const wxBtn = document.getElementById('wx-btn');
-  const isTimeView = calV==='week'||calV==='workweek'||calV==='day';
-  if(wxBtn){
-    if(!isTimeView){
-      wxBtn.style.display = 'none';
-    } else {
-      // Build the date range for this view
-      const wxMaxDate = new Date(T); wxMaxDate.setDate(wxMaxDate.getDate()+13);
-      const wxMaxStr  = fmt(wxMaxDate);
-      let wxViewDates;
-      if(calV==='day'){
-        wxViewDates = [fmt(cur)];
-      } else {
-        const ww = calV==='workweek';
-        const s  = wstart(cur, ww);
-        wxViewDates = Array.from({length:ww?5:7},(_,i)=>{
-          const d=new Date(s); d.setDate(s.getDate()+i); return fmt(d);
-        });
-      }
-      const allInRange = wxViewDates.every(d => d <= wxMaxStr);
-      wxBtn.style.display = allInRange ? 'flex' : 'none';
-      if(!allInRange && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
-    }
-  }
   // Weather mode intercepts time-grid views
   if(weatherMode && isTimeView){
     if(calV==='day'){
-      c.innerHTML = rWeatherDay(fmt(cur));
+      const saved = preserveScroll ? (document.querySelector('.daybody')?.scrollTop ?? null) : null;
+      c.innerHTML = `<div style="display:flex;height:100%;overflow:hidden">
+        <div style="flex:1;min-width:0;overflow:hidden;border-right:1px solid var(--border)">${rDay()}</div>
+        <div style="flex:1;min-width:0;overflow-y:auto">${rWeatherDay(fmt(cur))}</div>
+      </div>`;
+      setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToHour(6); }, 0);
       return;
     }
     // Week/5day: render normal calendar then inject weather strip after
@@ -2215,66 +2218,106 @@ function rWeatherDay(dateStr){
     </div></div>`;
   }
 
-  const w    = wxIcon(wx.code);
-  const now  = new Date();
-  const curH = now.getHours();
+  const w      = wxIcon(wx.code);
+  const now    = new Date();
   const isToday = dateStr === fmt(now);
-
-  // Current temp = closest hour or hi
   const curHour = isToday
-    ? wx.hours.find(h => parseInt(h.time) >= curH) || wx.hours[wx.hours.length-1]
+    ? wx.hours.find(h => parseInt(h.time) >= now.getHours()) || wx.hours[wx.hours.length-1]
     : null;
   const curTemp = curHour ? curHour.temp : wx.hi;
   const curCode = curHour ? wxIcon(curHour.code) : w;
+  const dateLabel = new Date(dateStr+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
-  // Build temp curve SVG
-  const W = 600, H = 100, PAD = 20;
-  const temps  = wx.hours.map(h => h.temp);
-  const minT   = Math.min(...temps) - 5;
-  const maxT   = Math.max(...temps) + 5;
-  const toX    = i => PAD + (i / (temps.length-1)) * (W - PAD*2);
-  const toY    = t => H - PAD - ((t - minT) / (maxT - minT)) * (H - PAD*2);
-  const pts    = temps.map((t,i) => `${toX(i).toFixed(1)},${toY(t).toFixed(1)}`).join(' ');
-  const polyPts= temps.map((t,i) => `${toX(i).toFixed(1)},${toY(t).toFixed(1)}`).join(' ')
-    + ` ${toX(temps.length-1).toFixed(1)},${H} ${toX(0).toFixed(1)},${H}`;
+  // SVG dimensions — use viewBox so it scales to container width
+  const VW = 800, ICON_H = 28, GRAPH_H = 110, TIME_H = 18;
+  const VH = ICON_H + GRAPH_H + TIME_H;
+  const PAD_L = 8, PAD_R = 8;
+  const hours = wx.hours; // 24 hourly entries
+  const n = hours.length;
+
+  const temps = hours.map(h => h.temp);
+  const minT  = Math.min(...temps) - 4;
+  const maxT  = Math.max(...temps) + 4;
+  const toX   = i => PAD_L + (i / (n - 1)) * (VW - PAD_L - PAD_R);
+  const toY   = t => ICON_H + GRAPH_H - ((t - minT) / (maxT - minT)) * GRAPH_H;
+
+  // Temp curve points
+  const linePoints = hours.map((h,i) => `${toX(i).toFixed(1)},${toY(h.temp).toFixed(1)}`).join(' ');
+  const fillPoints = linePoints
+    + ` ${toX(n-1).toFixed(1)},${(ICON_H+GRAPH_H).toFixed(1)} ${toX(0).toFixed(1)},${(ICON_H+GRAPH_H).toFixed(1)}`;
+
+  // Grid lines
+  const gridLines = [];
+  for(let t = Math.ceil(minT/10)*10; t <= maxT; t += 10){
+    const y = toY(t).toFixed(1);
+    gridLines.push(`<line x1="${PAD_L}" y1="${y}" x2="${VW-PAD_R}" y2="${y}" stroke="#e2e2de" stroke-width="1"/>`);
+  }
+
+  // Precip bars — in front of temp fill
+  const barW = Math.max(1, (VW - PAD_L - PAD_R) / n - 1);
+  const precipBars = hours.map((h,i) => {
+    if((h.prec||0) < 5) return '';
+    const barH = (h.prec / 100) * GRAPH_H;
+    const bx   = (toX(i) - barW/2).toFixed(1);
+    const by   = (ICON_H + GRAPH_H - barH).toFixed(1);
+    return `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#93c5fd" opacity="0.55" rx="1"/>`;
+  }).join('');
 
   // Current time line
   const nowLine = isToday && curHour
-    ? `<line x1="${toX(wx.hours.indexOf(curHour)).toFixed(1)}" y1="0" x2="${toX(wx.hours.indexOf(curHour)).toFixed(1)}" y2="${H}" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-dasharray="3,3"/>`
+    ? (() => { const i = hours.indexOf(curHour); const x = toX(i).toFixed(1); return `<line x1="${x}" y1="${ICON_H}" x2="${x}" y2="${ICON_H+GRAPH_H}" stroke="#2c6bed" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6"/>`; })()
     : '';
 
-  const svgCurve = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="wx-curve">
-    <defs>
-      <linearGradient id="wxgrad" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#7ec8e3" stop-opacity="0.6"/>
-        <stop offset="100%" stop-color="#1a3a6e" stop-opacity="0.1"/>
-      </linearGradient>
-    </defs>
-    <polygon points="${polyPts}" fill="url(#wxgrad)"/>
-    <polyline points="${pts}" fill="none" stroke="#7ec8e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-    ${nowLine}
-  </svg>`;
+  // H/L markers
+  const maxH = hours.reduce((a,b)=>a.temp>b.temp?a:b);
+  const minH = hours.reduce((a,b)=>a.temp<b.temp?a:b);
+  const hiX  = toX(hours.indexOf(maxH)).toFixed(1);
+  const hiY  = (toY(maxH.temp) - 10).toFixed(1);
+  const loX  = toX(hours.indexOf(minH)).toFixed(1);
+  const loY  = (toY(minH.temp) + 14).toFixed(1);
+  const hlMarkers = `
+    <circle cx="${hiX}" cy="${(toY(maxH.temp)).toFixed(1)}" r="3" fill="#2c6bed"/>
+    <text x="${hiX}" y="${hiY}" text-anchor="middle" font-size="10" font-weight="700" fill="#1c1c1a">${maxH.temp}°</text>
+    <circle cx="${loX}" cy="${(toY(minH.temp)).toFixed(1)}" r="3" fill="#2c6bed"/>
+    <text x="${loX}" y="${loY}" text-anchor="middle" font-size="10" font-weight="700" fill="#6b7280">${minH.temp}°</text>`;
 
-  // Hourly scroll — show every 3 hours
-  const hourlyHtml = wx.hours
-    .filter((_,i) => i%3===0)
-    .map(h => {
-      const ic = wxIcon(h.code);
-      return `<div class="wx-hour">
-        <div class="wx-hour-time">${h.time==='00:00'?'12am':h.time==='12:00'?'12pm':
-          parseInt(h.time)<12?parseInt(h.time)+'am':(parseInt(h.time)-12)+'pm'}</div>
-        <div class="wx-hour-icon">${ic.icon}</div>
-        <div class="wx-hour-temp">${h.temp}°</div>
-        ${h.prec>15?`<div class="wx-hour-prec">💧${h.prec}%</div>`:''}
-      </div>`;
-    }).join('');
+  // Weather icons — every 3 hours, positioned above curve
+  const iconSvg = hours.filter((_,i)=>i%3===0).map(h => {
+    const i  = hours.indexOf(h);
+    const x  = toX(i).toFixed(1);
+    const ic = wxIcon(h.code);
+    return `<text x="${x}" y="${ICON_H - 6}" text-anchor="middle" font-size="16">${ic.icon}</text>`;
+  }).join('');
+
+  // Time labels at 0%, 25%, 50%, 75% — 12A, 6A, 12P, 6P
+  const timeLabelY = (ICON_H + GRAPH_H + TIME_H - 2).toFixed(1);
+  const timeLabels = [
+    {label:'12A', pct:0},
+    {label:'6A',  pct:0.25},
+    {label:'12P', pct:0.5},
+    {label:'6P',  pct:0.75},
+  ].map(({label, pct}) => {
+    const x   = (PAD_L + pct * (VW - PAD_L - PAD_R)).toFixed(1);
+    const anchor = pct === 0 ? 'start' : 'middle';
+    return `<text x="${x}" y="${timeLabelY}" text-anchor="${anchor}" font-size="10" font-weight="600" fill="#92928d">${label}</text>`;
+  }).join('');
+
+  const svg = `<svg viewBox="0 0 ${VW} ${VH}" preserveAspectRatio="none"
+    style="width:100%;height:${VH}px;display:block;flex-shrink:0">
+    ${gridLines.join('')}
+    <polygon points="${fillPoints}" fill="#2c6bed" opacity="0.08"/>
+    <polyline points="${linePoints}" fill="none" stroke="#2c6bed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${precipBars}
+    ${hlMarkers}
+    ${nowLine}
+    ${iconSvg}
+    ${timeLabels}
+  </svg>`;
 
   // Stats
   const avgHumidity = Math.round(wx.hours.reduce((s,h)=>s+h.humidity,0)/wx.hours.length);
   const maxWind     = Math.max(...wx.hours.map(h=>h.wind));
   const avgWind     = Math.round(wx.hours.reduce((s,h)=>s+h.wind,0)/wx.hours.length);
-
-  const dateLabel = new Date(dateStr+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
 
   return `<div class="wx-wrap">
     <div class="wx-header">
@@ -2290,14 +2333,11 @@ function rWeatherDay(dateStr){
         </div>
       </div>
     </div>
-
     <div class="wx-section">
       <div class="wx-section-title">Hourly Forecast</div>
-      ${svgCurve}
-      <div class="wx-hourly">${hourlyHtml}</div>
+      ${svg}
     </div>
-
-    <div style="margin: 0 16px 16px; display:grid; grid-template-columns:1fr 1fr; gap:10px">
+    <div style="margin:0 16px 16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <div class="wx-stat">
         <div class="wx-stat-lbl">💧 Precipitation</div>
         <div class="wx-stat-val">${wx.precip}%</div>
