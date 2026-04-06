@@ -103,7 +103,7 @@ body {
   background: var(--header-bg);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center;
-  padding: 0 14px; gap: 10px;
+  padding: 0 14px; gap: 15px;
   flex-shrink: 0;
 }
 .tb-left { display: flex; flex-direction: column; justify-content: center; min-width: 240px; gap: 1px; }
@@ -118,7 +118,7 @@ body {
 }
 .vdrop-btn {
   display: flex; align-items: center; gap: 8px;
-  padding: 12px 14px; border-radius: 10px;
+  padding: 0 14px; height: 44px; border-radius: 10px;
   font-size: 13px; font-weight: 500;
   cursor: pointer;
   border: 1px solid var(--border);
@@ -169,11 +169,12 @@ body {
 .arr-btn:hover { background: var(--sidebar-bg); }
 
 .today-btn {
-  padding: 10px 16px; border-radius: 10px;
+  padding: 0 16px; height: 44px; border-radius: 10px;
   border: 1px solid var(--border); background: var(--bg);
   font-size: 13px; font-weight: 500;
   cursor: pointer; color: var(--text);
   transition: background 0.11s; white-space: nowrap;
+  display: inline-flex; align-items: center;
 }
 .today-btn:hover { background: var(--sidebar-bg); }
 
@@ -785,14 +786,14 @@ body {
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-season" id="tb-season"><span class="tb-season-icon" id="tb-sicon"></span><span id="tb-slabel"></span></div>
-      <div style="display:flex;align-items:center;gap:10px">
-        <div class="tb-title" id="tb-title">March 2026</div>
-        <button class="today-btn" id="wx-btn" onclick="toggleWeather()"
-          style="display:none;font-size:20px;padding:10px 12px;line-height:1;border-radius:10px"
-          title="Toggle weather">⛅</button>
-      </div>
+      <div class="tb-title" id="tb-title">March 2026</div>
     </div>
     <div class="tb-space"></div>
+    <button class="today-btn" id="wx-btn" onclick="toggleWeather()"
+      style="display:none;gap:6px"
+      title="Toggle weather">
+      <span style="font-size:16px;line-height:1">⛅</span> Weather
+    </button>
     <div class="vdrop-wrap" id="vdrop-wrap">
       <button class="vdrop-btn" id="vdrop-btn" onclick="toggleViewDrop()">
         <span id="vdrop-label">5 Day</span>
@@ -1250,7 +1251,7 @@ function render(preserveScroll){
         });
       }
       const allInRange = wxViewDates.every(d => d <= wxMaxStr);
-      wxBtn.style.display = allInRange ? '' : 'none';
+      wxBtn.style.display = allInRange ? 'flex' : 'none';
       if(!allInRange && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
     }
   }
