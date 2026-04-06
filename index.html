@@ -2122,14 +2122,14 @@ document.addEventListener('click', e => {
 
 // WMO weather code → emoji + description
 function wxIcon(code){
-  if(code===0)  return {icon:'☀️', desc:'Clear'};
+  if(code===0)  return {icon:'☀️',  desc:'Clear'};
   if(code===1)  return {icon:'🌤️', desc:'Mostly clear'};
-  if(code===2)  return {icon:'⛅', desc:'Partly cloudy'};
-  if(code===3)  return {icon:'☁️', desc:'Overcast'};
+  if(code===2)  return {icon:'⛅',  desc:'Partly cloudy'};
+  if(code===3)  return {icon:'🌥️', desc:'Overcast'};
   if(code<=49)  return {icon:'🌫️', desc:'Foggy'};
-  if(code<=57)  return {icon:'🌧️', desc:'Drizzle'};
+  if(code<=57)  return {icon:'🌦️', desc:'Drizzle'};
   if(code<=67)  return {icon:'🌧️', desc:'Rain'};
-  if(code<=77)  return {icon:'❄️', desc:'Snow'};
+  if(code<=77)  return {icon:'❄️',  desc:'Snow'};
   if(code<=82)  return {icon:'🌦️', desc:'Showers'};
   if(code<=84)  return {icon:'🌨️', desc:'Snow showers'};
   if(code<=99)  return {icon:'⛈️', desc:'Thunderstorm'};
