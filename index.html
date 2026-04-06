@@ -1155,7 +1155,20 @@ function render(preserveScroll){
   const isTimeView = calV==='week'||calV==='workweek'||calV==='day';
   if(wxBtn) wxBtn.style.display = isTimeView ? '' : 'none';
   // Weather mode intercepts time-grid views
-  if(weatherMode && isTimeView){ c.innerHTML=rWeatherView(wxDateForView()); return; }
+  if(weatherMode && isTimeView){
+    if(calV==='day'){
+      c.innerHTML = rWeatherDay(fmt(cur));
+    } else {
+      // Week or 5-day: compute the same date range rWeek uses
+      const ww   = calV==='workweek';
+      const s    = wstart(cur, ww);
+      const days = Array.from({length: ww?5:7}, (_,i) => {
+        const d = new Date(s); d.setDate(s.getDate()+i); return fmt(d);
+      });
+      c.innerHTML = rWeatherMulti(days);
+    }
+    return;
+  }
   if(calV==='week'||calV==='workweek'){
     const saved = preserveScroll ? (document.querySelector('.wbody')?.scrollTop ?? null) : null;
     c.innerHTML=rWeek(calV==='workweek');
@@ -2082,7 +2095,7 @@ function retryWeather(){
   render();
 }
 
-function rWeatherView(dateStr){
+function rWeatherDay(dateStr){
   const wx = wxCache[dateStr];
 
   if(!wx && wxError){
@@ -2218,9 +2231,93 @@ function toggleWeather(){
   render();
 }
 
-function wxDateForView(){
-  // Return the date string to show weather for based on current view/cursor
-  return fmt(cur);
+// Multi-day weather grid for week/5-day views
+function rWeatherMulti(dates){
+  // Kick off fetch for any missing dates
+  const anyMissing = dates.some(d => !wxCache[d]);
+  if(anyMissing && !wxFetching && !wxError){
+    fetchWeather(dates[0]).then(() => render());
+  }
+
+  if(wxError && anyMissing){
+    return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:16px">
+      <div style="font-size:32px">⚠️</div>
+      <div>Couldn't load weather data.</div>
+      <div style="font-size:13px;opacity:0.65">Check your internet connection.</div>
+      <button onclick="retryWeather()" style="margin-top:8px;padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:14px;font-weight:600;cursor:pointer">Try Again</button>
+    </div></div>`;
+  }
+
+  if(anyMissing){
+    return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:12px">
+      <div style="font-size:32px">🌤️</div>
+      <div>Loading weather for ${WX_CITY}…</div>
+    </div></div>`;
+  }
+
+  const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const todayStr = fmt(new Date());
+
+  const cols = dates.map(dateStr => {
+    const wx     = wxCache[dateStr];
+    const w      = wxIcon(wx.code);
+    const d      = new Date(dateStr+'T12:00:00');
+    const isToday = dateStr === todayStr;
+    const dow    = DAYS_SHORT[d.getDay()];
+    const mdate  = MONTHS_SHORT[d.getMonth()]+' '+d.getDate();
+
+    // Mini hourly bars — show every 4 hours as colored temp blocks
+    const dayHours = wx.hours.filter((_,i)=>i%4===0);
+    const allTemps = wx.hours.map(h=>h.temp);
+    const minT = Math.min(...allTemps), maxT = Math.max(...allTemps);
+    const tempPct = t => Math.round(((t-minT)/(maxT-minT||1))*100);
+
+    const hourBars = dayHours.map(h => {
+      const pct  = tempPct(h.temp);
+      const hic  = wxIcon(h.code);
+      const hStr = h.time==='00:00'?'12a':h.time==='12:00'?'12p':
+        parseInt(h.time)<12?parseInt(h.time)+'a':(parseInt(h.time)-12)+'p';
+      return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
+        <div style="font-size:9px;opacity:0.6">${hStr}</div>
+        <div style="font-size:14px">${hic.icon}</div>
+        <div style="font-size:11px;font-weight:600">${h.temp}°</div>
+        ${h.prec>15?`<div style="font-size:9px;color:#7ec8e3">${h.prec}%</div>`:'<div style="font-size:9px;opacity:0"></div>'}
+      </div>`;
+    }).join('');
+
+    const borderLeft = isToday ? 'border-left:2px solid rgba(255,255,255,0.5)' : 'border-left:1px solid rgba(255,255,255,0.12)';
+
+    return `<div style="flex:1;display:flex;flex-direction:column;${borderLeft};padding:12px 8px;min-width:0">
+      <!-- Day header -->
+      <div style="text-align:center;margin-bottom:10px">
+        <div style="font-size:${isToday?'13px':'12px'};font-weight:${isToday?'700':'500'};opacity:${isToday?'1':'0.7'};text-transform:uppercase;letter-spacing:0.05em">${dow}</div>
+        <div style="font-size:11px;opacity:0.55;margin-top:1px">${mdate}</div>
+      </div>
+      <!-- Main icon + hi/lo -->
+      <div style="text-align:center;margin-bottom:12px">
+        <div style="font-size:32px;line-height:1;margin-bottom:6px">${w.icon}</div>
+        <div style="font-size:13px;font-weight:600">${wx.hi}° <span style="opacity:0.55;font-weight:400">${wx.lo}°</span></div>
+        <div style="font-size:10px;opacity:0.6;margin-top:2px">${w.desc}</div>
+      </div>
+      <!-- Precip -->
+      ${wx.precip>5?`<div style="text-align:center;font-size:11px;color:#7ec8e3;margin-bottom:10px">💧 ${wx.precip}%</div>`:`<div style="margin-bottom:10px"></div>`}
+      <!-- Hourly mini row -->
+      <div style="display:flex;gap:2px;margin-top:auto">
+        ${hourBars}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="wx-wrap" style="flex-direction:row">
+    <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;
+      letter-spacing:0.1em;text-transform:uppercase;opacity:0.4;padding:12px 8px;flex-shrink:0">
+      ${WX_CITY}
+    </div>
+    <div style="flex:1;display:flex;overflow:hidden;height:100%">
+      ${cols}
+    </div>
+  </div>`;
 }
 
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
