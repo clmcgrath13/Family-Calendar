@@ -2354,8 +2354,6 @@ function injectWeatherStrip(ww){
     strip.style.height = '80px';
     strip.innerHTML = `<div class="wx-strip-loading">🌤️ Loading weather…</div>`;
     wwrap.appendChild(strip);
-    const aldr = document.getElementById('week-allday-row');
-    if(aldr) aldr.style.display = 'none';
     return;
   }
 
@@ -2499,8 +2497,6 @@ function injectWeatherStrip(ww){
     </div>`;
 
   wwrap.appendChild(strip);
-  const aldr = document.getElementById('week-allday-row');
-  if(aldr) aldr.style.display = 'none';
 }
 
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
