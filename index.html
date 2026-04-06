@@ -353,28 +353,76 @@ body {
 }
 
 /* LISTS */
+/* ── Lists — Top cylinder + Bottom content ─────────────────── */
 .listwrap {
-  height: 100%; overflow-y: auto; padding: 16px;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start;
+  height: 100%; display: flex; flex-direction: column; overflow: hidden;
 }
-.lcard { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-.lcard-hd {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px 14px; border-bottom: 1px solid var(--border);
+/* Top: horizontal 3D cylinder selector */
+.lsel-panel {
+  height: 110px; flex-shrink: 0;
+  background: var(--sidebar-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  perspective: 900px;
+  perspective-origin: 50% 50%;
+  overflow: hidden;
+  position: relative;
 }
-.lcard-icon { font-size: 16px; }
-.lcard-name { font-size: 13px; font-weight: 500; flex: 1; }
-.lcard-ct { font-size: 10px; color: var(--muted); font-weight: 600; }
-.lcard-bd { padding: 6px 0; }
-.litem { display: flex; align-items: center; gap: 8px; padding: 6px 14px; }
+.lsel-scene {
+  width: 100%;
+  height: 80px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.48s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.lsel-card {
+  position: absolute;
+  width: 110px;
+  height: 80px;
+  top: 0; left: 50%;
+  margin-left: -55px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 4px; cursor: pointer;
+  backface-visibility: hidden;
+  transition: box-shadow 0.3s, opacity 0.3s;
+  padding: 8px;
+}
+.lsel-card.lsel-focus {
+  cursor: default;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  border-color: var(--today-ring);
+  border-width: 2px;
+}
+.lsel-icon { font-size: 26px; line-height: 1; }
+.lsel-name { font-size: 11px; font-weight: 600; color: var(--text); text-align: center; line-height: 1.2; }
+/* Bottom: focused list content */
+.lcontent-panel {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.lcontent-hd {
+  display: flex; align-items: center; gap: 10px;
+  padding: 14px 20px; border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--header-bg);
+}
+.lcontent-icon { font-size: 24px; }
+.lcontent-name { font-size: 17px; font-weight: 700; flex: 1; }
+.lcontent-ct   { font-size: 12px; color: var(--muted); }
+.lcontent-bd   { flex: 1; overflow-y: auto; padding: 8px 0; }
+.litem { display: flex; align-items: center; gap: 12px; padding: 13px 20px; }
 .licheck {
-  width: 15px; height: 15px; border-radius: 4px;
+  width: 28px; height: 28px; border-radius: 8px;
   border: 1.5px solid var(--border); flex-shrink: 0;
   cursor: pointer; display: flex; align-items: center; justify-content: center;
   transition: all 0.13s;
 }
-.licheck.done { background: var(--kids); border-color: var(--kids); }
-.litxt { font-size: 12px; }
+.licheck.done { background: #22a06b; border-color: #22a06b; }
+.litxt { font-size: 16px; line-height: 1.3; }
 .litxt.done { text-decoration: line-through; color: var(--muted); }
 
 /* MEALS */
@@ -489,6 +537,63 @@ body {
 #ov .btn { padding: 14px 20px; font-size: 14px; border-radius: 10px; }
 #ov .ppick { width: 44px; height: 44px; font-size: 14px; border-width: 3px; }
 #ov .ppicker { gap: 10px; }
+
+/* ── Weather View ───────────────────────────────────────────── */
+.wx-wrap {
+  height: 100%; overflow-y: auto;
+  background: linear-gradient(180deg, #1a2744 0%, #1e3a5f 40%, #2d5a8e 100%);
+  color: #fff; display: flex; flex-direction: column;
+  font-family: var(--font);
+}
+.wx-header {
+  padding: 20px 24px 12px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.wx-date    { font-size: 13px; opacity: 0.75; font-weight: 500; }
+.wx-main    { display: flex; align-items: center; gap: 16px; }
+.wx-temp    { font-size: 52px; font-weight: 300; line-height: 1; }
+.wx-hilo    { font-size: 16px; opacity: 0.8; }
+.wx-icon    { font-size: 52px; line-height: 1; }
+.wx-desc    { font-size: 15px; opacity: 0.8; margin-top: 4px; }
+.wx-section {
+  margin: 0 16px 16px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 16px; padding: 14px 16px;
+  backdrop-filter: blur(4px);
+}
+.wx-section-title {
+  font-size: 11px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; opacity: 0.65; margin-bottom: 10px;
+}
+/* Hourly scroll row */
+.wx-hourly {
+  display: flex; gap: 4px; overflow-x: auto;
+  padding-bottom: 4px;
+}
+.wx-hour {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; min-width: 52px; padding: 4px 0;
+}
+.wx-hour-time { font-size: 11px; opacity: 0.7; }
+.wx-hour-icon { font-size: 20px; line-height: 1; }
+.wx-hour-temp { font-size: 14px; font-weight: 600; }
+.wx-hour-prec { font-size: 10px; color: #7ec8e3; }
+/* Temp curve SVG container */
+.wx-curve { width: 100%; height: 120px; margin-bottom: 6px; }
+/* Stats grid */
+.wx-stats {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.wx-stat {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px; padding: 12px 14px;
+}
+.wx-stat-lbl { font-size: 11px; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.wx-stat-val { font-size: 22px; font-weight: 600; }
+.wx-stat-sub { font-size: 11px; opacity: 0.65; margin-top: 2px; }
+.wx-loading  { display: flex; align-items: center; justify-content: center; height: 100%; opacity: 0.7; font-size: 15px; }
+.wx-btn-active { background: #dceeff !important; color: #1a6bb5 !important; }
 
 /* Google Calendar Sync */
 .sync-btn {
@@ -634,6 +739,7 @@ body {
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
     <button class="today-btn" onclick="gotoday()">Today</button>
+    <button class="today-btn" id="wx-btn" onclick="toggleWeather()" style="display:none;font-size:18px;padding:8px 14px" title="Weather">⛅</button>
   </div>
   <div class="content" id="content"></div>
 </div>
@@ -674,6 +780,16 @@ body {
 <script>
 const T=new Date();
 let cur=new Date(T), appV='calendar', calV='workweek';
+
+// Weather state — declared here so render() can reference them on first call
+const WX_LAT  = 41.0034;
+const WX_LON  = -74.3429;
+const WX_CITY = 'Butler, NJ';
+let weatherMode = false;
+let wxCache     = {};
+let wxFetching  = false;
+let wxError     = false;
+
 // Family members — edit via Settings screen
 let members = [
   {name:'Mom',   color:'#d44b8a', bg:'#fceef6'},
@@ -1034,6 +1150,12 @@ function render(preserveScroll){
   if(appV==='lists'){ c.innerHTML=rLists(); return; }
   if(appV==='meals'){ c.innerHTML=rMeals(); return; }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
+  // Show/hide weather button — only relevant for time-grid views
+  const wxBtn = document.getElementById('wx-btn');
+  const isTimeView = calV==='week'||calV==='workweek'||calV==='day';
+  if(wxBtn) wxBtn.style.display = isTimeView ? '' : 'none';
+  // Weather mode intercepts time-grid views
+  if(weatherMode && isTimeView){ c.innerHTML=rWeatherView(wxDateForView()); return; }
   if(calV==='week'||calV==='workweek'){
     const saved = preserveScroll ? (document.querySelector('.wbody')?.scrollTop ?? null) : null;
     c.innerHTML=rWeek(calV==='workweek');
@@ -1305,14 +1427,126 @@ function rTasks(){
 
 function toggleT(id){ const t=tasks.find(t=>t.id===id); if(t) t.done=!t.done; render(); }
 
+let _focusedList = 0;
+
 function rLists(){
-  return `<div class="listwrap">${lists.map(l=>{
-    const rem=l.items.filter(i=>!i.d).length;
-    return `<div class="lcard"><div class="lcard-hd"><div class="lcard-icon">${l.icon}</div><div class="lcard-name">${l.name}</div><div class="lcard-ct">${rem} left</div></div><div class="lcard-bd">${l.items.map((it,i)=>`<div class="litem"><div class="licheck${it.d?' done':''}" onclick="toggleI(${l.id},${i})">${it.d?`<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}</div><div class="litxt${it.d?' done':''}">${it.t}</div></div>`).join('')}</div></div>`;
-  }).join('')}</div>`;
+  const total = lists.length;
+  if(!total) return `<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);font-size:14px">No lists yet — add one in Settings.</div>`;
+
+  // Horizontal cylinder: cards rotate around Y axis (left to right)
+  const ANGLE_STEP = 50;
+  const RADIUS     = 200;
+  const sceneRotY  = -(_focusedList * ANGLE_STEP);
+
+  const selCards = lists.map((l, i) => {
+    const angle   = i * ANGLE_STEP;
+    const isFocus = i === _focusedList;
+    const dist    = Math.min(Math.abs(i - _focusedList), 3);
+    const opacity = isFocus ? 1 : Math.max(0.35, 1 - dist * 0.22);
+    const rem     = l.items.filter(it => !it.d).length;
+    return `<div class="lsel-card${isFocus?' lsel-focus':''}"
+      style="transform:rotateY(${angle}deg) translateZ(${RADIUS}px);opacity:${opacity}"
+      onclick="${isFocus?'':'focusList('+i+')'}">
+      <div class="lsel-icon">${l.icon}</div>
+      <div class="lsel-name">${l.name}</div>
+    </div>`;
+  }).join('');
+
+  // Right panel — focused list content
+  const fl = lists[_focusedList];
+  const rem = fl.items.filter(it => !it.d).length;
+  const items = fl.items.map((it, idx) => `
+    <div class="litem">
+      <div class="licheck${it.d?' done':''}" onclick="toggleI(${fl.id},${idx})">
+        ${it.d ? `<svg width="13" height="13" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+      </div>
+      <div class="litxt${it.d?' done':''}">${it.t}</div>
+    </div>`).join('');
+
+  return `<div class="listwrap">
+    <!-- Left: 3D cylinder selector -->
+    <div class="lsel-panel">
+      <div class="lsel-scene" id="lsel-scene"
+        style="transform:rotateY(${sceneRotY}deg)">
+        ${selCards}
+      </div>
+    </div>
+    <!-- Right: focused list content -->
+    <div class="lcontent-panel">
+      <div class="lcontent-hd">
+        <div class="lcontent-icon">${fl.icon}</div>
+        <div class="lcontent-name">${fl.name}</div>
+        <div class="lcontent-ct">${rem} left</div>
+      </div>
+      <div class="lcontent-bd">${items}</div>
+    </div>
+  </div>`;
 }
 
-function toggleI(lid,idx){ const l=lists.find(l=>l.id===lid); if(l) l.items[idx].d=!l.items[idx].d; render(); }
+function focusList(idx){
+  if(idx === _focusedList) return;
+  _focusedList = idx;
+  // Animate cylinder immediately via DOM, then re-render after spin settles
+  const scene = document.getElementById('lsel-scene');
+  if(scene){
+    const ANGLE_STEP = 55;
+    scene.style.transform = `rotateY(${-(idx * 50)}deg)`;
+    scene.querySelectorAll('.lsel-card').forEach((c, i) => {
+      const isFocus = i === idx;
+      const dist = Math.min(Math.abs(i - idx), 3);
+      c.style.opacity = isFocus ? 1 : Math.max(0.35, 1 - dist * 0.22);
+      c.classList.toggle('lsel-focus', isFocus);
+      c.setAttribute('onclick', isFocus ? '' : `focusList(${i})`);
+    });
+    clearTimeout(window._listRenderTimer);
+    window._listRenderTimer = setTimeout(() => render(), 500);
+  } else {
+    render();
+  }
+}
+
+function toggleI(lid, idx){
+  const l = lists.find(l => l.id === lid);
+  if(l){ l.items[idx].d = !l.items[idx].d; render(); }
+}
+
+function addList(){
+  const iconEl = document.getElementById('new-list-icon');
+  const nameEl = document.getElementById('new-list-name');
+  const name = nameEl?.value.trim();
+  if(!name) return;
+  const icon = iconEl?.value.trim() || '🗒️';
+  lists.push({ id: Date.now(), name, icon, items: [] });
+  _focusedList = lists.length - 1;
+  if(nameEl) nameEl.value = '';
+  if(iconEl) iconEl.value = '';
+  // Re-render settings list rows
+  const rows = document.getElementById('list-rows');
+  if(rows) rows.innerHTML = lists.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="font-size:18px;flex-shrink:0">${l.icon}</span>
+      <input class="fin" style="flex:1;font-size:13px;padding:8px 10px" value="${l.name}"
+        oninput="lists[${i}].name=this.value">
+      <button class="member-row-del" style="width:36px;height:36px;font-size:15px"
+        onclick="removeList(${i})">✕</button>
+    </div>`).join('');
+}
+
+function removeList(idx){
+  if(lists.length <= 1) return;
+  lists.splice(idx, 1);
+  if(_focusedList >= lists.length) _focusedList = lists.length - 1;
+  // Re-render settings list rows
+  const rows = document.getElementById('list-rows');
+  if(rows) rows.innerHTML = lists.map((l,i)=>`
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="font-size:18px;flex-shrink:0">${l.icon}</span>
+      <input class="fin" style="flex:1;font-size:13px;padding:8px 10px" value="${l.name}"
+        oninput="lists[${i}].name=this.value">
+      <button class="member-row-del" style="width:36px;height:36px;font-size:15px"
+        onclick="removeList(${i})">✕</button>
+    </div>`).join('');
+}
 
 function rMeals(){
   const todLbl=DS[T.getDay()];
@@ -1408,6 +1642,28 @@ function rSettings(){
           <div class="add-member-row">
             <input class="fin" id="new-member-name" type="text" placeholder="Name" style="font-size:15px;padding:10px 12px">
             <button class="btn btn-p" onclick="draftAdd()" style="padding:10px 16px;font-size:14px;white-space:nowrap">Add</button>
+          </div>
+        </div>
+
+        <div class="set-card">
+          <div class="set-section-title">Lists</div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px">Rename or remove lists. Add new ones below.</p>
+          <div id="list-rows">
+            ${lists.map((l,i)=>`
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+                <span style="font-size:18px;flex-shrink:0">${l.icon}</span>
+                <input class="fin" style="flex:1;font-size:13px;padding:8px 10px" value="${l.name}"
+                  oninput="lists[${i}].name=this.value">
+                <button class="member-row-del" style="width:36px;height:36px;font-size:15px"
+                  onclick="removeList(${i})">✕</button>
+              </div>`).join('')}
+          </div>
+          <div style="display:flex;gap:8px;margin-top:4px;align-items:center">
+            <input class="fin" id="new-list-icon" type="text" placeholder="🗒️"
+              style="width:48px;font-size:18px;padding:8px;text-align:center">
+            <input class="fin" id="new-list-name" type="text" placeholder="List name"
+              style="flex:1;font-size:13px;padding:8px 10px">
+            <button class="btn btn-p" onclick="addList()" style="padding:8px 14px;font-size:13px;white-space:nowrap">Add</button>
           </div>
         </div>
 
@@ -1751,6 +2007,221 @@ sv('calendar');
 document.querySelector('.nav-btn[data-v="calendar"]').classList.add('active');
 // Build sidebar member dots from the dynamic members array
 rebuildFullSidebarDots();
+
+// ─── WEATHER ────────────────────────────────────────────────────────────────
+// (WX_LAT, WX_LON, WX_CITY, weatherMode, wxCache, wxFetching declared at top of script)
+
+// WMO weather code → emoji + description
+function wxIcon(code){
+  if(code===0)  return {icon:'☀️', desc:'Clear'};
+  if(code===1)  return {icon:'🌤️', desc:'Mostly clear'};
+  if(code===2)  return {icon:'⛅', desc:'Partly cloudy'};
+  if(code===3)  return {icon:'☁️', desc:'Overcast'};
+  if(code<=49)  return {icon:'🌫️', desc:'Foggy'};
+  if(code<=57)  return {icon:'🌧️', desc:'Drizzle'};
+  if(code<=67)  return {icon:'🌧️', desc:'Rain'};
+  if(code<=77)  return {icon:'❄️', desc:'Snow'};
+  if(code<=82)  return {icon:'🌦️', desc:'Showers'};
+  if(code<=84)  return {icon:'🌨️', desc:'Snow showers'};
+  if(code<=99)  return {icon:'⛈️', desc:'Thunderstorm'};
+  return {icon:'🌡️', desc:'Unknown'};
+}
+
+function wxWindDir(deg){
+  const dirs = ['N','NE','E','SE','S','SW','W','NW'];
+  return dirs[Math.round(deg/45)%8];
+}
+
+async function fetchWeather(dateStr){
+  if(wxCache[dateStr]) return wxCache[dateStr];
+  if(wxFetching) return null;
+  wxFetching = true;
+  wxError    = false;
+  try {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${WX_LAT}&longitude=${WX_LON}`
+      + `&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m,relativehumidity_2m`
+      + `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_probability_max`
+      + `&temperature_unit=fahrenheit&windspeed_unit=mph`
+      + `&timezone=America%2FNew_York&forecast_days=7`;
+    const resp = await fetch(url);
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    const data = await resp.json();
+    data.daily.time.forEach((d, di) => {
+      const hourIdxs = data.hourly.time
+        .map((t,i) => t.startsWith(d) ? i : -1)
+        .filter(i => i >= 0);
+      wxCache[d] = {
+        date    : d,
+        hi      : Math.round(data.daily.temperature_2m_max[di]),
+        lo      : Math.round(data.daily.temperature_2m_min[di]),
+        code    : data.daily.weathercode[di],
+        precip  : data.daily.precipitation_probability_max[di],
+        hours   : hourIdxs.map(i => ({
+          time    : data.hourly.time[i].slice(11,16),
+          temp    : Math.round(data.hourly.temperature_2m[i]),
+          prec    : data.hourly.precipitation_probability[i],
+          code    : data.hourly.weathercode[i],
+          wind    : Math.round(data.hourly.windspeed_10m[i]),
+          humidity: data.hourly.relativehumidity_2m[i],
+        })),
+      };
+    });
+    return wxCache[dateStr] || null;
+  } catch(e) {
+    console.error('Weather fetch failed:', e);
+    wxError = true;
+    return null;
+  } finally {
+    wxFetching = false;
+  }
+}
+
+function retryWeather(){
+  wxError = false;
+  wxCache = {};
+  render();
+}
+
+function rWeatherView(dateStr){
+  const wx = wxCache[dateStr];
+
+  if(!wx && wxError){
+    return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:16px">
+      <div style="font-size:32px">⚠️</div>
+      <div>Couldn't load weather data.</div>
+      <div style="font-size:13px;opacity:0.65">Check your internet connection.</div>
+      <button onclick="retryWeather()" style="margin-top:8px;padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:14px;font-weight:600;cursor:pointer">
+        Try Again
+      </button>
+    </div></div>`;
+  }
+
+  if(!wx){
+    fetchWeather(dateStr).then(d => { if(d) render(); else render(); });
+    return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:12px">
+      <div style="font-size:32px">🌤️</div>
+      <div>Loading weather for ${WX_CITY}…</div>
+    </div></div>`;
+  }
+
+  const w    = wxIcon(wx.code);
+  const now  = new Date();
+  const curH = now.getHours();
+  const isToday = dateStr === fmt(now);
+
+  // Current temp = closest hour or hi
+  const curHour = isToday
+    ? wx.hours.find(h => parseInt(h.time) >= curH) || wx.hours[wx.hours.length-1]
+    : null;
+  const curTemp = curHour ? curHour.temp : wx.hi;
+  const curCode = curHour ? wxIcon(curHour.code) : w;
+
+  // Build temp curve SVG
+  const W = 600, H = 100, PAD = 20;
+  const temps  = wx.hours.map(h => h.temp);
+  const minT   = Math.min(...temps) - 5;
+  const maxT   = Math.max(...temps) + 5;
+  const toX    = i => PAD + (i / (temps.length-1)) * (W - PAD*2);
+  const toY    = t => H - PAD - ((t - minT) / (maxT - minT)) * (H - PAD*2);
+  const pts    = temps.map((t,i) => `${toX(i).toFixed(1)},${toY(t).toFixed(1)}`).join(' ');
+  const polyPts= temps.map((t,i) => `${toX(i).toFixed(1)},${toY(t).toFixed(1)}`).join(' ')
+    + ` ${toX(temps.length-1).toFixed(1)},${H} ${toX(0).toFixed(1)},${H}`;
+
+  // Current time line
+  const nowLine = isToday && curHour
+    ? `<line x1="${toX(wx.hours.indexOf(curHour)).toFixed(1)}" y1="0" x2="${toX(wx.hours.indexOf(curHour)).toFixed(1)}" y2="${H}" stroke="rgba(255,255,255,0.4)" stroke-width="1" stroke-dasharray="3,3"/>`
+    : '';
+
+  const svgCurve = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" class="wx-curve">
+    <defs>
+      <linearGradient id="wxgrad" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#7ec8e3" stop-opacity="0.6"/>
+        <stop offset="100%" stop-color="#1a3a6e" stop-opacity="0.1"/>
+      </linearGradient>
+    </defs>
+    <polygon points="${polyPts}" fill="url(#wxgrad)"/>
+    <polyline points="${pts}" fill="none" stroke="#7ec8e3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${nowLine}
+  </svg>`;
+
+  // Hourly scroll — show every 3 hours
+  const hourlyHtml = wx.hours
+    .filter((_,i) => i%3===0)
+    .map(h => {
+      const ic = wxIcon(h.code);
+      return `<div class="wx-hour">
+        <div class="wx-hour-time">${h.time==='00:00'?'12am':h.time==='12:00'?'12pm':
+          parseInt(h.time)<12?parseInt(h.time)+'am':(parseInt(h.time)-12)+'pm'}</div>
+        <div class="wx-hour-icon">${ic.icon}</div>
+        <div class="wx-hour-temp">${h.temp}°</div>
+        ${h.prec>15?`<div class="wx-hour-prec">💧${h.prec}%</div>`:''}
+      </div>`;
+    }).join('');
+
+  // Stats
+  const avgHumidity = Math.round(wx.hours.reduce((s,h)=>s+h.humidity,0)/wx.hours.length);
+  const maxWind     = Math.max(...wx.hours.map(h=>h.wind));
+  const avgWind     = Math.round(wx.hours.reduce((s,h)=>s+h.wind,0)/wx.hours.length);
+
+  const dateLabel = new Date(dateStr+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+
+  return `<div class="wx-wrap">
+    <div class="wx-header">
+      <div class="wx-date">📍 ${WX_CITY} · ${dateLabel}</div>
+      <div class="wx-main">
+        <div class="wx-icon">${curCode.icon}</div>
+        <div>
+          <div style="display:flex;align-items:baseline;gap:10px">
+            <div class="wx-temp">${curTemp}°</div>
+            <div class="wx-hilo">H:${wx.hi}° L:${wx.lo}°</div>
+          </div>
+          <div class="wx-desc">${curCode.desc}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wx-section">
+      <div class="wx-section-title">Hourly Forecast</div>
+      ${svgCurve}
+      <div class="wx-hourly">${hourlyHtml}</div>
+    </div>
+
+    <div style="margin: 0 16px 16px; display:grid; grid-template-columns:1fr 1fr; gap:10px">
+      <div class="wx-stat">
+        <div class="wx-stat-lbl">💧 Precipitation</div>
+        <div class="wx-stat-val">${wx.precip}%</div>
+        <div class="wx-stat-sub">chance today</div>
+      </div>
+      <div class="wx-stat">
+        <div class="wx-stat-lbl">💨 Wind</div>
+        <div class="wx-stat-val">${avgWind} mph</div>
+        <div class="wx-stat-sub">max ${maxWind} mph</div>
+      </div>
+      <div class="wx-stat">
+        <div class="wx-stat-lbl">💦 Humidity</div>
+        <div class="wx-stat-val">${avgHumidity}%</div>
+        <div class="wx-stat-sub">average</div>
+      </div>
+      <div class="wx-stat">
+        <div class="wx-stat-lbl">🌡️ Range</div>
+        <div class="wx-stat-val">${wx.hi}° / ${wx.lo}°</div>
+        <div class="wx-stat-sub">high / low</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleWeather(){
+  weatherMode = !weatherMode;
+  const btn = document.getElementById('wx-btn');
+  if(btn) btn.classList.toggle('wx-btn-active', weatherMode);
+  render();
+}
+
+function wxDateForView(){
+  // Return the date string to show weather for based on current view/cursor
+  return fmt(cur);
+}
 
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
 
