@@ -2350,11 +2350,22 @@ function injectWeatherStrip(ww){
   dates.forEach((d, di) => {
     const dayHours = wxCache[d]?.hours || [];
     dayHours.forEach((h, hi) => {
-      if(hi < hoursPerDay) allPoints.push({ x: toX(di, hi), y: toY(h.temp), temp: h.temp, code: h.code });
+      if(hi < hoursPerDay) allPoints.push({ x: toX(di, hi), y: toY(h.temp), temp: h.temp, code: h.code, prec: h.prec||0 });
     });
   });
 
   if(allPoints.length < 2) return;
+
+  // Precipitation bars — hourly prec% as semi-transparent cyan bars behind temp curve
+  // Each bar width = colW / hoursPerDay, height proportional to prec% of GRAPH_H
+  const barW = Math.max(1, colW / hoursPerDay - 1);
+  const precipBars = allPoints.map(p => {
+    if(p.prec < 5) return ''; // skip negligible
+    const barH = (p.prec / 100) * GRAPH_H;
+    const bx   = (p.x - barW/2).toFixed(1);
+    const by   = (GRAPH_H - barH).toFixed(1);
+    return `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#38bdf8" opacity="0.28" rx="1"/>`;
+  }).join('');
 
   // SVG polyline points
   const linePoints = allPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
@@ -2410,6 +2421,7 @@ function injectWeatherStrip(ww){
     </defs>
     ${gridLines}
     ${dividers}
+    ${precipBars}
     <polygon points="${fillPoints}" fill="url(#wxsg)"/>
     <polyline points="${linePoints}" fill="none" stroke="url(#wxlg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
     ${hlMarkers}
