@@ -250,7 +250,7 @@ body {
 .emore { font-size: 9px; color: var(--muted); font-weight: 500; }
 
 /* WEEK */
-.wwrap { display: flex; flex-direction: column; height: 100%; }
+.wwrap { display: flex; flex-direction: column; height: 100%; position: relative; }
 .whead {
   display: grid; border-bottom: 1px solid var(--border);
   background: var(--header-bg); flex-shrink: 0;
@@ -624,12 +624,15 @@ body {
 
 /* ── Weather Strip (week/5-day overlay) ─────────────────────── */
 .wx-strip {
-  flex-shrink: 0;
+  position: absolute;
+  left: 0; right: 0;
   background: var(--header-bg);
   border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
   display: flex;
-  position: relative;
   overflow: hidden;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
 }
 .wx-strip-tcol {
   width: 46px; flex-shrink: 0;
@@ -2317,32 +2320,10 @@ function rWeatherDay(dateStr){
 }
 
 function toggleWeather(){
-  const SLOT_H = 104;
-  const body = document.querySelector('.wbody') || document.querySelector('.daybody');
-  let centerHour = null;
-  if(body){
-    const centerPx = body.scrollTop + body.clientHeight / 2;
-    centerHour = centerPx / SLOT_H;
-  }
-
   weatherMode = !weatherMode;
   const btn = document.getElementById('wx-btn');
   if(btn) btn.classList.toggle('wx-btn-active', weatherMode);
-
-  // Use preserveScroll=true so render() saves/restores scrollTop instead of calling scrollToHour(6)
-  // Then correct for the height change caused by adding/removing the weather strip
   render(true);
-
-  // After render+inject settle, apply the center-hour correction for strip height change
-  if(centerHour !== null){
-    setTimeout(()=>{
-      const b = document.querySelector('.wbody') || document.querySelector('.daybody');
-      if(b){
-        const target = centerHour * SLOT_H - b.clientHeight / 2;
-        b.scrollTop = Math.max(0, target);
-      }
-    }, 20);
-  }
 }
 
 function injectWeatherStrip(ww){
@@ -2367,11 +2348,12 @@ function injectWeatherStrip(ww){
     const strip = document.createElement('div');
     strip.id = 'wx-strip';
     strip.className = 'wx-strip';
+    const whead = wwrap.querySelector('.whead');
+    const topPx = whead ? whead.offsetHeight : 0;
+    strip.style.top = topPx + 'px';
     strip.style.height = '80px';
     strip.innerHTML = `<div class="wx-strip-loading">🌤️ Loading weather…</div>`;
-    // Insert after whead (before allDayRow or wbody)
-    const whead = wwrap.querySelector('.whead');
-    if(whead) whead.after(strip);
+    wwrap.appendChild(strip);
     const aldr = document.getElementById('week-allday-row');
     if(aldr) aldr.style.display = 'none';
     return;
@@ -2500,6 +2482,9 @@ function injectWeatherStrip(ww){
   const strip = document.createElement('div');
   strip.id = 'wx-strip';
   strip.className = 'wx-strip';
+  const whead = wwrap.querySelector('.whead');
+  const topPx = whead ? whead.offsetHeight : 0;
+  strip.style.top = topPx + 'px';
   strip.style.height = STRIP_H+'px';
   strip.innerHTML = `
     <div class="wx-strip-tcol" style="height:${STRIP_H}px">
@@ -2513,8 +2498,7 @@ function injectWeatherStrip(ww){
       <div style="display:flex;flex-shrink:0">${timeLabels}</div>
     </div>`;
 
-  const whead = wwrap.querySelector('.whead');
-  if(whead) whead.after(strip);
+  wwrap.appendChild(strip);
   const aldr = document.getElementById('week-allday-row');
   if(aldr) aldr.style.display = 'none';
 }
