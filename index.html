@@ -2317,8 +2317,6 @@ function rWeatherDay(dateStr){
 }
 
 function toggleWeather(){
-  // Capture the time (in hours) currently at the vertical center of wbody
-  // so we can restore it after the strip is added/removed (which changes wbody height)
   const SLOT_H = 104;
   const body = document.querySelector('.wbody') || document.querySelector('.daybody');
   let centerHour = null;
@@ -2331,11 +2329,11 @@ function toggleWeather(){
   const btn = document.getElementById('wx-btn');
   if(btn) btn.classList.toggle('wx-btn-active', weatherMode);
 
-  // Re-render — pass false so render() doesn't try to preserve scrollTop
-  // (scrollTop preservation is wrong here because wbody height changes)
-  render(false);
+  // Use preserveScroll=true so render() saves/restores scrollTop instead of calling scrollToHour(6)
+  // Then correct for the height change caused by adding/removing the weather strip
+  render(true);
 
-  // After render+inject settle, restore the center hour
+  // After render+inject settle, apply the center-hour correction for strip height change
   if(centerHour !== null){
     setTimeout(()=>{
       const b = document.querySelector('.wbody') || document.querySelector('.daybody');
@@ -2343,7 +2341,7 @@ function toggleWeather(){
         const target = centerHour * SLOT_H - b.clientHeight / 2;
         b.scrollTop = Math.max(0, target);
       }
-    }, 10);
+    }, 20);
   }
 }
 
