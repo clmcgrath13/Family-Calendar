@@ -598,8 +598,8 @@ body {
 /* ── Weather Strip (week/5-day overlay) ─────────────────────── */
 .wx-strip {
   flex-shrink: 0;
-  background: #111827;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border);
   display: flex;
   position: relative;
   overflow: hidden;
@@ -618,7 +618,7 @@ body {
   align-items: flex-end;
 }
 .wx-strip-tlbl {
-  font-size: 8px; color: rgba(255,255,255,0.45);
+  font-size: 8px; color: var(--muted);
   font-weight: 600; white-space: nowrap;
   line-height: 1;
 }
@@ -627,7 +627,7 @@ body {
 }
 .wx-strip-col {
   display: flex; flex-direction: column;
-  border-left: 1px solid rgba(255,255,255,0.06);
+  border-left: 1px solid var(--border);
   position: relative; overflow: visible;
 }
 .wx-strip-icons {
@@ -643,16 +643,16 @@ body {
   flex-shrink: 0;
 }
 .wx-strip-timelabel {
-  font-size: 8px; color: rgba(255,255,255,0.4);
+  font-size: 8px; color: var(--muted);
   font-weight: 600;
 }
 .wx-strip-hilo {
   position: absolute; font-size: 8px; font-weight: 700;
-  color: rgba(255,255,255,0.9); pointer-events: none;
+  color: var(--text); pointer-events: none;
 }
 .wx-strip-loading {
   display: flex; align-items: center; justify-content: center;
-  width: 100%; color: rgba(255,255,255,0.5); font-size: 12px; gap: 8px;
+  width: 100%; color: var(--muted); font-size: 12px; gap: 8px;
 }
 
 /* Google Calendar Sync */
@@ -2364,7 +2364,7 @@ function injectWeatherStrip(ww){
     const barH = (p.prec / 100) * GRAPH_H;
     const bx   = (p.x - barW/2).toFixed(1);
     const by   = (GRAPH_H - barH).toFixed(1);
-    return `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#38bdf8" opacity="0.28" rx="1"/>`;
+    return `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#93c5fd" opacity="0.55" rx="1"/>`;
   }).join('');
 
   // SVG polyline points
@@ -2386,44 +2386,38 @@ function injectWeatherStrip(ww){
     const hy = (toY(maxH.temp)-12).toFixed(1);
     const lx = toX(di, minIdx).toFixed(1);
     const ly = (toY(minH.temp)+3).toFixed(1);
-    hlMarkers += `<circle cx="${hx}" cy="${(parseFloat(hy)+10).toFixed(1)}" r="3" fill="#e8f57a"/>`;
-    hlMarkers += `<text x="${hx}" y="${hy}" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.85)">${maxH.temp}°</text>`;
-    hlMarkers += `<circle cx="${lx}" cy="${(parseFloat(ly)-5).toFixed(1)}" r="3" fill="#7ec8e3"/>`;
-    hlMarkers += `<text x="${lx}" y="${(parseFloat(ly)+8).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.7)">${minH.temp}°</text>`;
+    hlMarkers += `<circle cx="${hx}" cy="${(parseFloat(hy)+10).toFixed(1)}" r="3" fill="#2c6bed"/>`;
+    hlMarkers += `<text x="${hx}" y="${hy}" text-anchor="middle" font-size="9" font-weight="700" fill="#1c1c1a">${maxH.temp}°</text>`;
+    hlMarkers += `<circle cx="${lx}" cy="${(parseFloat(ly)-5).toFixed(1)}" r="3" fill="#2c6bed"/>`;
+    hlMarkers += `<text x="${lx}" y="${(parseFloat(ly)+8).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="#6b7280">${minH.temp}°</text>`;
   });
 
   // Vertical day dividers on graph
   let dividers = '';
   for(let di=1; di<numDays; di++){
     const x = (di * colW).toFixed(1);
-    dividers += `<line x1="${x}" y1="0" x2="${x}" y2="${GRAPH_H}" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>`;
+    dividers += `<line x1="${x}" y1="0" x2="${x}" y2="${GRAPH_H}" stroke="#e2e2de" stroke-width="1"/>`;
   }
 
   // Temp scale lines (horizontal grid)
   let gridLines = '';
   for(let t=globalMin; t<=globalMax; t+=10){
     const y = toY(t).toFixed(1);
-    gridLines += `<line x1="0" y1="${y}" x2="${totalW}" y2="${y}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`;
+    gridLines += `<line x1="0" y1="${y}" x2="${totalW}" y2="${y}" stroke="#e2e2de" stroke-width="1"/>`;
   }
 
   const svg = `<svg width="${totalW}" height="${GRAPH_H}" viewBox="0 0 ${totalW} ${GRAPH_H}" style="display:block;overflow:visible">
     <defs>
       <linearGradient id="wxsg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#c8f57a" stop-opacity="0.55"/>
-        <stop offset="35%" stop-color="#7ec8e3" stop-opacity="0.45"/>
-        <stop offset="100%" stop-color="#1a3a6e" stop-opacity="0.15"/>
-      </linearGradient>
-      <linearGradient id="wxlg" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#7ec8e3"/>
-        <stop offset="50%" stop-color="#c8f57a"/>
-        <stop offset="100%" stop-color="#7ec8e3"/>
+        <stop offset="0%" stop-color="#2c6bed" stop-opacity="0.18"/>
+        <stop offset="100%" stop-color="#2c6bed" stop-opacity="0.04"/>
       </linearGradient>
     </defs>
     ${gridLines}
     ${dividers}
-    ${precipBars}
     <polygon points="${fillPoints}" fill="url(#wxsg)"/>
-    <polyline points="${linePoints}" fill="none" stroke="url(#wxlg)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <polyline points="${linePoints}" fill="none" stroke="#2c6bed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    ${precipBars}
     ${hlMarkers}
   </svg>`;
 
