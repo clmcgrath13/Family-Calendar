@@ -569,43 +569,32 @@ body {
 /* ── Weather View ───────────────────────────────────────────── */
 .wx-wrap {
   height: 100%; overflow-y: auto;
-  background: linear-gradient(180deg, #1a2744 0%, #1e3a5f 40%, #2d5a8e 100%);
-  color: #fff; display: flex; flex-direction: column;
+  background: var(--bg);
+  color: var(--text); display: flex; flex-direction: column;
   font-family: var(--font);
 }
 .wx-header {
   padding: 20px 24px 12px;
   display: flex; flex-direction: column; gap: 4px;
+  border-bottom: 1px solid var(--border);
+  background: var(--header-bg);
 }
-.wx-date    { font-size: 13px; opacity: 0.75; font-weight: 500; }
+.wx-date    { font-size: 12px; color: var(--muted); font-weight: 500; }
 .wx-main    { display: flex; align-items: center; gap: 16px; }
-.wx-temp    { font-size: 52px; font-weight: 300; line-height: 1; }
-.wx-hilo    { font-size: 16px; opacity: 0.8; }
-.wx-icon    { font-size: 52px; line-height: 1; }
-.wx-desc    { font-size: 15px; opacity: 0.8; margin-top: 4px; }
+.wx-temp    { font-size: 52px; font-weight: 300; line-height: 1; color: var(--text); }
+.wx-hilo    { font-size: 15px; color: var(--muted); }
+.wx-icon    { font-size: 48px; line-height: 1; }
+.wx-desc    { font-size: 14px; color: var(--muted); margin-top: 2px; }
 .wx-section {
-  margin: 0 16px 16px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 16px; padding: 14px 16px;
-  backdrop-filter: blur(4px);
+  margin: 16px 16px 0;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
 }
 .wx-section-title {
-  font-size: 11px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.08em; opacity: 0.65; margin-bottom: 10px;
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted); margin-bottom: 10px;
 }
-/* Hourly scroll row */
-.wx-hourly {
-  display: flex; gap: 4px; overflow-x: auto;
-  padding-bottom: 4px;
-}
-.wx-hour {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 5px; min-width: 52px; padding: 4px 0;
-}
-.wx-hour-time { font-size: 11px; opacity: 0.7; }
-.wx-hour-icon { font-size: 20px; line-height: 1; }
-.wx-hour-temp { font-size: 14px; font-weight: 600; }
-.wx-hour-prec { font-size: 10px; color: #7ec8e3; }
 /* Temp curve SVG container */
 .wx-curve { width: 100%; height: 120px; margin-bottom: 6px; }
 /* Stats grid */
@@ -614,13 +603,14 @@ body {
   gap: 10px;
 }
 .wx-stat {
-  background: rgba(255,255,255,0.08);
+  background: var(--header-bg);
+  border: 1px solid var(--border);
   border-radius: 12px; padding: 12px 14px;
 }
-.wx-stat-lbl { font-size: 11px; opacity: 0.65; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
-.wx-stat-val { font-size: 22px; font-weight: 600; }
-.wx-stat-sub { font-size: 11px; opacity: 0.65; margin-top: 2px; }
-.wx-loading  { display: flex; align-items: center; justify-content: center; height: 100%; opacity: 0.7; font-size: 15px; }
+.wx-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.wx-stat-val { font-size: 22px; font-weight: 600; color: var(--text); }
+.wx-stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.wx-loading  { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--muted); font-size: 15px; }
 .wx-btn-active { background: #dceeff !important; color: #1a6bb5 !important; }
 
 /* ── Weather Strip (week/5-day overlay) ─────────────────────── */
@@ -2203,8 +2193,8 @@ function rWeatherDay(dateStr){
     return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:16px">
       <div style="font-size:32px">⚠️</div>
       <div>Couldn't load weather data.</div>
-      <div style="font-size:13px;opacity:0.65">Check your internet connection.</div>
-      <button onclick="retryWeather()" style="margin-top:8px;padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:14px;font-weight:600;cursor:pointer">
+      <div style="font-size:13px;color:var(--muted)">Check your internet connection.</div>
+      <button onclick="retryWeather()" style="margin-top:8px;padding:12px 24px;border-radius:10px;border:1px solid var(--border);background:var(--header-bg);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">
         Try Again
       </button>
     </div></div>`;
