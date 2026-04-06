@@ -21,14 +21,7 @@
   --font: 'DM Sans', sans-serif;
   --shadow: 0 2px 16px rgba(0,0,0,0.09);
   --today-ring: #2c6bed;
-  --mom: #d44b8a;
-  --mom-bg: #fceef6;
-  --dad: #2c6bed;
-  --dad-bg: #e8f0fd;
   --kids: #22a06b;
-  --kids-bg: #e2f5ee;
-  --family: #7c52c8;
-  --family-bg: #f0ebfc;
 }
 
 body {
@@ -119,18 +112,52 @@ body {
 .tb-title { font-size: 26px; font-weight: 400; line-height: 1.1; font-family: 'DM Serif Display', serif; letter-spacing: -0.01em; }
 .tb-space { flex: 1; }
 
-.vpills {
-  display: flex; background: var(--sidebar-bg);
-  border-radius: 8px; padding: 3px; gap: 2px;
+/* View dropdown — custom (native select opens upward on Kindle) */
+.vdrop-wrap {
+  position: relative; flex-shrink: 0;
 }
-.vpill {
-  padding: 10px 14px; border-radius: 8px;
+.vdrop-btn {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 14px; border-radius: 10px;
   font-size: 13px; font-weight: 500;
-  cursor: pointer; border: none;
-  background: transparent; color: var(--muted);
-  transition: all 0.12s; white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: var(--bg); color: var(--text);
+  font-family: var(--font);
+  white-space: nowrap; min-width: 90px;
+  justify-content: space-between;
+  transition: background 0.12s;
 }
-.vpill.active { background: #fff; color: var(--text); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+.vdrop-btn:hover { background: var(--sidebar-bg); }
+.vdrop-btn svg { flex-shrink: 0; transition: transform 0.2s; }
+.vdrop-btn.open svg { transform: rotate(180deg); }
+.vdrop-menu {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: var(--shadow);
+  overflow: hidden; z-index: 500;
+  min-width: 100%;
+  opacity: 0; pointer-events: none;
+  transform: translateY(-6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.vdrop-menu.open {
+  opacity: 1; pointer-events: all;
+  transform: translateY(0);
+}
+.vdrop-item {
+  display: flex; align-items: center;
+  padding: 14px 18px;
+  font-size: 14px; font-weight: 500;
+  cursor: pointer; color: var(--text);
+  transition: background 0.1s;
+  white-space: nowrap;
+}
+.vdrop-item:hover { background: var(--sidebar-bg); }
+.vdrop-item.active {
+  color: var(--today-ring); font-weight: 700;
+  background: #f0f6ff;
+}
 
 .arr-btn {
   width: 44px; height: 44px;
@@ -722,34 +749,6 @@ body {
 
 /* mday-bar defined above */
 
-/* Event detail modal */
-.det-who {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 3px 10px; border-radius: 20px;
-  font-size: 11px; font-weight: 600; margin-bottom: 4px;
-}
-.det-row {
-  display: flex; align-items: flex-start; gap: 10px;
-  padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 14px;
-}
-/* Detail modal — much larger than edit modal */
-#det-modal {
-  width: min(680px, 92vw);
-  max-height: 85vh;
-  display: flex; flex-direction: column;
-}
-#det-modal .modal-hd { padding: 20px 24px; }
-#det-modal .modal-ttl { font-size: 20px; font-weight: 600; line-height: 1.2; }
-#det-modal .modal-bd { padding: 20px 24px; flex: 1; overflow-y: auto; gap: 0; }
-#det-modal .modal-ft { padding: 16px 24px; }
-.det-desc {
-  font-size: 14px; color: var(--text); line-height: 1.6;
-  padding: 10px 0; border-bottom: 1px solid var(--border);
-  white-space: pre-wrap;
-}
-.det-row:last-child { border-bottom: none; }
-.det-row-icon { width: 16px; flex-shrink: 0; opacity: 0.5; margin-top: 1px; }
-.det-row-val { color: var(--text); line-height: 1.4; }
 </style>
 </head>
 <body>
@@ -782,15 +781,26 @@ body {
   <div class="topbar">
     <div class="tb-left">
       <div class="tb-season" id="tb-season"><span class="tb-season-icon" id="tb-sicon"></span><span id="tb-slabel"></span></div>
-      <div class="tb-title" id="tb-title">March 2026</div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="tb-title" id="tb-title">March 2026</div>
+        <button class="today-btn" id="wx-btn" onclick="toggleWeather()"
+          style="display:none;font-size:20px;padding:10px 12px;line-height:1;border-radius:10px"
+          title="Toggle weather">⛅</button>
+      </div>
     </div>
     <div class="tb-space"></div>
-    <div class="vpills" id="cal-tabs">
-      <button class="vpill" onclick="scv('month')">Month</button>
-      <button class="vpill" onclick="scv('week')">Week</button>
-      <button class="vpill active" onclick="scv('workweek')">5 Day</button>
-      <button class="vpill" onclick="scv('day')">Day</button>
-      <button class="vpill" onclick="scv('agenda')">Agenda</button>
+    <div class="vdrop-wrap" id="vdrop-wrap">
+      <button class="vdrop-btn" id="vdrop-btn" onclick="toggleViewDrop()">
+        <span id="vdrop-label">5 Day</span>
+        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="vdrop-menu" id="vdrop-menu">
+        <div class="vdrop-item" onclick="pickView('month')">Month</div>
+        <div class="vdrop-item" onclick="pickView('week')">Week</div>
+        <div class="vdrop-item active" onclick="pickView('workweek')">5 Day</div>
+        <div class="vdrop-item" onclick="pickView('day')">Day</div>
+        <div class="vdrop-item" onclick="pickView('agenda')">Agenda</div>
+      </div>
     </div>
     <button class="arr-btn" onclick="navP()">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -799,7 +809,6 @@ body {
       <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </button>
     <button class="today-btn" onclick="gotoday()">Today</button>
-    <button class="today-btn" id="wx-btn" onclick="toggleWeather()" style="display:none;font-size:18px;padding:8px 14px" title="Weather">⛅</button>
   </div>
   <div class="content" id="content"></div>
 </div>
@@ -816,23 +825,6 @@ body {
     <div class="modal-ft">
       <button class="btn btn-s" onclick="closeM()">Cancel</button>
       <button class="btn btn-p" onclick="doSave()">Add</button>
-    </div>
-  </div>
-</div>
-
-<!-- Event detail overlay -->
-<div class="overlay" id="det-ov" onclick="detOvClick(event)">
-  <div class="modal" id="det-modal">
-    <div class="modal-hd">
-      <span class="modal-ttl" id="det-title">Event</span>
-      <button class="modal-x" onclick="closeDet()">✕</button>
-    </div>
-    <div class="modal-bd" id="det-body"></div>
-    <div class="modal-ft">
-      <button class="btn btn-s" style="color:#c44;border:1px solid #f5c5c5" onclick="deleteEvFromDet()">Delete</button>
-      <div style="flex:1"></div>
-      <button class="btn btn-s" onclick="closeDet()">Close</button>
-      <button class="btn btn-p" onclick="editEvFromDet()">Edit</button>
     </div>
   </div>
 </div>
@@ -1135,10 +1127,33 @@ function sv(v){
   render();
 }
 
+const VIEW_LABELS = {month:'Month',week:'Week',workweek:'5 Day',day:'Day',agenda:'Agenda'};
+
+function toggleViewDrop(){
+  const menu = document.getElementById('vdrop-menu');
+  const btn  = document.getElementById('vdrop-btn');
+  if(!menu||!btn) return;
+  const open = menu.classList.toggle('open');
+  btn.classList.toggle('open', open);
+}
+
+function pickView(v){
+  const menu = document.getElementById('vdrop-menu');
+  const btn  = document.getElementById('vdrop-btn');
+  const lbl  = document.getElementById('vdrop-label');
+  if(menu){ menu.classList.remove('open'); menu.querySelectorAll('.vdrop-item').forEach(el=>{ el.classList.toggle('active', el.textContent.trim()===VIEW_LABELS[v]); }); }
+  if(btn)  btn.classList.remove('open');
+  if(lbl)  lbl.textContent = VIEW_LABELS[v] || v;
+  scv(v);
+}
+
 function scv(v){
-  calV=v;
-  const order=['month','week','workweek','day','agenda'];
-  document.querySelectorAll('.vpill').forEach((p,i)=>p.classList.toggle('active',order[i]===v));
+  calV = v;
+  // Sync label in case scv is called directly (e.g. from utb)
+  const lbl = document.getElementById('vdrop-label');
+  if(lbl) lbl.textContent = VIEW_LABELS[v] || v;
+  const menu = document.getElementById('vdrop-menu');
+  if(menu) menu.querySelectorAll('.vdrop-item').forEach(el=>{ el.classList.toggle('active', el.textContent.trim()===VIEW_LABELS[v]); });
   render();
 }
 
@@ -1210,10 +1225,31 @@ function render(preserveScroll){
   if(appV==='lists'){ c.innerHTML=rLists(); return; }
   if(appV==='meals'){ c.innerHTML=rMeals(); return; }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
-  // Show/hide weather button — only relevant for time-grid views
+  // Show/hide weather button — only for time-grid views AND all dates within 14-day forecast
   const wxBtn = document.getElementById('wx-btn');
   const isTimeView = calV==='week'||calV==='workweek'||calV==='day';
-  if(wxBtn) wxBtn.style.display = isTimeView ? '' : 'none';
+  if(wxBtn){
+    if(!isTimeView){
+      wxBtn.style.display = 'none';
+    } else {
+      // Build the date range for this view
+      const wxMaxDate = new Date(T); wxMaxDate.setDate(wxMaxDate.getDate()+13);
+      const wxMaxStr  = fmt(wxMaxDate);
+      let wxViewDates;
+      if(calV==='day'){
+        wxViewDates = [fmt(cur)];
+      } else {
+        const ww = calV==='workweek';
+        const s  = wstart(cur, ww);
+        wxViewDates = Array.from({length:ww?5:7},(_,i)=>{
+          const d=new Date(s); d.setDate(s.getDate()+i); return fmt(d);
+        });
+      }
+      const allInRange = wxViewDates.every(d => d <= wxMaxStr);
+      wxBtn.style.display = allInRange ? '' : 'none';
+      if(!allInRange && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
+    }
+  }
   // Weather mode intercepts time-grid views
   if(weatherMode && isTimeView){
     if(calV==='day'){
@@ -1441,7 +1477,7 @@ function rWeek(ww){
   }).join('');
   return `<div class="wwrap">
     <div class="whead" style="grid-template-columns:46px repeat(${cols},1fr)">${hd}</div>
-    ${allDayRow}
+    <div id="week-allday-row">${allDayRow}</div>
     <div class="wbody"><div class="tcol">${tlbls}</div><div class="dcols" style="grid-template-columns:repeat(${cols},1fr)" id="dcols">${dcHtml}</div></div>
   </div>`;
 }
@@ -1835,11 +1871,6 @@ function cancelSettings(){
   sv('calendar');
 }
 
-// Legacy stub kept so any residual calls don't throw
-function setNewColor(el, c){ window._draftNewColor = c; }
-function addMember(){ draftAdd(); }
-function delMember(idx){ draftDel(idx); }
-
 function openAdd(){
   if(appV==='tasks') addTask();
   else if(appV==='lists') addListItem();
@@ -2072,17 +2103,19 @@ function editEvent(id){
   openM();
 }
 
-// Legacy aliases — keep so any residual calls don't throw
-function showEventDetail(id){ editEvent(id); }
-function editEvFromDet(){ }
-function deleteEvFromDet(){ }
-function closeDet(){ }
-
 
 sv('calendar');
 document.querySelector('.nav-btn[data-v="calendar"]').classList.add('active');
-// Build sidebar member dots from the dynamic members array
 rebuildFullSidebarDots();
+
+// Close view dropdown when clicking outside it
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('vdrop-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    document.getElementById('vdrop-menu')?.classList.remove('open');
+    document.getElementById('vdrop-btn')?.classList.remove('open');
+  }
+});
 
 // ─── WEATHER ────────────────────────────────────────────────────────────────
 // (WX_LAT, WX_LON, WX_CITY, weatherMode, wxCache, wxFetching declared at top of script)
@@ -2103,11 +2136,6 @@ function wxIcon(code){
   return {icon:'🌡️', desc:'Unknown'};
 }
 
-function wxWindDir(deg){
-  const dirs = ['N','NE','E','SE','S','SW','W','NW'];
-  return dirs[Math.round(deg/45)%8];
-}
-
 async function fetchWeather(dateStr){
   if(wxCache[dateStr]) return wxCache[dateStr];
   if(wxFetching) return null;
@@ -2118,7 +2146,7 @@ async function fetchWeather(dateStr){
       + `&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m,relativehumidity_2m`
       + `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_probability_max`
       + `&temperature_unit=fahrenheit&windspeed_unit=mph`
-      + `&timezone=America%2FNew_York&forecast_days=7`;
+      + `&timezone=America%2FNew_York&forecast_days=14`;
     const resp = await fetch(url);
     if(!resp.ok) throw new Error('HTTP '+resp.status);
     const data = await resp.json();
@@ -2288,10 +2316,34 @@ function rWeatherDay(dateStr){
 }
 
 function toggleWeather(){
+  // Capture the time (in hours) currently at the vertical center of wbody
+  // so we can restore it after the strip is added/removed (which changes wbody height)
+  const SLOT_H = 104;
+  const body = document.querySelector('.wbody') || document.querySelector('.daybody');
+  let centerHour = null;
+  if(body){
+    const centerPx = body.scrollTop + body.clientHeight / 2;
+    centerHour = centerPx / SLOT_H;
+  }
+
   weatherMode = !weatherMode;
   const btn = document.getElementById('wx-btn');
   if(btn) btn.classList.toggle('wx-btn-active', weatherMode);
-  render();
+
+  // Re-render — pass false so render() doesn't try to preserve scrollTop
+  // (scrollTop preservation is wrong here because wbody height changes)
+  render(false);
+
+  // After render+inject settle, restore the center hour
+  if(centerHour !== null){
+    setTimeout(()=>{
+      const b = document.querySelector('.wbody') || document.querySelector('.daybody');
+      if(b){
+        const target = centerHour * SLOT_H - b.clientHeight / 2;
+        b.scrollTop = Math.max(0, target);
+      }
+    }, 10);
+  }
 }
 
 function injectWeatherStrip(ww){
@@ -2321,6 +2373,8 @@ function injectWeatherStrip(ww){
     // Insert after whead (before allDayRow or wbody)
     const whead = wwrap.querySelector('.whead');
     if(whead) whead.after(strip);
+    const aldr = document.getElementById('week-allday-row');
+    if(aldr) aldr.style.display = 'none';
     return;
   }
 
@@ -2462,95 +2516,8 @@ function injectWeatherStrip(ww){
 
   const whead = wwrap.querySelector('.whead');
   if(whead) whead.after(strip);
-}
-
-// Multi-day weather grid for week/5-day views
-function rWeatherMulti(dates){
-  // Kick off fetch for any missing dates
-  const anyMissing = dates.some(d => !wxCache[d]);
-  if(anyMissing && !wxFetching && !wxError){
-    fetchWeather(dates[0]).then(() => render());
-  }
-
-  if(wxError && anyMissing){
-    return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:16px">
-      <div style="font-size:32px">⚠️</div>
-      <div>Couldn't load weather data.</div>
-      <div style="font-size:13px;opacity:0.65">Check your internet connection.</div>
-      <button onclick="retryWeather()" style="margin-top:8px;padding:12px 24px;border-radius:10px;border:1px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.15);color:#fff;font-size:14px;font-weight:600;cursor:pointer">Try Again</button>
-    </div></div>`;
-  }
-
-  if(anyMissing){
-    return `<div class="wx-wrap"><div class="wx-loading" style="flex-direction:column;gap:12px">
-      <div style="font-size:32px">🌤️</div>
-      <div>Loading weather for ${WX_CITY}…</div>
-    </div></div>`;
-  }
-
-  const DAYS_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const todayStr = fmt(new Date());
-
-  const cols = dates.map(dateStr => {
-    const wx     = wxCache[dateStr];
-    const w      = wxIcon(wx.code);
-    const d      = new Date(dateStr+'T12:00:00');
-    const isToday = dateStr === todayStr;
-    const dow    = DAYS_SHORT[d.getDay()];
-    const mdate  = MONTHS_SHORT[d.getMonth()]+' '+d.getDate();
-
-    // Mini hourly bars — show every 4 hours as colored temp blocks
-    const dayHours = wx.hours.filter((_,i)=>i%4===0);
-    const allTemps = wx.hours.map(h=>h.temp);
-    const minT = Math.min(...allTemps), maxT = Math.max(...allTemps);
-    const tempPct = t => Math.round(((t-minT)/(maxT-minT||1))*100);
-
-    const hourBars = dayHours.map(h => {
-      const pct  = tempPct(h.temp);
-      const hic  = wxIcon(h.code);
-      const hStr = h.time==='00:00'?'12a':h.time==='12:00'?'12p':
-        parseInt(h.time)<12?parseInt(h.time)+'a':(parseInt(h.time)-12)+'p';
-      return `<div style="display:flex;flex-direction:column;align-items:center;gap:3px;flex:1">
-        <div style="font-size:9px;opacity:0.6">${hStr}</div>
-        <div style="font-size:14px">${hic.icon}</div>
-        <div style="font-size:11px;font-weight:600">${h.temp}°</div>
-        ${h.prec>15?`<div style="font-size:9px;color:#7ec8e3">${h.prec}%</div>`:'<div style="font-size:9px;opacity:0"></div>'}
-      </div>`;
-    }).join('');
-
-    const borderLeft = isToday ? 'border-left:2px solid rgba(255,255,255,0.5)' : 'border-left:1px solid rgba(255,255,255,0.12)';
-
-    return `<div style="flex:1;display:flex;flex-direction:column;${borderLeft};padding:12px 8px;min-width:0">
-      <!-- Day header -->
-      <div style="text-align:center;margin-bottom:10px">
-        <div style="font-size:${isToday?'13px':'12px'};font-weight:${isToday?'700':'500'};opacity:${isToday?'1':'0.7'};text-transform:uppercase;letter-spacing:0.05em">${dow}</div>
-        <div style="font-size:11px;opacity:0.55;margin-top:1px">${mdate}</div>
-      </div>
-      <!-- Main icon + hi/lo -->
-      <div style="text-align:center;margin-bottom:12px">
-        <div style="font-size:32px;line-height:1;margin-bottom:6px">${w.icon}</div>
-        <div style="font-size:13px;font-weight:600">${wx.hi}° <span style="opacity:0.55;font-weight:400">${wx.lo}°</span></div>
-        <div style="font-size:10px;opacity:0.6;margin-top:2px">${w.desc}</div>
-      </div>
-      <!-- Precip -->
-      ${wx.precip>5?`<div style="text-align:center;font-size:11px;color:#7ec8e3;margin-bottom:10px">💧 ${wx.precip}%</div>`:`<div style="margin-bottom:10px"></div>`}
-      <!-- Hourly mini row -->
-      <div style="display:flex;gap:2px;margin-top:auto">
-        ${hourBars}
-      </div>
-    </div>`;
-  }).join('');
-
-  return `<div class="wx-wrap" style="flex-direction:row">
-    <div style="writing-mode:vertical-rl;transform:rotate(180deg);font-size:10px;font-weight:700;
-      letter-spacing:0.1em;text-transform:uppercase;opacity:0.4;padding:12px 8px;flex-shrink:0">
-      ${WX_CITY}
-    </div>
-    <div style="flex:1;display:flex;overflow:hidden;height:100%">
-      ${cols}
-    </div>
-  </div>`;
+  const aldr = document.getElementById('week-allday-row');
+  if(aldr) aldr.style.display = 'none';
 }
 
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
