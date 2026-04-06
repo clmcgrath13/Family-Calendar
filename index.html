@@ -665,13 +665,14 @@ body {
 .wx-strip-icon { font-size: 12px; line-height: 1; }
 .wx-strip-graph { flex: 1; position: relative; min-height: 0; }
 .wx-strip-timelabels {
-  display: flex; justify-content: space-between;
-  padding: 2px 4px 0;
+  position: relative;
+  height: 14px;
   flex-shrink: 0;
 }
 .wx-strip-timelabel {
+  position: absolute;
   font-size: 8px; color: var(--muted);
-  font-weight: 600;
+  font-weight: 600; transform: translateX(-50%);
 }
 .wx-strip-hilo {
   position: absolute; font-size: 8px; font-weight: 700;
@@ -2484,11 +2485,11 @@ function injectWeatherStrip(ww){
 
   // Time labels — 12AM, 6AM, 12PM, 6PM per day
   const timeLabels = dates.map(() =>
-    `<div class="wx-strip-timelabels" style="width:${colW}px;flex-shrink:0">
-      <span class="wx-strip-timelabel">12A</span>
-      <span class="wx-strip-timelabel">6A</span>
-      <span class="wx-strip-timelabel">12P</span>
-      <span class="wx-strip-timelabel">6P</span>
+    `<div class="wx-strip-timelabels" style="width:${colW}px">
+      <span class="wx-strip-timelabel" style="left:0%;transform:translateX(0)">12A</span>
+      <span class="wx-strip-timelabel" style="left:25%">6A</span>
+      <span class="wx-strip-timelabel" style="left:50%">12P</span>
+      <span class="wx-strip-timelabel" style="left:75%">6P</span>
     </div>`).join('');
 
   // Temperature scale on left
