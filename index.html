@@ -2619,7 +2619,6 @@ function handleSyncClick(){
 async function gcalFetch(){
   if(!GCAL_API_KEY){ syncStatusSet('','Add API Key'); return; }
   syncStatusSet('syncing','Syncing…');
-  dbg && dbg('gcalFetch: starting fetch');
   try {
     const now  = new Date();
     const tMin = new Date(now); tMin.setMonth(tMin.getMonth()-1); tMin.setDate(1);
@@ -2634,16 +2633,12 @@ async function gcalFetch(){
     });
     const calId = encodeURIComponent(GCAL_CALENDAR_ID);
     const url = `${GCAL_API}/calendars/${calId}/events?${p}`;
-    dbg && dbg('gcalFetch: fetching ' + url.slice(0,80)+'…');
     const r = await fetch(url);
-    dbg && dbg('gcalFetch: HTTP ' + r.status);
     if(!r.ok){
       const errBody = await r.text();
-      dbg && dbg('gcalFetch error body: ' + errBody.slice(0,120));
       throw new Error('HTTP '+r.status);
     }
     const data = await r.json();
-    dbg && dbg('gcalFetch: got ' + (data.items||[]).length + ' events');
     evs = evs.filter(e=>!e.fromGcal);
     (data.items||[]).filter(e=>e.status!=='cancelled').forEach(e=>evs.push(gcalToLocal(e)));
     const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
@@ -2653,7 +2648,6 @@ async function gcalFetch(){
     gcalAutoTimer = setTimeout(gcalFetch, 15*60*1000);
   } catch(err){
     syncStatusSet('error','Sync failed');
-    dbg && dbg('gcalFetch FAILED: ' + err.message);
     console.error('GCal error:', err);
   }
 }
@@ -2662,67 +2656,6 @@ async function gcalFetch(){
 if(GCAL_API_KEY) gcalFetch();
 
 // ─── END GOOGLE CALENDAR SYNC ───────────────────────────────────────────────
-
-// ─── GCAL DEBUG OVERLAY ─────────────────────────────────────────────────────
-// Tap the debug panel to dismiss it. Remove this block once auth is working.
-
-let _dbgMsgs = [];
-function dbg(msg){
-  const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const line = `[${t}] ${msg}`;
-  _dbgMsgs.push(line);
-  console.log('DBG:', line);
-  const el = document.getElementById('_dbg');
-  if(el) el.innerHTML = _dbgMsgs.slice(-12).map(m=>`<div>${m}</div>`).join('');
-}
-
-// Inject overlay panel
-(function(){
-  const div = document.createElement('div');
-  div.id = '_dbg';
-  div.onclick = () => { _dbgMsgs = []; div.innerHTML = '<div>(cleared)</div>'; };
-  Object.assign(div.style, {
-    position:'fixed', bottom:'0', left:'0', right:'0',
-    background:'rgba(0,0,0,0.85)', color:'#0f0', fontFamily:'monospace',
-    fontSize:'11px', padding:'8px 12px', zIndex:'9999',
-    maxHeight:'180px', overflowY:'auto', display:'none',
-    lineHeight:'1.6', whiteSpace:'pre-wrap', wordBreak:'break-all',
-  });
-  document.body.appendChild(div);
-  dbg('Debug panel ready — tap to clear');
-})();
-
-// Show panel when Sync is tapped
-const _origHandleSyncClick = handleSyncClick;
-handleSyncClick = function(){
-  document.getElementById('_dbg').style.display = 'block';
-  dbg('handleSyncClick fired');
-  dbg('GCAL_API_KEY: ' + (GCAL_API_KEY ? GCAL_API_KEY.slice(0,12)+'…' : 'MISSING'));
-  dbg('GCAL_CALENDAR_ID: ' + GCAL_CALENDAR_ID);
-  try {
-    _origHandleSyncClick();
-    dbg('handleSyncClick completed without throw');
-  } catch(e) {
-    dbg('ERROR: ' + e.message);
-    dbg('Stack: ' + (e.stack||'').split('\n').slice(0,3).join(' | '));
-  }
-};
-
-// Log load state
-window.addEventListener('load', () => {
-  dbg('window.load fired');
-  dbg('API key present: ' + (GCAL_API_KEY ? 'yes' : 'NO — check config.js'));
-});
-
-// Log any unhandled errors
-window.addEventListener('error', e => {
-  document.getElementById('_dbg').style.display = 'block';
-  dbg('UNCAUGHT: ' + e.message + ' (' + (e.filename||'').split('/').pop() + ':' + e.lineno + ')');
-});
-window.addEventListener('unhandledrejection', e => {
-  document.getElementById('_dbg').style.display = 'block';
-  dbg('UNHANDLED PROMISE: ' + (e.reason?.message || e.reason));
-});
 
 </script>
 </body>
