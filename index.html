@@ -6,23 +6,7 @@
 <title>Family Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="config.js"></script>
-<script>
-// Load Google Identity Services dynamically so we can detect load/error
-(function(){
-  const s = document.createElement('script');
-  s.src = 'https://accounts.google.com/gsi/client';
-  s.async = true;
-  s.defer = true;
-  s.onload = function(){
-    if(typeof dbg === 'function') dbg('GIS script: LOADED ✓');
-    if(typeof gcalInit === 'function') gcalInit();
-  };
-  s.onerror = function(e){
-    if(typeof dbg === 'function') dbg('GIS script: FAILED TO LOAD ✗ — Fully Kiosk may be blocking accounts.google.com');
-  };
-  document.head.appendChild(s);
-})();
-</script>
+
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -1797,10 +1781,10 @@ function rSettings(){
 
         <div class="set-card">
           <div class="set-section-title">Google Calendar</div>
-          <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Connect your Gmail calendar. Use [Name] tags in event titles to assign family members.</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:12px">Syncs your public Google Calendar. Add <code>window.GCAL_API_KEY</code> to config.js. Use [Name] tags in event titles to assign family members.</p>
           <button class="sync-btn" id="sync-btn" onclick="handleSyncClick()" style="width:100%;justify-content:center;padding:12px 16px;font-size:13px">
             <div class="sync-dot" id="sync-dot"></div>
-            <span id="sync-label">Connect Google</span>
+            <span id="sync-label">Sync Calendar</span>
           </button>
         </div>
 
@@ -2549,19 +2533,18 @@ function injectWeatherStrip(ww){
 }
 
 // ─── GOOGLE CALENDAR SYNC ───────────────────────────────────────────────────
+// Uses a read-only API key from config.js — no OAuth, no popups, works everywhere
+// config.js must set: window.GCAL_API_KEY = 'your-key'
+//                     window.GCAL_CALENDAR_ID = 'your-email@gmail.com' (optional, defaults to primary)
 
-// Client ID loaded from config.js (window.GCAL_CLIENT_ID) — never hardcode here
-const GCAL_CLIENT_ID = window.GCAL_CLIENT_ID || '';
-
-const GCAL_SCOPES = 'https://www.googleapis.com/auth/calendar.readonly';
-const GCAL_API    = 'https://www.googleapis.com/calendar/v3';
+const GCAL_API_KEY     = window.GCAL_API_KEY     || '';
+const GCAL_CALENDAR_ID = window.GCAL_CALENDAR_ID || 'primary';
+const GCAL_API         = 'https://www.googleapis.com/calendar/v3';
 
 // Tag → member mapping for bracket tags like [Collin], [Ava], [Amanda], [All]
-// Edit these to match your family members' real first names
 function buildTagMap(){
   const map = {};
   members.forEach(m=>{ map[m.name.toLowerCase()] = [m.name]; });
-  // First-name → member mappings — customise to match your family
   map['collin']  = ['Collin'];
   map['colin']   = ['Collin'];
   map['ava']     = ['Ava'];
@@ -2580,8 +2563,7 @@ function parseGcalWho(title, desc){
     const key = match[1].toLowerCase().trim();
     if(tagMap[key]) return tagMap[key];
   }
-  // No tag — default to first member (you, the calendar owner)
-  return [members[0]?.name || 'Dad'];
+  return [members[0]?.name || 'Mom'];
 }
 
 function cleanGcalTitle(title){
@@ -2594,7 +2576,6 @@ function gcalToLocal(gev){
   let date, endDate, time, end;
   if(isAllDay){
     date = gev.start.date;
-    // Google all-day end is exclusive — subtract one day
     const ed = new Date(gev.end.date+'T12:00:00');
     ed.setDate(ed.getDate()-1);
     endDate = fmt(ed);
@@ -2618,9 +2599,7 @@ function gcalToLocal(gev){
   };
 }
 
-let gcalToken     = null;
 let gcalAutoTimer = null;
-let gcalClient    = null;
 
 function syncStatusSet(state, label){
   const dot = document.getElementById('sync-dot');
@@ -2629,66 +2608,59 @@ function syncStatusSet(state, label){
   if(lbl) lbl.textContent = label;
 }
 
-function gcalInit(){
-  if(!GCAL_CLIENT_ID){ syncStatusSet('','Add Client ID'); return; }
-  if(!window.google?.accounts?.oauth2) return;
-  gcalClient = google.accounts.oauth2.initTokenClient({
-    client_id : GCAL_CLIENT_ID,
-    scope     : GCAL_SCOPES,
-    callback  : (resp) => {
-      if(resp.error){ syncStatusSet('error','Auth failed'); return; }
-      gcalToken = resp.access_token;
-      gcalFetch();
-    },
-  });
-  syncStatusSet('','Connect Google');
-}
-
 function handleSyncClick(){
-  if(!GCAL_CLIENT_ID){
-    alert('Open the app code and paste your Google OAuth Client ID into the GCAL_CLIENT_ID variable near the bottom of the script.');
+  if(!GCAL_API_KEY){
+    alert('Add your Google Calendar API key to config.js as:\nwindow.GCAL_API_KEY = "your-key-here";\n\nAlso make sure your calendar is set to public in Google Calendar settings.');
     return;
   }
-  if(gcalToken){ gcalFetch(); return; }
-  if(!gcalClient) gcalInit();
-  if(gcalClient) gcalClient.requestAccessToken({ prompt:'consent' });
+  gcalFetch();
 }
 
 async function gcalFetch(){
-  if(!gcalToken) return;
+  if(!GCAL_API_KEY){ syncStatusSet('','Add API Key'); return; }
   syncStatusSet('syncing','Syncing…');
+  dbg && dbg('gcalFetch: starting fetch');
   try {
     const now  = new Date();
     const tMin = new Date(now); tMin.setMonth(tMin.getMonth()-1); tMin.setDate(1);
     const tMax = new Date(now); tMax.setMonth(tMax.getMonth()+3); tMax.setDate(0);
     const p = new URLSearchParams({
+      key          : GCAL_API_KEY,
       timeMin      : tMin.toISOString(),
       timeMax      : tMax.toISOString(),
       maxResults   : '500',
       singleEvents : 'true',
       orderBy      : 'startTime',
     });
-    const r = await fetch(`${GCAL_API}/calendars/primary/events?${p}`,
-      { headers: { Authorization: `Bearer ${gcalToken}` } });
-    if(r.status===401){ gcalToken=null; syncStatusSet('','Connect Google'); return; }
-    if(!r.ok) throw new Error('HTTP '+r.status);
+    const calId = encodeURIComponent(GCAL_CALENDAR_ID);
+    const url = `${GCAL_API}/calendars/${calId}/events?${p}`;
+    dbg && dbg('gcalFetch: fetching ' + url.slice(0,80)+'…');
+    const r = await fetch(url);
+    dbg && dbg('gcalFetch: HTTP ' + r.status);
+    if(!r.ok){
+      const errBody = await r.text();
+      dbg && dbg('gcalFetch error body: ' + errBody.slice(0,120));
+      throw new Error('HTTP '+r.status);
+    }
     const data = await r.json();
-    // Remove old synced events, keep manual ones
+    dbg && dbg('gcalFetch: got ' + (data.items||[]).length + ' events');
     evs = evs.filter(e=>!e.fromGcal);
     (data.items||[]).filter(e=>e.status!=='cancelled').forEach(e=>evs.push(gcalToLocal(e)));
     const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     syncStatusSet('connected','Synced '+t);
     render();
-    // Auto-refresh every 15 min
     clearTimeout(gcalAutoTimer);
     gcalAutoTimer = setTimeout(gcalFetch, 15*60*1000);
   } catch(err){
     syncStatusSet('error','Sync failed');
+    dbg && dbg('gcalFetch FAILED: ' + err.message);
     console.error('GCal error:', err);
   }
 }
 
-// GIS initialised via script onload callback above
+// Auto-sync on load if key is present
+if(GCAL_API_KEY) gcalFetch();
+
 // ─── END GOOGLE CALENDAR SYNC ───────────────────────────────────────────────
 
 // ─── GCAL DEBUG OVERLAY ─────────────────────────────────────────────────────
@@ -2720,17 +2692,13 @@ function dbg(msg){
   dbg('Debug panel ready — tap to clear');
 })();
 
-// Show panel when Connect Google is tapped
+// Show panel when Sync is tapped
 const _origHandleSyncClick = handleSyncClick;
 handleSyncClick = function(){
   document.getElementById('_dbg').style.display = 'block';
   dbg('handleSyncClick fired');
-  dbg('GCAL_CLIENT_ID: ' + (GCAL_CLIENT_ID ? GCAL_CLIENT_ID.slice(0,20)+'…' : 'MISSING'));
-  dbg('gcalToken: ' + (gcalToken ? 'present' : 'null'));
-  dbg('gcalClient: ' + (gcalClient ? 'present' : 'null'));
-  dbg('window.google: ' + (window.google ? 'present' : 'MISSING'));
-  dbg('google.accounts: ' + (window.google?.accounts ? 'present' : 'MISSING'));
-  dbg('google.accounts.oauth2: ' + (window.google?.accounts?.oauth2 ? 'present' : 'MISSING'));
+  dbg('GCAL_API_KEY: ' + (GCAL_API_KEY ? GCAL_API_KEY.slice(0,12)+'…' : 'MISSING'));
+  dbg('GCAL_CALENDAR_ID: ' + GCAL_CALENDAR_ID);
   try {
     _origHandleSyncClick();
     dbg('handleSyncClick completed without throw');
@@ -2740,23 +2708,10 @@ handleSyncClick = function(){
   }
 };
 
-// Patch gcalInit to log each step
-const _origGcalInit = gcalInit;
-gcalInit = function(){
-  dbg('gcalInit called');
-  dbg('GIS lib: ' + (window.google?.accounts?.oauth2 ? 'loaded' : 'NOT LOADED'));
-  try {
-    _origGcalInit();
-    dbg('gcalInit done — gcalClient: ' + (gcalClient ? 'set' : 'null'));
-  } catch(e) {
-    dbg('gcalInit ERROR: ' + e.message);
-  }
-};
-
 // Log load state
 window.addEventListener('load', () => {
   dbg('window.load fired');
-  dbg('google on load: ' + (window.google?.accounts?.oauth2 ? 'ready' : 'not yet loaded'));
+  dbg('API key present: ' + (GCAL_API_KEY ? 'yes' : 'NO — check config.js'));
 });
 
 // Log any unhandled errors
