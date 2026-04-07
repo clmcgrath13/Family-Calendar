@@ -1,1 +1,3 @@
-window.GCAL_CLIENT_ID = '697995087846-jb5286il5gl9c0osnvgbtjheu3u844ne.apps.googleusercontent.com';
+window.GCAL_CLIENT_ID = '';
+window.GCAL_API_KEY = 'AIzaSyAPN3xD3OcNnkRa0pPm7PS7aHvPydPzMDg';
+window.GCAL_CALENDAR_ID = 'clmcgrath13@gmail.com'; // or leave out for primary
