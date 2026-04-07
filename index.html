@@ -6,7 +6,23 @@
 <title>Family Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="config.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script>
+// Load Google Identity Services dynamically so we can detect load/error
+(function(){
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.async = true;
+  s.defer = true;
+  s.onload = function(){
+    if(typeof dbg === 'function') dbg('GIS script: LOADED ✓');
+    if(typeof gcalInit === 'function') gcalInit();
+  };
+  s.onerror = function(e){
+    if(typeof dbg === 'function') dbg('GIS script: FAILED TO LOAD ✗ — Fully Kiosk may be blocking accounts.google.com');
+  };
+  document.head.appendChild(s);
+})();
+</script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -2672,12 +2688,7 @@ async function gcalFetch(){
   }
 }
 
-// Wait for GIS library to load then initialise
-(function waitForGIS(){
-  if(window.google?.accounts?.oauth2) gcalInit();
-  else setTimeout(waitForGIS, 300);
-})();
-
+// GIS initialised via script onload callback above
 // ─── END GOOGLE CALENDAR SYNC ───────────────────────────────────────────────
 
 // ─── GCAL DEBUG OVERLAY ─────────────────────────────────────────────────────
@@ -2742,10 +2753,10 @@ gcalInit = function(){
   }
 };
 
-// Patch waitForGIS to log
+// Log load state
 window.addEventListener('load', () => {
   dbg('window.load fired');
-  dbg('google on load: ' + (window.google?.accounts?.oauth2 ? 'ready' : 'not ready'));
+  dbg('google on load: ' + (window.google?.accounts?.oauth2 ? 'ready' : 'not yet loaded'));
 });
 
 // Log any unhandled errors
