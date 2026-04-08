@@ -925,7 +925,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.0</div>
+  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.1</div>
 </nav>
 
 <div class="main">
@@ -2868,15 +2868,17 @@ setTimeout(()=>{
 }, 150);
 
 // Load tasks — wait up to 5s for config.js to set the token (Apps Script can be slow)
-(function waitForConfig(attempts){
+// Load tasks — poll until config.js token is available, then load
+// Apps Script can take 2-5s; we retry every 500ms indefinitely until found
+(function pollForToken(){
   if(window.GITHUB_TOKEN){
+    console.log('[tasks] token found, loading tasks…');
     ghLoadTasks();
-  } else if(attempts > 0){
-    setTimeout(() => waitForConfig(attempts - 1), 200);
   } else {
-    console.warn('GitHub token not found after waiting — tasks will not sync');
+    console.log('[tasks] waiting for token…');
+    setTimeout(pollForToken, 500);
   }
-})(25); // 25 × 200ms = 5 seconds max wait
+})();
 
 // Auto-fetch weather on load so header shows current temp immediately
 fetchWeather(fmt(T)).then(() => updateNowBar());
