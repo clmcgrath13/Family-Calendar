@@ -1375,7 +1375,7 @@ function utb(){
   if(listLeft)  listLeft.style.display  = inLists  ? 'flex'   : 'none';
   if(navCtrl)   navCtrl.style.display   = (!inLists && !inSettings) ? 'flex' : 'none';
   if(vdropWrap) vdropWrap.style.display = (appV==='calendar') ? 'flex' : 'none';
-  if(syncEl)    syncEl.style.display    = inTasks  ? 'inline' : 'none';
+  if(syncEl)    syncEl.style.display    = (inTasks || syncEl.textContent) ? 'inline' : 'none';
 
   if(wxBtn){
     wxBtn.style.display    = showWx ? 'flex' : 'none';
@@ -3524,13 +3524,16 @@ async function ghTestConnection(){
 // Load tasks from GitHub on startup
 async function ghLoadTasks(){
   if(!GH_TOKEN || !GH_OWNER || !GH_REPO){ return; }
-  ghStatusSet('', 'Loading…');
+  ghStatusSet('saving', 'Loading tasks…');
   try {
-    const r = await fetch(GH_API, {
-      headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github+json' }
+    const r = await fetch(GH_API + '?t=' + Date.now(), {
+      headers: {
+        Authorization: `token ${GH_TOKEN}`,
+        Accept: 'application/vnd.github+json',
+        'Cache-Control': 'no-cache',
+      }
     });
     if(r.status === 404){
-      // File doesn't exist yet — create it with current tasks
       ghStatusSet('', 'Creating tasks.json…');
       await ghSaveNow();
       return;
@@ -3547,7 +3550,7 @@ async function ghLoadTasks(){
     setTimeout(() => ghStatusSet('', ''), 2000);
   } catch(e) {
     console.error('GitHub load failed:', e);
-    ghStatusSet('error', 'Load failed');
+    ghStatusSet('error', 'Load failed: '+e.message);
   }
 }
 
