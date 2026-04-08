@@ -66,55 +66,16 @@
     ]
   },
   {
-    "id": 1775676973739,
-    "title": "Clean Exhaust Fan",
+    "id": 1775688679226,
+    "title": "Empty dads car",
     "done": false,
-    "date": "",
+    "date": "2026-04-08",
     "recur": "",
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "",
     "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775677007412,
-    "title": "Rotate Couch Cushions",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775677025449,
-    "title": "Fix the fence so Zorro doesnt escape",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775677045058,
-    "title": "Clean Bathroom Light",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
+      "Collin"
     ]
   }
 ]
