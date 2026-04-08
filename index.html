@@ -3453,6 +3453,7 @@ const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/$
 
 let _ghSha       = null;  // current file SHA — required for updates
 let _ghSaveTimer = null;  // debounce timer
+let _tasksLoaded = false; // true once tasks have been loaded from GitHub
 
 function ghStatusSet(state, msg){
   const el = document.getElementById('gh-sync-status');
@@ -3544,6 +3545,7 @@ async function ghLoadTasks(){
     const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
     if(Array.isArray(loaded)){
       tasks = loaded;
+      _tasksLoaded = true;
       render();
     }
     ghStatusSet('saved', 'Synced');
@@ -3598,13 +3600,15 @@ async function ghSaveNow(){
 
 // Debounced save — waits 1.5s after last change before writing
 function ghScheduleSave(){
+  if(!_tasksLoaded) return; // don't save until we've loaded from GitHub
   clearTimeout(_ghSaveTimer);
   _ghSaveTimer = setTimeout(ghSaveNow, 800);
 }
 
-// Flush any pending save immediately if user closes/refreshes the page
+// Flush any pending save on refresh — but ONLY if tasks were loaded from GitHub first
+// (prevents overwriting tasks.json with [] if page is refreshed before load completes)
 window.addEventListener('beforeunload', () => {
-  if(_ghSaveTimer){
+  if(_ghSaveTimer && _tasksLoaded){
     clearTimeout(_ghSaveTimer);
     ghSaveNow();
   }
