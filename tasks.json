@@ -90,5 +90,19 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775667552651,
+    "title": "Review Finances",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad",
+      "Mom"
+    ]
   }
 ]
