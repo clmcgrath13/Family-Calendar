@@ -2866,8 +2866,16 @@ setTimeout(()=>{
   if(calV !== 'month' && calV !== 'agenda') scrollToNow();
 }, 150);
 
-// Load tasks from GitHub if token is configured
-if(window.GITHUB_TOKEN) ghLoadTasks();
+// Load tasks — wait up to 5s for config.js to set the token (Apps Script can be slow)
+(function waitForConfig(attempts){
+  if(window.GITHUB_TOKEN){
+    ghLoadTasks();
+  } else if(attempts > 0){
+    setTimeout(() => waitForConfig(attempts - 1), 200);
+  } else {
+    console.warn('GitHub token not found after waiting — tasks will not sync');
+  }
+})(25); // 25 × 200ms = 5 seconds max wait
 
 // Auto-fetch weather on load so header shows current temp immediately
 fetchWeather(fmt(T)).then(() => updateNowBar());
@@ -3439,17 +3447,13 @@ if(GCAL_API_KEY) gcalFetch();
 // ─── END GOOGLE CALENDAR SYNC ───────────────────────────────────────────────
 
 // ─── GITHUB TASKS STORAGE ───────────────────────────────────────────────────
-// Reads/writes tasks.json in your GitHub repo via the Contents API.
-// Requires in config.js:
-//   window.GITHUB_TOKEN = 'github_pat_...';
-//   window.GITHUB_OWNER = 'clmcgrath13';
-//   window.GITHUB_REPO  = 'family-calendar';
-
-const GH_TOKEN = window.GITHUB_TOKEN || '';
-const GH_OWNER = window.GITHUB_OWNER || '';
-const GH_REPO  = window.GITHUB_REPO  || '';
-const GH_FILE  = 'tasks.json';
-const GH_API   = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_FILE}`;
+// Read credentials from window at call time (not at parse time)
+// so they work even if config.js loads slowly
+const GH_FILE = 'tasks.json';
+function ghToken() { return window.GITHUB_TOKEN || ''; }
+function ghOwner() { return window.GITHUB_OWNER || ''; }
+function ghRepo()  { return window.GITHUB_REPO  || ''; }
+function ghApi()   { return `https://api.github.com/repos/${ghOwner()}/${ghRepo()}/contents/${GH_FILE}`; }
 
 let _ghSha       = null;  // current file SHA — required for updates
 let _ghSaveTimer = null;  // debounce timer
@@ -3471,13 +3475,13 @@ async function ghTestConnection(){
   el.style.color = 'var(--muted)';
   el.textContent = 'Testing…';
 
-  if(!GH_TOKEN){ el.style.color='#e05b30'; el.textContent='❌ No token set in config.js'; return; }
-  if(!GH_OWNER || !GH_REPO){ el.style.color='#e05b30'; el.textContent='❌ GITHUB_OWNER or GITHUB_REPO not set'; return; }
+  if(!ghToken()){ el.style.color='#e05b30'; el.textContent='❌ No token set in config.js'; return; }
+  if(!ghOwner() || !ghRepo()){ el.style.color='#e05b30'; el.textContent='❌ GITHUB_OWNER or GITHUB_REPO not set'; return; }
 
   try {
     // Step 1: test auth against the user endpoint
     const authR = await fetch('https://api.github.com/user', {
-      headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github+json' }
+      headers: { Authorization: `token ${ghToken()}`, Accept: 'application/vnd.github+json' }
     });
     if(!authR.ok){
       const e = await authR.json().catch(()=>({}));
@@ -3488,8 +3492,8 @@ async function ghTestConnection(){
     const user = await authR.json();
 
     // Step 2: test repo access
-    const repoR = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}`, {
-      headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github+json' }
+    const repoR = await fetch(`https://api.github.com/repos/${ghOwner()}/${ghRepo()}`, {
+      headers: { Authorization: `token ${ghToken()}`, Accept: 'application/vnd.github+json' }
     });
     if(!repoR.ok){
       const e = await repoR.json().catch(()=>({}));
@@ -3499,8 +3503,8 @@ async function ghTestConnection(){
     }
 
     // Step 3: test file access
-    const fileR = await fetch(GH_API, {
-      headers: { Authorization: `token ${GH_TOKEN}`, Accept: 'application/vnd.github+json' }
+    const fileR = await fetch(ghApi(), {
+      headers: { Authorization: `token ${ghToken()}`, Accept: 'application/vnd.github+json' }
     });
     if(fileR.status === 404){
       el.style.color = '#c87d12';
@@ -3524,12 +3528,12 @@ async function ghTestConnection(){
 
 // Load tasks from GitHub on startup
 async function ghLoadTasks(){
-  if(!GH_TOKEN || !GH_OWNER || !GH_REPO){ return; }
+  if(!ghToken() || !ghOwner() || !ghRepo()){ return; }
   ghStatusSet('saving', 'Loading tasks…');
   try {
-    const r = await fetch(GH_API + '?t=' + Date.now(), {
+    const r = await fetch(ghApi() + '?t=' + Date.now(), {
       headers: {
-        Authorization: `token ${GH_TOKEN}`,
+        Authorization: `token ${ghToken()}`,
         Accept: 'application/vnd.github+json',
         'Cache-Control': 'no-cache',
       }
@@ -3558,7 +3562,7 @@ async function ghLoadTasks(){
 
 // Save tasks to GitHub (called after every change)
 async function ghSaveNow(){
-  if(!GH_TOKEN || !GH_OWNER || !GH_REPO) return;
+  if(!ghToken() || !ghOwner() || !ghRepo()) return;
   ghStatusSet('saving', 'Saving…');
   try {
     const content = btoa(unescape(encodeURIComponent(JSON.stringify(tasks, null, 2))));
@@ -3567,10 +3571,10 @@ async function ghSaveNow(){
       content,
       ...(  _ghSha ? { sha: _ghSha } : {} )
     };
-    const r = await fetch(GH_API, {
+    const r = await fetch(ghApi(), {
       method : 'PUT',
       headers: {
-        Authorization : `token ${GH_TOKEN}`,
+        Authorization : `token ${ghToken()}`,
         Accept        : 'application/vnd.github+json',
         'Content-Type': 'application/json',
       },
@@ -3582,7 +3586,7 @@ async function ghSaveNow(){
       // SHA conflict — re-fetch and retry once
       if(r.status === 409 || r.status === 422){
         ghStatusSet('saving', 'Conflict — retrying…');
-        const rGet = await fetch(GH_API, { headers:{ Authorization:`token ${GH_TOKEN}`, Accept:'application/vnd.github+json' } });
+        const rGet = await fetch(ghApi(), { headers:{ Authorization:`token ${ghToken()}`, Accept:'application/vnd.github+json' } });
         if(rGet.ok){ const d = await rGet.json(); _ghSha = d.sha; }
         return ghSaveNow();
       }
