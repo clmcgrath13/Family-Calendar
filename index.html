@@ -925,7 +925,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.1</div>
+  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.2</div>
 </nav>
 
 <div class="main">
@@ -3452,11 +3452,10 @@ if(GCAL_API_KEY) gcalFetch();
 // ─── GITHUB TASKS STORAGE ───────────────────────────────────────────────────
 // Read credentials from window at call time (not at parse time)
 // so they work even if config.js loads slowly
-const GH_FILE = 'tasks.json';
 function ghToken() { return window.GITHUB_TOKEN || ''; }
 function ghOwner() { return window.GITHUB_OWNER || ''; }
 function ghRepo()  { return window.GITHUB_REPO  || ''; }
-function ghApi()   { return `https://api.github.com/repos/${ghOwner()}/${ghRepo()}/contents/${GH_FILE}`; }
+function ghApi()   { return `https://api.github.com/repos/${ghOwner()}/${ghRepo()}/contents/tasks.json`; }
 
 let _ghSha       = null;  // current file SHA — required for updates
 let _ghSaveTimer = null;  // debounce timer
