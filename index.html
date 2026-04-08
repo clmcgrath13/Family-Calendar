@@ -3535,7 +3535,6 @@ async function ghLoadTasks(){
       headers: {
         Authorization: `token ${ghToken()}`,
         Accept: 'application/vnd.github+json',
-        'Cache-Control': 'no-cache',
       }
     });
     if(r.status === 404){
