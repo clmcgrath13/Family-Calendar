@@ -99,7 +99,7 @@ body {
 .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
 
 .topbar {
-  height: 80px;
+  height: 72px;
   background: var(--header-bg);
   border-bottom: 1px solid var(--border);
   display: flex; align-items: center;
@@ -350,25 +350,6 @@ body {
 
 /* TASKS */
 .taskwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
-.task-topbar {
-  display:flex; align-items:center; gap:10px;
-  padding:7px 10px; background:var(--header-bg);
-  border-bottom:1px solid var(--border); flex-shrink:0;
-}
-.task-date-lbl { font-size:15px; font-weight:600; min-width:160px; text-align:center; }
-.task-arr {
-  width:38px; height:38px; border-radius:9px;
-  border:1px solid var(--border); background:var(--bg);
-  cursor:pointer; display:flex; align-items:center; justify-content:center;
-  font-size:14px; color:var(--text); transition:background 0.11s; flex-shrink:0;
-}
-.task-arr:hover { background:var(--sidebar-bg); }
-.task-today-btn {
-  padding:0 14px; height:38px; border-radius:9px;
-  border:1px solid var(--border); background:var(--bg);
-  font-size:12px; font-weight:500; cursor:pointer;
-  color:var(--text); font-family:var(--font); white-space:nowrap;
-}
 .task-cols {
   flex:1; display:flex; overflow-x:auto; overflow-y:hidden;
   gap:8px; padding:8px;
@@ -898,9 +879,21 @@ body {
 
 <div class="main">
   <div class="topbar">
-    <div class="tb-left">
-      <div class="tb-title" id="tb-title">March 2026</div>
-      <div class="tb-season" id="tb-season"><span class="tb-season-icon" id="tb-sicon"></span><span id="tb-slabel"></span></div>
+    <!-- Now bar: day · date on top, time · weather · season below -->
+    <div id="tb-now-bar" style="display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap">
+      <div id="tb-now-date" style="font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;line-height:1;color:var(--text)"></div>
+      <div id="tb-now-time" style="font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text)"></div>
+      <div id="tb-now-wx" style="display:flex;align-items:center;gap:4px;font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text)"></div>
+      <div id="tb-now-season" style="font-size:20px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--muted)"></div>
+    </div>
+    <!-- List picker on the LEFT -->
+    <div id="tb-left-lists" style="display:none;align-items:center;position:relative">
+      <button onclick="event.stopPropagation();toggleLDrop()" style="padding:4px 6px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">
+        <span id="tb-list-icon"></span>
+        <span id="tb-list-name"></span>
+        <span id="tb-list-chevron" style="font-size:13px;color:var(--muted);font-family:var(--font);display:inline-block;transition:transform 0.2s">▾</span>
+      </button>
+      <div class="ldrop" id="ldrop" onclick="event.stopPropagation()" style="top:calc(100% + 4px);left:0"></div>
     </div>
     <div class="tb-space"></div>
     <button class="today-btn" id="wx-btn" onclick="toggleWeather()"
@@ -908,27 +901,34 @@ body {
       title="Toggle weather">
       <span style="font-size:16px;line-height:1">⛅</span> Weather
     </button>
-    <div class="vdrop-wrap" id="vdrop-wrap">
-      <button class="vdrop-btn" id="vdrop-btn" onclick="toggleViewDrop()">
-        <span id="vdrop-label">3 Day</span>
-        <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <div class="vdrop-menu" id="vdrop-menu">
-        <div class="vdrop-item" onclick="pickView('month')">Month</div>
-        <div class="vdrop-item" onclick="pickView('week')">Week</div>
-        <div class="vdrop-item" onclick="pickView('workweek')">5 Day</div>
-        <div class="vdrop-item active" onclick="pickView('threeday')">3 Day</div>
-        <div class="vdrop-item" onclick="pickView('day')">Day</div>
-        <div class="vdrop-item" onclick="pickView('agenda')">Agenda</div>
+    <!-- Unified nav controls: view picker (cal only) + ← → Today (always) -->
+    <div id="tb-nav-controls" style="display:flex;align-items:center;gap:6px;width:294px;justify-content:flex-end">
+      <!-- View picker: calendar only -->
+      <div class="vdrop-wrap" id="vdrop-wrap" style="display:flex">
+        <button class="vdrop-btn" id="vdrop-btn" onclick="toggleViewDrop()">
+          <span id="vdrop-label">3 Day</span>
+          <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="vdrop-menu" id="vdrop-menu">
+          <div class="vdrop-item" onclick="pickView('month')">Month</div>
+          <div class="vdrop-item" onclick="pickView('week')">Week</div>
+          <div class="vdrop-item" onclick="pickView('workweek')">5 Day</div>
+          <div class="vdrop-item active" onclick="pickView('threeday')">3 Day</div>
+          <div class="vdrop-item" onclick="pickView('day')">Day</div>
+          <div class="vdrop-item" onclick="pickView('agenda')">Agenda</div>
+        </div>
       </div>
+      <!-- Arrows: wired to whichever view is active -->
+      <button class="arr-btn" id="nav-prev" onclick="navPrev()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="arr-btn" id="nav-next" onclick="navNext()">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="today-btn" onclick="navToday()">Today</button>
     </div>
-    <button class="arr-btn" onclick="navP()">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="arr-btn" onclick="navN()">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </button>
-    <button class="today-btn" onclick="gotoday()">Today</button>
+    <!-- Sync status -->
+    <span id="gh-sync-status" style="display:none;font-size:10px;font-weight:600;color:var(--muted);margin-left:4px"></span>
   </div>
   <div class="content" id="content"></div>
 </div>
@@ -1284,6 +1284,11 @@ function scv(v){
   render();
 }
 
+// Unified nav — arrows and Today button call these regardless of view
+function navPrev()  { appV==='tasks' ? taskNav(-1)    : navP();    }
+function navNext()  { appV==='tasks' ? taskNav(1)     : navN();    }
+function navToday() { appV==='tasks' ? taskGoToday()  : gotoday(); }
+
 function navP(){
   if(appV==='calendar'){
     if(calV==='month'||calV==='agenda') cur.setMonth(cur.getMonth()-1);
@@ -1317,29 +1322,124 @@ function getSeason(mo, day){
 }
 
 function utb(){
-  const el=document.getElementById('tb-title');
-  const sEl=document.getElementById('tb-slabel');
-  const sIcon=document.getElementById('tb-sicon');
-  const sRow=document.getElementById('tb-season');
-  // Season is always based on current real month for the display month
-  const displayMo = (appV==='calendar') ? cur.getMonth() : cur.getMonth();
-  const season = getSeason(displayMo, cur.getDate());
-  if(sEl){ sEl.textContent=season.name; sEl.style.color=season.color; }
-  if(sIcon){ sIcon.textContent=season.icon; }
-  if(sRow){ sRow.style.color=season.color; }
+  const taskLeft   = null;
+  const listLeft  = document.getElementById('tb-left-lists');
+  const nowBar    = document.getElementById('tb-now-bar');
+  const navCtrl   = document.getElementById('tb-nav-controls');
+  const vdropWrap = document.getElementById('vdrop-wrap');
+  const syncEl    = document.getElementById('gh-sync-status');
 
-  // Hide season row for non-calendar views, show simple label instead
-  const showSeason = true;
-  if(appV==='settings'){ el.textContent='Settings'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='⚙️'; return; }
-  if(appV==='tasks'){ el.textContent='Tasks'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='📋'; return; }
-  if(appV==='lists'){ el.textContent='Lists'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='📝'; return; }
-  if(appV==='meals'){ el.textContent='Meal Planner'; if(sEl) sEl.textContent=''; if(sIcon) sIcon.textContent='🍽️'; return; }
-  if(calV==='month'||calV==='agenda'){ el.textContent=MOS[cur.getMonth()]+' '+cur.getFullYear(); return; }
-  if(calV==='day'){ el.textContent=DF[cur.getDay()]+', '+MOS[cur.getMonth()]+' '+cur.getDate(); return; }
-  const s=wstart(cur,calV==='workweek'||calV==='threeday');
-  const e2=new Date(s); e2.setDate(s.getDate()+(calV==='workweek'?4:calV==='threeday'?2:6));
-  el.textContent=MOS[s.getMonth()]+' '+s.getDate()+' – '+MOS[e2.getMonth()]+' '+e2.getDate()+', '+e2.getFullYear();
+  const inTasks   = appV === 'tasks';
+  const inLists   = appV === 'lists';
+  const inSettings= appV === 'settings';
+  const showNow   = !inLists && !inSettings;
+  const showNav   = !inLists && !inSettings;
+
+  if(nowBar)    nowBar.style.display    = showNow ? 'flex'   : 'none';
+  if(listLeft)  listLeft.style.display  = inLists ? 'flex'   : 'none';
+  if(navCtrl)   navCtrl.style.display   = showNav ? 'flex'   : 'none';
+  if(vdropWrap) vdropWrap.style.display = (appV==='calendar') ? 'flex' : 'none';
+  if(syncEl)    syncEl.style.display    = inTasks ? 'inline' : 'none';
+
+  if(showNow) updateNowBar();
+
+  if(inTasks){ return; }
+
+  if(inLists){
+    const fl     = lists[_focusedList] || lists[0];
+    const iconEl = document.getElementById('tb-list-icon');
+    const nameEl = document.getElementById('tb-list-name');
+    const chevEl = document.getElementById('tb-list-chevron');
+    const dropEl = document.getElementById('ldrop');
+    if(iconEl) iconEl.textContent = fl ? fl.icon : '';
+    if(nameEl) nameEl.textContent = fl ? fl.name : '';
+    if(chevEl) chevEl.style.transform = _listDropOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+    if(dropEl){
+      dropEl.className = 'ldrop' + (_listDropOpen ? ' open' : '');
+      dropEl.innerHTML = lists.map((l,i)=>
+        '<div class="ldrop-item'+(i===_focusedList?' active':'')+' " onclick="focusList('+i+')">'
+        +'<span class="ldrop-item-icon">'+l.icon+'</span>'
+        +'<span class="ldrop-item-name">'+l.name+'</span>'
+        +'<button class="ldrop-item-menu" onclick="event.stopPropagation();editListPrompt('+i+')">⋮</button>'
+        +'</div>').join('')
+        +'<div class="ldrop-item" onclick="newListPrompt()" style="color:var(--today-ring)">'
+        +'<span class="ldrop-item-icon">＋</span>'
+        +'<span class="ldrop-item-name" style="color:var(--today-ring);font-weight:600">New List</span>'
+        +'</div>';
+    }
+    return;
+  }
 }
+
+function updateNowBar(){
+  const now    = new Date();
+  const dateEl = document.getElementById('tb-now-date');
+  const timeEl = document.getElementById('tb-now-time');
+  const wxEl   = document.getElementById('tb-now-wx');
+  const sznEl  = document.getElementById('tb-now-season');
+  if(!dateEl || !timeEl || !wxEl) return;
+
+  // When on tasks and not today — show the task date, hide time/weather
+  const onTasksNotToday = appV === 'tasks' && taskDate !== fmt(now);
+  if(onTasksNotToday){
+    const d = new Date(taskDate+'T12:00:00');
+    dateEl.textContent = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+    timeEl.textContent = '';
+    wxEl.innerHTML     = '';
+    if(sznEl){ sznEl.textContent=''; }
+    return;
+  }
+
+  // Default: show current date, time, weather, season
+  dateEl.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  timeEl.textContent = now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
+
+  if(sznEl){
+    const s = getSeason(now.getMonth(), now.getDate());
+    sznEl.textContent = s.name;
+    sznEl.style.color = s.color;
+  }
+
+  const todayStr = fmt(now);
+  const wx = wxCache[todayStr];
+  if(wx){
+    let temp, code;
+    if(wx.hours && wx.hours.length){
+      const nowMins = now.getHours()*60 + now.getMinutes();
+      const closest = wx.hours.reduce((best, h) => {
+        const [hh,mm] = h.time.split(':').map(Number);
+        const diff = Math.abs(hh*60+mm - nowMins);
+        return diff < best.diff ? {h, diff} : best;
+      }, {h: wx.hours[0], diff: Infinity}).h;
+      temp = closest.temp;
+      code = closest.code;
+    } else {
+      temp = wx.hi;
+      code = wx.code;
+    }
+
+    const isNight = (() => {
+      if(wx.sunrise && wx.sunset){
+        const rise = new Date(wx.sunrise).getTime();
+        const set  = new Date(wx.sunset).getTime();
+        return now.getTime() < rise || now.getTime() > set;
+      }
+      return now.getHours() < 6 || now.getHours() >= 20;
+    })();
+
+    const icon = isNight
+      ? (code===0 ? '🌙' : code<=2 ? '🌛' : code<=3 ? '☁️' : '🌑')
+      : wxIcon(code).icon;
+
+    wxEl.innerHTML = '<span style="line-height:1;vertical-align:middle">'+icon+'</span>'
+                   + '<span style="vertical-align:middle"> '+temp+'°</span>';
+  } else {
+    wxEl.innerHTML = '';
+  }
+}
+
+setInterval(() => { if(appV !== 'lists' && appV !== 'settings') updateNowBar(); }, 60000);
+
 
 function wstart(d,ww){
   if(ww) return new Date(d); // 5 Day: start from current day
@@ -1388,7 +1488,7 @@ function render(preserveScroll){
         <div style="flex:1;min-width:0;overflow:hidden;border-right:1px solid var(--border)">${rDay()}</div>
         <div style="flex:1;min-width:0;overflow-y:auto">${rWeatherDay(fmt(cur))}</div>
       </div>`;
-      setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToHour(6); }, 0);
+      setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToNow(); }, 0);
       return;
     }
     // Week/5day/3day: render normal calendar then inject weather strip after
@@ -1399,7 +1499,7 @@ function render(preserveScroll){
       drawNow();
       injectWeatherStrip(wxDays);
       if(saved!==null) document.querySelector('.wbody').scrollTop = saved;
-      else scrollToHour(6);
+      else scrollToNow();
     }, 0);
     return;
   }
@@ -1407,13 +1507,13 @@ function render(preserveScroll){
     const nDays = calV==='threeday'?3:calV==='workweek'?5:7;
     const saved = preserveScroll ? (document.querySelector('.wbody')?.scrollTop ?? null) : null;
     c.innerHTML=rWeek(nDays);
-    setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.wbody').scrollTop=saved) : scrollToHour(6); },0);
+    setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.wbody').scrollTop=saved) : scrollToNow(); },0);
     return;
   }
   if(calV==='day'){
     const saved = preserveScroll ? (document.querySelector('.daybody')?.scrollTop ?? null) : null;
     c.innerHTML=rDay();
-    setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToHour(6); },0);
+    setTimeout(()=>{ drawNow(); saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToNow(); },0);
     return;
   }
   if(calV==='agenda'){ c.innerHTML=rAgenda(); return; }
@@ -1770,24 +1870,18 @@ function rTasks(){
     const myTasks = tasks.filter(t => visibleFor(t, m.name));
     const color   = mColor(m.name);
 
-    const morning = myTasks.filter(t => t.timeOfDay === 'morning');
-    const evening = myTasks.filter(t => t.timeOfDay === 'evening');
-    const anytime = myTasks.filter(t => !t.timeOfDay);
+    const morning   = myTasks.filter(t => t.timeOfDay === 'morning');
+    const afternoon = myTasks.filter(t => t.timeOfDay === 'afternoon');
+    const evening   = myTasks.filter(t => t.timeOfDay === 'evening');
+    const anytime   = myTasks.filter(t => !t.timeOfDay);
 
     const total = myTasks.length;
     const done  = myTasks.filter(t => isDoneOn(t, d)).length;
 
-    const morningSection = morning.length ? `
-      <div class="task-section-lbl">🌅 Morning</div>
-      ${morning.map(t => card(t, color)).join('')}` : '';
-
-    const eveningSection = evening.length ? `
-      <div class="task-section-lbl">🌙 Evening</div>
-      ${evening.map(t => card(t, color)).join('')}` : '';
-
-    const anytimeSection = anytime.length ? `
-      <div class="task-section-lbl">ANY TIME</div>
-      ${anytime.map(t => card(t, color)).join('')}` : '';
+    const morningSection   = morning.length   ? `<div class="task-section-lbl">🌅 Morning</div>${morning.map(t => card(t, color)).join('')}`   : '';
+    const afternoonSection = afternoon.length ? `<div class="task-section-lbl">☀️ Afternoon</div>${afternoon.map(t => card(t, color)).join('')}` : '';
+    const eveningSection   = evening.length   ? `<div class="task-section-lbl">🌙 Evening</div>${evening.map(t => card(t, color)).join('')}`     : '';
+    const anytimeSection   = anytime.length   ? `<div class="task-section-lbl">ANY TIME</div>${anytime.map(t => card(t, color)).join('')}`       : '';
 
     return `<div class="task-col">
       <div class="task-col-hd">
@@ -1801,7 +1895,7 @@ function rTasks(){
         </div>
       </div>
       <div class="task-col-body">
-        ${morningSection}${eveningSection}${anytimeSection}
+        ${morningSection}${afternoonSection}${eveningSection}${anytimeSection}
       </div>
     </div>`;
   }).join('');
@@ -1809,14 +1903,6 @@ function rTasks(){
   const dateLbl = isToday ? `Today, ${dow}` : dow;
 
   return `<div class="taskwrap">
-    <div class="task-topbar">
-      <button class="task-arr" onclick="taskNav(-1)">&#8592;</button>
-      <div class="task-date-lbl">${dateLbl}</div>
-      <button class="task-arr" onclick="taskNav(1)">&#8594;</button>
-      ${!isToday?`<button class="task-today-btn" onclick="taskGoToday()">Jump to Today</button>`:''}
-      <div style="flex:1"></div>
-      <span id="gh-sync-status" style="font-size:10px;font-weight:600;color:var(--muted)"></span>
-    </div>
     <div class="task-cols">${cols}</div>
   </div>`;
 }
@@ -1878,7 +1964,7 @@ function toggleT(id){
     whoArr(t).forEach(who => {
       const sectionTasks = tasks.filter(tk => isVisible(tk, who) && (tk.timeOfDay||'anytime') === section);
       if(sectionTasks.length > 0 && sectionTasks.every(tk => taskDone(tk))){
-        const label = section==='morning' ? '🌅 Morning' : section==='evening' ? '🌙 Evening' : '';
+        const label = section==='morning' ? '🌅 Morning' : section==='afternoon' ? '☀️ Afternoon' : section==='evening' ? '🌙 Evening' : '';
         showTaskCongrats(who, label);
       }
     });
@@ -1948,17 +2034,6 @@ function rLists(){
     </div>`).join('');
 
   return `<div class="listwrap" onclick="closeLDrop(event)">
-    <div class="lhdr">
-      <button class="lhdr-btn" onclick="event.stopPropagation();toggleLDrop()">
-        <span class="lhdr-icon">${fl.icon}</span>
-        <span class="lhdr-name">${fl.name}</span>
-        <span class="lhdr-chevron${_listDropOpen?' open':''}">▾</span>
-      </button>
-      <span class="lhdr-ct">${rem} left</span>
-      <div class="ldrop${_listDropOpen?' open':''}" id="ldrop" onclick="event.stopPropagation()">
-        ${dropItems}
-      </div>
-    </div>
     <div class="lbody">${items}</div>
   </div>`;
 }
@@ -2118,10 +2193,16 @@ function rMeals(){
 function scrollToHour(h){
   const body = document.querySelector('.wbody') || document.querySelector('.daybody');
   if(!body) return;
-  // Center current time in viewport — scroll so the given hour is ~1/3 from top
   const viewH = body.clientHeight || 400;
-  const targetTop = h * 104 - Math.round(viewH / 3);
-  body.scrollTop = Math.max(0, targetTop);
+  body.scrollTop = Math.max(0, h * 104 - Math.round(viewH / 3));
+}
+
+function scrollToNow(){
+  const body = document.querySelector('.wbody') || document.querySelector('.daybody');
+  if(!body) return;
+  const nowH    = new Date().getHours() + new Date().getMinutes()/60;
+  const targetH = Math.min(nowH, 21.5);
+  body.scrollTop = Math.max(0, targetH * 104 - body.clientHeight / 2);
 }
 
 function drawNow(){
@@ -2445,6 +2526,7 @@ function _taskModalHtml(t){
       <select class="fin" id="ttod">
         <option value=""${(!isEdit||!t.timeOfDay)?' selected':''}>Any time</option>
         <option value="morning"${(isEdit&&t.timeOfDay==='morning')?' selected':''}>🌅 Morning</option>
+        <option value="afternoon"${(isEdit&&t.timeOfDay==='afternoon')?' selected':''}>☀️ Afternoon</option>
         <option value="evening"${(isEdit&&t.timeOfDay==='evening')?' selected':''}>🌙 Evening</option>
       </select>
     </div>
@@ -2482,11 +2564,11 @@ function _taskModalHtml(t){
       <div id="t-interval-row" class="fld" style="${recurVal==='weekly'||recurVal==='monthly'||recurVal==='yearly'||recurVal==='custom'?'':'display:none'}">
         <label class="flbl">Every</label>
         <div style="display:flex;align-items:center;gap:8px">
-          <button type="button" class="task-arr" style="width:34px;height:34px"
+          <button type="button" class="arr-btn" style="width:34px;height:34px"
             onclick="const el=document.getElementById('t-interval');el.value=Math.max(1,parseInt(el.value)-1)">−</button>
           <input class="fin" id="t-interval" type="number" min="1" max="99" value="${recurN}"
             style="width:60px;text-align:center">
-          <button type="button" class="task-arr" style="width:34px;height:34px"
+          <button type="button" class="arr-btn" style="width:34px;height:34px"
             onclick="const el=document.getElementById('t-interval');el.value=Math.min(99,parseInt(el.value)+1)">+</button>
           <span id="t-interval-unit" style="font-size:13px;color:var(--muted)">${recurVal==='daily'?'day(s)':recurVal==='weekly'||recurVal==='custom'?'week(s)':recurVal==='monthly'?'month(s)':'year(s)'}</span>
         </div>
@@ -2701,16 +2783,8 @@ rebuildFullSidebarDots();
 
 // On load, center the time-grid on current time for week/5day/3day/day views
 setTimeout(()=>{
-  if(calV !== 'month' && calV !== 'agenda'){
-    const body = document.querySelector('.wbody') || document.querySelector('.daybody');
-    if(body){
-      const SLOT_H  = 104;
-      const nowH    = new Date().getHours() + new Date().getMinutes()/60;
-      const targetH = Math.min(nowH, 21.5);
-      body.scrollTop = Math.max(0, targetH * SLOT_H - body.clientHeight / 2);
-    }
-  }
-}, 50);
+  if(calV !== 'month' && calV !== 'agenda') scrollToNow();
+}, 150);
 
 // Load tasks from GitHub if token is configured
 if(window.GITHUB_TOKEN) ghLoadTasks();
@@ -2751,7 +2825,7 @@ async function fetchWeather(dateStr){
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${WX_LAT}&longitude=${WX_LON}`
       + `&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m,relativehumidity_2m`
-      + `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_probability_max`
+      + `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_probability_max,sunrise,sunset`
       + `&temperature_unit=fahrenheit&windspeed_unit=mph`
       + `&timezone=America%2FNew_York&forecast_days=14`;
     const resp = await fetch(url);
@@ -2767,6 +2841,8 @@ async function fetchWeather(dateStr){
         lo      : Math.round(data.daily.temperature_2m_min[di]),
         code    : data.daily.weathercode[di],
         precip  : data.daily.precipitation_probability_max[di],
+        sunrise : data.daily.sunrise?.[di] || null,
+        sunset  : data.daily.sunset?.[di]  || null,
         hours   : hourIdxs.map(i => ({
           time    : data.hourly.time[i].slice(11,16),
           temp    : Math.round(data.hourly.temperature_2m[i]),
@@ -2777,6 +2853,7 @@ async function fetchWeather(dateStr){
         })),
       };
     });
+    updateNowBar(); // refresh header weather display now that cache is populated
     return wxCache[dateStr] || null;
   } catch(e) {
     console.error('Weather fetch failed:', e);
