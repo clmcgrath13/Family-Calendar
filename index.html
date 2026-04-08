@@ -592,6 +592,56 @@ body {
 .fab:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(44,107,237,.52); }
 .fab:active { transform: scale(0.96); }
 
+/* DAY PEEK (month-view day popup) */
+.day-peek-overlay {
+  position:fixed; inset:0; z-index:550;
+  background:rgba(0,0,0,0.18);
+  display:flex; align-items:center; justify-content:center;
+}
+.day-peek {
+  background:var(--bg); border-radius:16px;
+  width:320px; max-width:88vw; max-height:70vh;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  display:flex; flex-direction:column; overflow:hidden;
+  animation:peekIn 0.15s ease;
+}
+@keyframes peekIn {
+  from { transform:scale(0.94) translateY(6px); opacity:0; }
+  to   { transform:none; opacity:1; }
+}
+.day-peek-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:14px 16px 10px; border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.day-peek-title {
+  font-size:16px; font-weight:600; cursor:pointer; color:var(--today-ring);
+  text-decoration:none;
+}
+.day-peek-title:hover { text-decoration:underline; }
+.day-peek-close {
+  width:28px; height:28px; border-radius:7px; border:none;
+  background:var(--sidebar-bg); cursor:pointer; font-size:14px;
+  color:var(--muted); display:flex; align-items:center; justify-content:center;
+}
+.day-peek-body { overflow-y:auto; padding:8px 0; flex:1; }
+.day-peek-empty {
+  padding:24px 16px; text-align:center; color:var(--muted); font-size:13px;
+}
+.day-peek-ev {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px; cursor:pointer; transition:background 0.1s;
+  border-bottom:1px solid var(--border);
+}
+.day-peek-ev:last-child { border-bottom:none; }
+.day-peek-ev:hover { background:var(--sidebar-bg); }
+.day-peek-dot {
+  width:10px; height:10px; border-radius:50%; flex-shrink:0;
+}
+.day-peek-ev-info { flex:1; min-width:0; }
+.day-peek-ev-title { font-size:13px; font-weight:500; }
+.day-peek-ev-time { font-size:11px; color:var(--muted); margin-top:1px; }
+
 /* MODAL */
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.28);
@@ -2219,7 +2269,66 @@ function drawNow(){
   if(todayCol&&todayCol.firstChild) todayCol.firstChild.insertAdjacentHTML('beforeend',line);
 }
 
-function mcc(ds){ if(calV==='month'){ cur=new Date(ds+'T12:00:00'); scv('day'); } }
+function mcc(ds){
+  if(calV !== 'month') return;
+
+  // Remove any existing peek
+  const existing = document.getElementById('day-peek-overlay');
+  if(existing) existing.remove();
+
+  const d   = new Date(ds+'T12:00:00');
+  const lbl = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+
+  // Gather all events for this day
+  const active = new Set(members.map(m=>m.name));
+  const dayEvs = evs.filter(e =>
+    whoArr(e).some(w => active.has(w)) &&
+    (isMultiDay(e) ? e.date<=ds && (e.endDate||e.date)>=ds : e.date===ds)
+  ).sort((a,b) => {
+    if(a.allDay && !b.allDay) return -1;
+    if(!a.allDay && b.allDay) return 1;
+    return (a.time||'').localeCompare(b.time||'');
+  });
+
+  const evHtml = dayEvs.length ? dayEvs.map(e => {
+    const color = whoArr(e).length>1 ? '#1a6bb5' : mColor(whoArr(e)[0]);
+    const timeStr = e.allDay ? 'All day' : (e.time ? fmt12(e.time)+(e.end?'–'+fmt12(e.end):'') : '');
+    return `<div class="day-peek-ev" onclick="peekEditEvent('${e.id}')">
+      <div class="day-peek-dot" style="background:${color}"></div>
+      <div class="day-peek-ev-info">
+        <div class="day-peek-ev-title">${e.title}</div>
+        ${timeStr?`<div class="day-peek-ev-time">${timeStr}</div>`:''}
+      </div>
+    </div>`;
+  }).join('') : `<div class="day-peek-empty">No events</div>`;
+
+  const overlay = document.createElement('div');
+  overlay.id = 'day-peek-overlay';
+  overlay.className = 'day-peek-overlay';
+  overlay.onclick = () => overlay.remove();
+  overlay.innerHTML = `
+    <div class="day-peek" onclick="event.stopPropagation()">
+      <div class="day-peek-hd">
+        <span class="day-peek-title" onclick="peekGoDay('${ds}')">${lbl}</span>
+        <button class="day-peek-close" onclick="document.getElementById('day-peek-overlay').remove()">✕</button>
+      </div>
+      <div class="day-peek-body">${evHtml}</div>
+    </div>`;
+  document.body.appendChild(overlay);
+}
+
+function peekGoDay(ds){
+  const existing = document.getElementById('day-peek-overlay');
+  if(existing) existing.remove();
+  cur = new Date(ds+'T12:00:00');
+  scv('day');
+}
+
+function peekEditEvent(id){
+  const existing = document.getElementById('day-peek-overlay');
+  if(existing) existing.remove();
+  editEvent(id);
+}
 
 function ppHtml(sel){
   const selArr = Array.isArray(sel) ? sel : (sel ? [sel] : []);
