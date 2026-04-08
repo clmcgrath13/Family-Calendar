@@ -3135,14 +3135,18 @@ function injectWeatherStrip(numDays){
   // Get date range
   const ww = numDays !== 7;
   const s  = wstart(cur, ww);
+  const today = fmt(T);
   const dates = Array.from({length: numDays}, (_,i) => {
     const d = new Date(s); d.setDate(s.getDate()+i); return fmt(d);
   });
 
-  // Check cache — fetch if needed
-  const anyMissing = dates.some(d => !wxCache[d]);
+  // Only require cache for today + future dates — past dates have no forecast data
+  const futureDates  = dates.filter(d => d >= today);
+  const anyMissing   = futureDates.some(d => !wxCache[d]);
   if(anyMissing){
-    if(!wxFetching && !wxError) fetchWeather(dates[0]).then(() => { if(weatherMode) injectWeatherStrip(numDays); });
+    // Fetch starting from today (not the start of the week which may be in the past)
+    const fetchFrom = futureDates[0] || today;
+    if(!wxFetching && !wxError) fetchWeather(fetchFrom).then(() => { if(weatherMode) injectWeatherStrip(numDays); });
     const strip = document.createElement('div');
     strip.id = 'wx-strip';
     strip.className = 'wx-strip';
@@ -3156,7 +3160,7 @@ function injectWeatherStrip(numDays){
   }
 
   // Gather all hours across all days for unified scale
-  const allTemps = dates.flatMap(d => (wxCache[d]?.hours||[]).map(h=>h.temp));
+  const allTemps = futureDates.flatMap(d => (wxCache[d]?.hours||[]).map(h=>h.temp));
   if(!allTemps.length) return;
   const globalMin = Math.floor(Math.min(...allTemps)/10)*10;
   const globalMax = Math.ceil(Math.max(...allTemps)/10)*10 + 5;
