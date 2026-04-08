@@ -90,5 +90,18 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1775688741874,
+    "title": "Clean exhaust fan",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
   }
 ]
