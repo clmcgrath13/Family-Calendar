@@ -3535,7 +3535,7 @@ async function ghLoadTasks(){
     const data = await r.json();
     _ghSha = data.sha;
     const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
-    if(Array.isArray(loaded) && loaded.length > 0){
+    if(Array.isArray(loaded)){
       tasks = loaded;
       render();
     }
@@ -3592,8 +3592,16 @@ async function ghSaveNow(){
 // Debounced save — waits 1.5s after last change before writing
 function ghScheduleSave(){
   clearTimeout(_ghSaveTimer);
-  _ghSaveTimer = setTimeout(ghSaveNow, 1500);
+  _ghSaveTimer = setTimeout(ghSaveNow, 800);
 }
+
+// Flush any pending save immediately if user closes/refreshes the page
+window.addEventListener('beforeunload', () => {
+  if(_ghSaveTimer){
+    clearTimeout(_ghSaveTimer);
+    ghSaveNow();
+  }
+});
 
 // ─── END GITHUB TASKS STORAGE ───────────────────────────────────────────────
 
