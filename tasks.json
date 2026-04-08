@@ -116,5 +116,18 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775688776638,
+    "title": "Clean bathroom light",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
   }
 ]
