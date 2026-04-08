@@ -929,14 +929,12 @@ body {
 
 <div class="main">
   <div class="topbar">
-    <!-- Now bar: day · date on top, time · weather · season below -->
+    <!-- Left: now-bar (date/time/season) OR list picker -->
     <div id="tb-now-bar" style="display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap">
       <div id="tb-now-date" style="font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;line-height:1;color:var(--text)"></div>
       <div id="tb-now-time" style="font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text)"></div>
-      <div id="tb-now-wx" style="display:flex;align-items:center;gap:4px;font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text);cursor:default;border-radius:8px;padding:2px 6px;transition:background 0.12s"></div>
       <div id="tb-now-season" style="font-size:20px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--muted)"></div>
     </div>
-    <!-- List picker on the LEFT -->
     <div id="tb-left-lists" style="display:none;align-items:center;position:relative">
       <button onclick="event.stopPropagation();toggleLDrop()" style="padding:4px 6px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">
         <span id="tb-list-icon"></span>
@@ -945,9 +943,15 @@ body {
       </button>
       <div class="ldrop" id="ldrop" onclick="event.stopPropagation()" style="top:calc(100% + 4px);left:0"></div>
     </div>
-    <!-- Unified nav controls: view picker (cal only) + ← → Today (always) -->
-    <div id="tb-nav-controls" style="display:flex;align-items:center;gap:6px;width:294px;justify-content:flex-end">
-      <!-- View picker: calendar only -->
+
+    <!-- Spacer pushes everything right -->
+    <div class="tb-space"></div>
+
+    <!-- Weather button: calendar only, styled as a button -->
+    <button id="wx-btn" onclick="toggleWeather()" style="display:none;align-items:center;gap:6px;padding:0 12px;height:44px;border-radius:10px;border:1px solid var(--border);background:var(--bg);font-family:'DM Serif Display',serif;font-size:20px;cursor:pointer;color:var(--text);transition:background 0.12s,color 0.12s;white-space:nowrap"></button>
+
+    <!-- Nav controls: view picker + ← → Today -->
+    <div id="tb-nav-controls" style="display:flex;align-items:center;gap:6px">
       <div class="vdrop-wrap" id="vdrop-wrap" style="display:flex">
         <button class="vdrop-btn" id="vdrop-btn" onclick="toggleViewDrop()">
           <span id="vdrop-label">3 Day</span>
@@ -962,7 +966,6 @@ body {
           <div class="vdrop-item" onclick="pickView('agenda')">Agenda</div>
         </div>
       </div>
-      <!-- Arrows: wired to whichever view is active -->
       <button class="arr-btn" id="nav-prev" onclick="navPrev()">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -1354,28 +1357,34 @@ function getSeason(mo, day){
 }
 
 function utb(){
-  const taskLeft   = null;
   const listLeft  = document.getElementById('tb-left-lists');
   const nowBar    = document.getElementById('tb-now-bar');
   const navCtrl   = document.getElementById('tb-nav-controls');
   const vdropWrap = document.getElementById('vdrop-wrap');
+  const wxBtn     = document.getElementById('wx-btn');
   const syncEl    = document.getElementById('gh-sync-status');
 
-  const inTasks   = appV === 'tasks';
-  const inLists   = appV === 'lists';
-  const inSettings= appV === 'settings';
-  const showNow   = !inLists && !inSettings;
-  const showNav   = !inLists && !inSettings;
+  const inTasks    = appV === 'tasks';
+  const inLists    = appV === 'lists';
+  const inSettings = appV === 'settings';
+  const showNow    = !inLists && !inSettings;
+  const isTimeView = calV==='week'||calV==='workweek'||calV==='threeday'||calV==='day';
+  const showWx     = appV==='calendar' && isTimeView;
 
-  if(nowBar)    nowBar.style.display    = showNow ? 'flex'   : 'none';
-  if(listLeft)  listLeft.style.display  = inLists ? 'flex'   : 'none';
-  if(navCtrl)   navCtrl.style.display   = showNav ? 'flex'   : 'none';
+  if(nowBar)    nowBar.style.display    = showNow  ? 'flex'   : 'none';
+  if(listLeft)  listLeft.style.display  = inLists  ? 'flex'   : 'none';
+  if(navCtrl)   navCtrl.style.display   = (!inLists && !inSettings) ? 'flex' : 'none';
   if(vdropWrap) vdropWrap.style.display = (appV==='calendar') ? 'flex' : 'none';
-  if(syncEl)    syncEl.style.display    = inTasks ? 'inline' : 'none';
+  if(syncEl)    syncEl.style.display    = inTasks  ? 'inline' : 'none';
+
+  if(wxBtn){
+    wxBtn.style.display    = showWx ? 'flex' : 'none';
+    wxBtn.style.background = (showWx && weatherMode) ? '#dceeff' : 'var(--bg)';
+    wxBtn.style.color      = (showWx && weatherMode) ? '#1a6bb5' : 'var(--text)';
+  }
 
   if(showNow) updateNowBar();
-
-  if(inTasks){ return; }
+  if(inTasks) return;
 
   if(inLists){
     const fl     = lists[_focusedList] || lists[0];
@@ -1389,7 +1398,7 @@ function utb(){
     if(dropEl){
       dropEl.className = 'ldrop' + (_listDropOpen ? ' open' : '');
       dropEl.innerHTML = lists.map((l,i)=>
-        '<div class="ldrop-item'+(i===_focusedList?' active':'')+' " onclick="focusList('+i+')">'
+        '<div class="ldrop-item'+(i===_focusedList?' active':'')+'" onclick="focusList('+i+')">'
         +'<span class="ldrop-item-icon">'+l.icon+'</span>'
         +'<span class="ldrop-item-name">'+l.name+'</span>'
         +'<button class="ldrop-item-menu" onclick="event.stopPropagation();editListPrompt('+i+')">⋮</button>'
@@ -1407,22 +1416,20 @@ function updateNowBar(){
   const now    = new Date();
   const dateEl = document.getElementById('tb-now-date');
   const timeEl = document.getElementById('tb-now-time');
-  const wxEl   = document.getElementById('tb-now-wx');
+  const wxBtn  = document.getElementById('wx-btn');
   const sznEl  = document.getElementById('tb-now-season');
-  if(!dateEl || !timeEl || !wxEl) return;
+  if(!dateEl || !timeEl) return;
 
-  // When on tasks and not today — show the task date, hide time/weather
+  // Tasks not on today: show task date only, no time/season
   const onTasksNotToday = appV === 'tasks' && taskDate !== fmt(now);
   if(onTasksNotToday){
     const d = new Date(taskDate+'T12:00:00');
     dateEl.textContent = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
     timeEl.textContent = '';
-    wxEl.innerHTML     = '';
-    if(sznEl){ sznEl.textContent=''; }
+    if(sznEl) sznEl.textContent = '';
     return;
   }
 
-  // Default: show current date, time, weather, season
   dateEl.textContent = now.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
   timeEl.textContent = now.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
 
@@ -1432,55 +1439,35 @@ function updateNowBar(){
     sznEl.style.color = s.color;
   }
 
-  // Wire wx div as toggle button on calendar time-grid views only
-  const isTimeView = calV==='week'||calV==='workweek'||calV==='threeday'||calV==='day';
-  const wxClickable = appV==='calendar' && isTimeView;
-  wxEl.style.cursor  = wxClickable ? 'pointer' : 'default';
-  wxEl.onclick       = wxClickable ? toggleWeather : null;
-  wxEl.title         = wxClickable ? 'Toggle weather strip' : '';
-  if(wxClickable && weatherMode){
-    wxEl.style.background = '#dceeff';
-    wxEl.style.color = '#1a6bb5';
-  } else {
-    wxEl.style.background = '';
-    wxEl.style.color = 'var(--text)';
-  }
-
+  // Populate weather button
   const todayStr = fmt(now);
   const wx = wxCache[todayStr];
-  if(wx){
+  if(wxBtn && wx){
     let temp, code;
     if(wx.hours && wx.hours.length){
       const nowMins = now.getHours()*60 + now.getMinutes();
-      const closest = wx.hours.reduce((best, h) => {
-        const [hh,mm] = h.time.split(':').map(Number);
-        const diff = Math.abs(hh*60+mm - nowMins);
-        return diff < best.diff ? {h, diff} : best;
-      }, {h: wx.hours[0], diff: Infinity}).h;
-      temp = closest.temp;
-      code = closest.code;
+      const closest = wx.hours.reduce((best,h)=>{
+        const [hh,mm]=h.time.split(':').map(Number);
+        const diff=Math.abs(hh*60+mm-nowMins);
+        return diff<best.diff?{h,diff}:best;
+      },{h:wx.hours[0],diff:Infinity}).h;
+      temp=closest.temp; code=closest.code;
     } else {
-      temp = wx.hi;
-      code = wx.code;
+      temp=wx.hi; code=wx.code;
     }
-
-    const isNight = (() => {
-      if(wx.sunrise && wx.sunset){
-        const rise = new Date(wx.sunrise).getTime();
-        const set  = new Date(wx.sunset).getTime();
-        return now.getTime() < rise || now.getTime() > set;
+    const isNight=(()=>{
+      if(wx.sunrise&&wx.sunset){
+        const rise=new Date(wx.sunrise).getTime(), set=new Date(wx.sunset).getTime();
+        return now.getTime()<rise||now.getTime()>set;
       }
-      return now.getHours() < 6 || now.getHours() >= 20;
+      return now.getHours()<6||now.getHours()>=20;
     })();
-
     const icon = isNight
-      ? (code===0 ? '🌙' : code<=2 ? '🌛' : code<=3 ? '☁️' : '🌑')
+      ? (code===0?'🌙':code<=2?'🌛':code<=3?'☁️':'🌑')
       : wxIcon(code).icon;
-
-    wxEl.innerHTML = '<span style="line-height:1;vertical-align:middle">'+icon+'</span>'
-                   + '<span style="vertical-align:middle"> '+temp+'°</span>';
-  } else {
-    wxEl.innerHTML = '';
+    wxBtn.innerHTML = '<span style="line-height:1">'+icon+'</span><span> '+temp+'°</span>';
+  } else if(wxBtn) {
+    wxBtn.innerHTML = '';
   }
 }
 
@@ -3135,7 +3122,6 @@ function rWeatherDay(dateStr){
 function toggleWeather(){
   weatherMode = !weatherMode;
   render(true);
-  updateNowBar(); // refresh active state on wx div
 }
 
 function injectWeatherStrip(numDays){
