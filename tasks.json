@@ -12,5 +12,18 @@
       "Collin",
       "Ava"
     ]
+  },
+  {
+    "id": 1775667405291,
+    "title": "Clean stove exhaust fan",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
   }
 ]
