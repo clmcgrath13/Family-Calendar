@@ -1,7 +1,7 @@
 [
   {
-    "id": 1775668531789,
-    "title": "clean stove exhaust fan",
+    "id": 1775668825266,
+    "title": "Sharpen Knives",
     "done": false,
     "date": "",
     "recur": "",
@@ -10,20 +10,6 @@
     "timeOfDay": "",
     "who": [
       "Dad"
-    ]
-  },
-  {
-    "id": 1775668542556,
-    "title": "Put your clothes away",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Collin",
-      "Ava"
     ]
   }
 ]
