@@ -933,7 +933,7 @@ body {
     <div id="tb-now-bar" style="display:flex;align-items:center;gap:10px;min-width:0;white-space:nowrap">
       <div id="tb-now-date" style="font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;line-height:1;color:var(--text)"></div>
       <div id="tb-now-time" style="font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text)"></div>
-      <div id="tb-now-wx" style="display:flex;align-items:center;gap:4px;font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text)"></div>
+      <div id="tb-now-wx" style="display:flex;align-items:center;gap:4px;font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text);cursor:default;border-radius:8px;padding:2px 6px;transition:background 0.12s"></div>
       <div id="tb-now-season" style="font-size:20px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--muted)"></div>
     </div>
     <!-- List picker on the LEFT -->
@@ -945,12 +945,6 @@ body {
       </button>
       <div class="ldrop" id="ldrop" onclick="event.stopPropagation()" style="top:calc(100% + 4px);left:0"></div>
     </div>
-    <div class="tb-space"></div>
-    <button class="today-btn" id="wx-btn" onclick="toggleWeather()"
-      style="display:none;gap:6px"
-      title="Toggle weather">
-      <span style="font-size:16px;line-height:1">⛅</span> Weather
-    </button>
     <!-- Unified nav controls: view picker (cal only) + ← → Today (always) -->
     <div id="tb-nav-controls" style="display:flex;align-items:center;gap:6px;width:294px;justify-content:flex-end">
       <!-- View picker: calendar only -->
@@ -1057,19 +1051,7 @@ let evs=[
 ];
 let taskDate = fmt(T); // currently viewed task date
 
-let tasks=[
-  {id:1, title:'Make the bed',    done:false, doneOn:[], date:'', who:['Collin'], recur:'daily', timeOfDay:'morning'},
-  {id:2, title:'Make the bed',    done:false, doneOn:[], date:'', who:['Ava'],    recur:'daily', timeOfDay:'morning'},
-  {id:3, title:'Brush teeth',     done:false, doneOn:[], date:'', who:['Collin'], recur:'daily', timeOfDay:'morning'},
-  {id:4, title:'Brush teeth',     done:false, doneOn:[], date:'', who:['Ava'],    recur:'daily', timeOfDay:'morning'},
-  {id:5, title:'Walk Zorro',      done:false, doneOn:[], date:'', who:['Collin'], recur:'daily', timeOfDay:'morning'},
-  {id:6, title:'Brush teeth',     done:false, doneOn:[], date:'', who:['Collin'], recur:'daily', timeOfDay:'evening'},
-  {id:7, title:'Brush teeth',     done:false, doneOn:[], date:'', who:['Ava'],    recur:'daily', timeOfDay:'evening'},
-  {id:8, title:'Dinner prep',     done:false, doneOn:[], date:'', who:['Mom'],    recur:'daily', timeOfDay:'evening'},
-  {id:9, title:'Kitchen clean',   done:false, doneOn:[], date:'', who:['Mom'],    recur:''},
-  {id:10,title:'Take out trash',  done:false, doneOn:[], date:'', who:['Dad'],    recur:''},
-  {id:11,title:'Schedule oil change',done:false,doneOn:[],date:fmt(T),who:['Dad'],recur:''},
-];
+let tasks=[];
 let lists=[
   {id:1,name:'Grocery',icon:'🛒',items:[{t:'Milk',d:false},{t:'Eggs',d:false},{t:'Bread',d:true},{t:'Chicken',d:false},{t:'Apples',d:false},{t:'Pasta',d:false}]},
   {id:2,name:'Home Projects',icon:'🔧',items:[{t:'Fix porch light',d:false},{t:'Caulk master bath',d:false},{t:'Touch up hallway paint',d:true}]},
@@ -1450,6 +1432,20 @@ function updateNowBar(){
     sznEl.style.color = s.color;
   }
 
+  // Wire wx div as toggle button on calendar time-grid views only
+  const isTimeView = calV==='week'||calV==='workweek'||calV==='threeday'||calV==='day';
+  const wxClickable = appV==='calendar' && isTimeView;
+  wxEl.style.cursor  = wxClickable ? 'pointer' : 'default';
+  wxEl.onclick       = wxClickable ? toggleWeather : null;
+  wxEl.title         = wxClickable ? 'Toggle weather strip' : '';
+  if(wxClickable && weatherMode){
+    wxEl.style.background = '#dceeff';
+    wxEl.style.color = '#1a6bb5';
+  } else {
+    wxEl.style.background = '';
+    wxEl.style.color = 'var(--text)';
+  }
+
   const todayStr = fmt(now);
   const wx = wxCache[todayStr];
   if(wx){
@@ -1501,30 +1497,9 @@ function wstart(d,ww){
 function render(preserveScroll){
   utb();
   const c=document.getElementById('content');
-  // Always sync weather button visibility before any early return
-  const wxBtn = document.getElementById('wx-btn');
   const isTimeView = calV==='week'||calV==='workweek'||calV==='threeday'||calV==='day';
-  if(wxBtn && appV==='calendar' && isTimeView){
-    const wxMaxDate = new Date(T); wxMaxDate.setDate(wxMaxDate.getDate()+13);
-    const wxMaxStr  = fmt(wxMaxDate);
-    let wxViewDates;
-    if(calV==='day'){
-      wxViewDates = [fmt(cur)];
-    } else {
-      const ww = calV==='workweek'||calV==='threeday';
-      const s  = wstart(cur, ww);
-      const wxN = calV==='threeday'?3:ww?5:7;
-      wxViewDates = Array.from({length:wxN},(_,i)=>{
-        const d=new Date(s); d.setDate(s.getDate()+i); return fmt(d);
-      });
-    }
-    const allInRange = wxViewDates.every(d => d <= wxMaxStr);
-    wxBtn.style.display = allInRange ? 'flex' : 'none';
-    if(!allInRange && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
-  } else if(wxBtn){
-    wxBtn.style.display = 'none';
-    if(!isTimeView && weatherMode){ weatherMode=false; wxBtn.classList.remove('wx-btn-active'); }
-  }
+  // Auto-disable weatherMode if we navigate away from a time-grid view
+  if(weatherMode && (!isTimeView || appV!=='calendar')) weatherMode = false;
   if(appV==='settings'){ c.innerHTML=rSettings(); return; }
   if(appV==='tasks'){ c.innerHTML=rTasks(); return; }
   if(appV==='lists'){ c.innerHTML=rLists(); return; }
@@ -2907,6 +2882,9 @@ setTimeout(()=>{
 // Load tasks from GitHub if token is configured
 if(window.GITHUB_TOKEN) ghLoadTasks();
 
+// Auto-fetch weather on load so header shows current temp immediately
+fetchWeather(fmt(T)).then(() => updateNowBar());
+
 // Close view dropdown when clicking outside it
 document.addEventListener('click', e => {
   const wrap = document.getElementById('vdrop-wrap');
@@ -3156,9 +3134,8 @@ function rWeatherDay(dateStr){
 
 function toggleWeather(){
   weatherMode = !weatherMode;
-  const btn = document.getElementById('wx-btn');
-  if(btn) btn.classList.toggle('wx-btn-active', weatherMode);
   render(true);
+  updateNowBar(); // refresh active state on wx div
 }
 
 function injectWeatherStrip(numDays){
