@@ -1,134 +1,16 @@
 [
   {
-    "id": 1,
-    "title": "Make the bed",
+    "id": 1775667386292,
+    "title": "Put your clothes away",
     "done": false,
-    "doneOn": [],
     "date": "",
-    "who": [
-      "Collin"
-    ],
-    "recur": "daily",
-    "timeOfDay": "morning"
-  },
-  {
-    "id": 2,
-    "title": "Make the bed",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Ava"
-    ],
-    "recur": "daily",
-    "timeOfDay": "morning"
-  },
-  {
-    "id": 3,
-    "title": "Brush teeth",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Collin"
-    ],
-    "recur": "daily",
-    "timeOfDay": "morning"
-  },
-  {
-    "id": 4,
-    "title": "Brush teeth",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Ava"
-    ],
-    "recur": "daily",
-    "timeOfDay": "morning"
-  },
-  {
-    "id": 5,
-    "title": "Walk Zorro",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Collin"
-    ],
-    "recur": "daily",
-    "timeOfDay": "morning"
-  },
-  {
-    "id": 6,
-    "title": "Brush teeth",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Collin"
-    ],
-    "recur": "daily",
-    "timeOfDay": "evening"
-  },
-  {
-    "id": 7,
-    "title": "Brush teeth",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Ava"
-    ],
-    "recur": "daily",
-    "timeOfDay": "evening"
-  },
-  {
-    "id": 8,
-    "title": "Dinner prep",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Mom"
-    ],
-    "recur": "daily",
-    "timeOfDay": "evening"
-  },
-  {
-    "id": 9,
-    "title": "Kitchen clean",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Mom"
-    ],
-    "recur": ""
-  },
-  {
-    "id": 10,
-    "title": "Take out trash",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "who": [
-      "Dad"
-    ],
-    "recur": ""
-  },
-  {
-    "id": 11,
-    "title": "Laundry",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-04-08",
-    "who": [
-      "Dad"
-    ],
     "recur": "",
     "recurN": 1,
     "recurDays": [],
-    "timeOfDay": ""
+    "timeOfDay": "",
+    "who": [
+      "Collin",
+      "Ava"
+    ]
   }
 ]
