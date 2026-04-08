@@ -352,7 +352,7 @@ body {
 .taskwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
 .task-topbar {
   display:flex; align-items:center; gap:10px;
-  padding:10px 14px; background:var(--header-bg);
+  padding:7px 10px; background:var(--header-bg);
   border-bottom:1px solid var(--border); flex-shrink:0;
 }
 .task-date-lbl { font-size:15px; font-weight:600; min-width:160px; text-align:center; }
@@ -371,67 +371,74 @@ body {
 }
 .task-cols {
   flex:1; display:flex; overflow-x:auto; overflow-y:hidden;
-  gap:10px; padding:10px;
+  gap:8px; padding:8px;
 }
 .task-col {
-  flex:1; min-width:200px; max-width:320px;
+  flex:1; min-width:160px; max-width:280px;
   display:flex; flex-direction:column;
   background:var(--bg); border:1px solid var(--border);
-  border-radius:14px; overflow:hidden;
+  border-radius:12px; overflow:hidden;
 }
+/* Compact inline header */
 .task-col-hd {
-  padding:16px 14px 12px;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  padding:8px 10px;
+  display:flex; align-items:center; gap:8px;
   border-bottom:1px solid var(--border);
   flex-shrink:0;
 }
 .task-avatar-wrap {
-  position:relative; width:80px; height:80px;
+  position:relative; width:40px; height:40px; flex-shrink:0;
 }
 .task-avatar-ring {
   position:absolute; inset:0;
   transform:rotate(-90deg);
 }
 .task-avatar {
-  position:absolute; inset:7px;
+  position:absolute; inset:4px;
   border-radius:50%;
   display:flex; align-items:center; justify-content:center;
-  font-size:22px; font-weight:700; color:white;
+  font-size:14px; font-weight:700; color:white;
 }
+.task-col-hd-info { flex:1; min-width:0; }
+.task-avatar-name { font-size:12px; font-weight:700; line-height:1.3; }
+.task-progress { font-size:10px; color:var(--muted); }
+/* Thin section divider */
 .task-section-lbl {
-  font-size:9px; font-weight:800; text-transform:uppercase;
-  letter-spacing:0.1em; color:var(--muted);
-  padding:8px 6px 4px; display:flex; align-items:center; gap:5px;
+  display:flex; align-items:center; gap:6px;
+  margin:6px 4px 3px; font-size:8px; font-weight:800;
+  text-transform:uppercase; letter-spacing:0.1em; color:var(--muted);
 }
-.task-avatar-name { font-size:13px; font-weight:600; }
-.task-progress { font-size:11px; color:var(--muted); }
-.task-col-body { flex:1; overflow-y:auto; padding:8px; }
+.task-section-lbl::after {
+  content:''; flex:1; height:1px; background:var(--border);
+}
+.task-col-body { flex:1; overflow-y:auto; padding:4px 6px; }
+/* Cards: current style but tighter */
 .task-card {
-  display:flex; align-items:flex-start; gap:10px;
-  padding:12px 12px; background:var(--bg);
-  border:1px solid var(--border); border-radius:10px;
-  margin-bottom:6px; cursor:pointer;
+  display:flex; align-items:center; gap:8px;
+  padding:7px 8px; background:var(--bg);
+  border:1px solid var(--border); border-radius:8px;
+  margin-bottom:4px; cursor:pointer;
   border-left-width:3px;
   transition:box-shadow 0.12s;
 }
 .task-card:active { box-shadow:var(--shadow); }
 .task-card.done-card { opacity:0.5; }
 .task-check {
-  width:24px; height:24px; border-radius:50%;
+  width:20px; height:20px; border-radius:50%;
   border:2px solid var(--border); flex-shrink:0;
   display:flex; align-items:center; justify-content:center;
-  transition:all 0.13s; margin-top:1px;
+  transition:all 0.13s;
 }
 .task-check.done { border-color:transparent; }
 .task-card-body { flex:1; min-width:0; }
-.task-card-title { font-size:13px; font-weight:500; line-height:1.3; }
+.task-card-title { font-size:12px; font-weight:500; line-height:1.3; }
 .task-card-title.done { text-decoration:line-through; color:var(--muted); }
-.task-card-sub { font-size:10px; color:var(--muted); margin-top:3px; }
+.task-card-sub { font-size:10px; color:var(--muted); margin-top:1px; }
 .task-menu-btn {
-  width:32px; height:32px; border-radius:8px; border:none;
-  background:transparent; color:var(--muted); font-size:18px;
+  width:26px; height:26px; border-radius:6px; border:none;
+  background:transparent; color:var(--muted); font-size:15px;
   cursor:pointer; display:flex; align-items:center; justify-content:center;
-  flex-shrink:0; transition:background 0.1s; letter-spacing:1px;
+  flex-shrink:0; transition:background 0.1s;
 }
 .task-menu-btn:hover { background:var(--sidebar-bg); }
 /* toggle switch */
@@ -1745,15 +1752,15 @@ function rTasks(){
     </div>`;
   };
 
-  // SVG progress ring — R=30, circumference=~188.5
-  const R = 38, C = 2 * Math.PI * R;
+  // Progress ring: 40px wrap, avatar inset:4px → radius 16px, ring at r=19 (3px outside)
+  const R = 19, C = 2 * Math.PI * R;
   function progressRing(done, total){
     const pct  = total > 0 ? done / total : 0;
     const dash = (pct * C).toFixed(1);
     const gap  = (C - pct * C).toFixed(1);
-    return `<svg class="task-avatar-ring" viewBox="0 0 80 80">
-      <circle cx="40" cy="40" r="${R}" fill="none" stroke="#e2e2de" stroke-width="3"/>
-      <circle cx="40" cy="40" r="${R}" fill="none" stroke="#1a6bb5" stroke-width="3"
+    return `<svg class="task-avatar-ring" viewBox="0 0 40 40">
+      <circle cx="20" cy="20" r="${R}" fill="none" stroke="#e2e2de" stroke-width="2"/>
+      <circle cx="20" cy="20" r="${R}" fill="none" stroke="#1a6bb5" stroke-width="2"
         stroke-dasharray="${dash} ${gap}" stroke-linecap="round"
         style="transition:stroke-dasharray 0.4s ease"/>
     </svg>`;
@@ -1788,8 +1795,10 @@ function rTasks(){
           ${progressRing(done, total)}
           <div class="task-avatar" style="background:${color}">${m.name.charAt(0)}</div>
         </div>
-        <div class="task-avatar-name">${m.name}</div>
-        <div class="task-progress">${done} of ${total} Completed</div>
+        <div class="task-col-hd-info">
+          <div class="task-avatar-name">${m.name}</div>
+          <div class="task-progress">${done} of ${total} done</div>
+        </div>
       </div>
       <div class="task-col-body">
         ${morningSection}${eveningSection}${anytimeSection}
@@ -2558,9 +2567,10 @@ function editTask(id){
 }
 
 function addListItem(){
+  const currentId = lists[_focusedList]?.id;
   document.getElementById('mttl').textContent='Add to List';
   document.getElementById('mbd').innerHTML=`
-    <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}">${l.icon} ${l.name}</option>`).join('')}</select></div>
+    <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}"${l.id===currentId?' selected':''}>${l.icon} ${l.name}</option>`).join('')}</select></div>
     <div class="fld"><label class="flbl">Item</label><input class="fin" id="litem" type="text" placeholder="Add item…"></div>`;
   window._save=()=>{
     const lid=parseInt(document.getElementById('lsel').value);
