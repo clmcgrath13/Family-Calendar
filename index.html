@@ -560,7 +560,7 @@ body {
 
 /* LUNCH TRACKER */
 .lunchwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
-.lunch-grid { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:10px; gap:12px; }
+.lunch-grid { flex:1; display:flex; flex-direction:column; overflow-y:auto; padding:10px; gap:12px; }
 .lunch-grid-days { display:grid; grid-template-columns:90px repeat(5,1fr); gap:8px; flex-shrink:0; }
 .lunch-day-hdr { text-align:center; padding-bottom:8px; border-bottom:2px solid var(--border); }
 .lunch-day-hdr.today { border-color:var(--today-ring); }
@@ -964,7 +964,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.6</div>
+  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.8</div>
 </nav>
 
 <div class="main">
@@ -2271,25 +2271,25 @@ function rMeals(){
       if(entry){
         const dotColor = entry.type==='school' ? '#2c6bed' : color;
         const typeIcon = entry.type==='school' ? '🏫' : '🏠';
-        return `<div class="lunch-cell${isToday?' today':''}" onclick="lunchKid='${kid}';openLunchPicker('${ds}')">
+        return `<div class="lunch-cell${isToday?' today':''}" onclick="openLunchPicker('${ds}','${kid}')">
           <div class="lunch-cell-dot" style="background:${dotColor}"></div>
           <div class="lunch-cell-name">${typeIcon} ${entry.name}</div>
         </div>`;
       }
-      return `<div class="lunch-cell empty${isToday?' today':''}" onclick="lunchKid='${kid}';openLunchPicker('${ds}')">
+      return `<div class="lunch-cell empty${isToday?' today':''}" onclick="openLunchPicker('${ds}','${kid}')">
         <div class="lunch-cell-plus">+</div>
       </div>`;
     }).join('');
 
     return `<div class="lunch-row">
       <div class="lunch-row-lbl" style="color:${color}">${kid}</div>
-      <div class="lunch-row-cells">${cells}</div>
+      ${cells}
     </div>`;
   }).join('');
 
   return `<div class="lunchwrap">
     <div class="lunch-grid">
-      <div class="lunch-grid-days">${hdrs}</div>
+      <div class="lunch-grid-days"><div></div>${hdrs}</div>
       ${rows}
     </div>
   </div>`;
@@ -2321,8 +2321,9 @@ async function fetchSchoolMenu(dateStr){
   }
 }
 
-function openLunchPicker(dateStr){
-  const kid = lunchKid;
+function openLunchPicker(dateStr, kid){
+  kid = kid || lunchKid;
+  lunchKid = kid; // keep global in sync
   const isCollin = kid==='Collin';
   const d = new Date(dateStr+'T12:00:00');
   const lbl = d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
