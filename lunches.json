@@ -49,11 +49,15 @@
     "2026-04-23": {
       "name": "Chili",
       "type": "custom"
+    },
+    "2026-04-24": {
+      "name": "Bagel",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Bagel",
     "Chili",
-    "Pasta with Mariners sauce",
-    "Bagel"
+    "Pasta with Mariners sauce"
   ]
 }
