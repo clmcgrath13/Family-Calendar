@@ -29,9 +29,14 @@
     "2026-04-16": {
       "name": "Pasta with Mariners sauce",
       "type": "custom"
+    },
+    "2026-04-17": {
+      "name": "Chili",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Chili",
     "Pasta with Mariners sauce",
     "Bagel"
   ]
