@@ -978,7 +978,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.4</div>
+  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.5</div>
 </nav>
 
 <div class="main">
@@ -2379,8 +2379,10 @@ function openLunchPicker(dateStr){
 }
 
 function renderCollinPicker(overlay, dateStr, lbl, existing){
-  const opts = COLLIN_PRESETS.map(p => `
-    <button class="lunch-opt" onclick="logLunch('Collin','${dateStr}','${p.name}','preset');document.querySelector('.lunch-picker-overlay').remove()">
+  window._collinPickerDate = dateStr;
+
+  const opts = COLLIN_PRESETS.map((p,i) => `
+    <button class="lunch-opt" data-preset-idx="${i}" onclick="pickCollinPreset(this)">
       <span class="lunch-opt-icon">${p.icon}</span>
       <span class="lunch-opt-name">${p.name}</span>
       ${existing&&existing.name===p.name?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
@@ -2395,17 +2397,20 @@ function renderCollinPicker(overlay, dateStr, lbl, existing){
       <div class="lunch-opts">${opts}</div>
       <div class="lunch-option-section">Custom</div>
       <div class="lunch-custom-row">
-        <input class="fin" id="lunch-custom-input" type="text" placeholder="Type something else…" value="${existing&&existing.type==='custom'?existing.name:''}">
-        <button class="btn btn-p" onclick="
-          const v=document.getElementById('lunch-custom-input').value.trim();
-          if(v){logLunch('Collin','${dateStr}',v,'custom');document.querySelector('.lunch-picker-overlay').remove();}
-        ">Save</button>
+        <input class="fin" id="lunch-custom-input" type="text" placeholder="Type something else…" value="${existing&&existing.type==='custom'?existing.name.replace(/"/g,'&quot;'):''}">
+        <button class="btn btn-p" id="collin-custom-save">Save</button>
       </div>
       ${existing?`<button class="lunch-opt" style="margin-top:8px;color:#c44;border-color:#f5c5c5" onclick="clearLunch('Collin','${dateStr}');document.querySelector('.lunch-picker-overlay').remove()">
         <span class="lunch-opt-icon">🗑️</span><span class="lunch-opt-name">Clear</span>
       </button>`:''}
     </div>
   </div>`;
+
+  // Safe event wiring
+  document.getElementById('collin-custom-save').onclick = () => {
+    const v = document.getElementById('lunch-custom-input').value.trim();
+    if(v){ logLunch('Collin', dateStr, v, 'custom'); document.querySelector('.lunch-picker-overlay').remove(); }
+  };
 }
 
 async function renderAvaPicker(overlay, dateStr, lbl, existing){
@@ -2425,40 +2430,75 @@ async function renderAvaPicker(overlay, dateStr, lbl, existing){
   const body = document.getElementById('ava-picker-body');
   if(!body) return;
 
-  const schoolOpts = schoolItems.length
-    ? schoolItems.map(item => `
-      <button class="lunch-opt school" onclick="logLunch('Ava','${dateStr}',${JSON.stringify(item.name).replace(/'/g,"\\'")},'school');document.querySelector('.lunch-picker-overlay').remove()">
+  // Group all school items into one combined lunch option
+  const schoolOptHtml = schoolItems.length
+    ? `<button class="lunch-opt school" id="ava-school-opt" onclick="pickAvaSchoolLunch('${dateStr}')">
         <span class="lunch-opt-icon">🏫</span>
-        <span class="lunch-opt-name">${item.name}${item.category?'<br><span style="font-size:10px;color:var(--muted)">'+item.category+'</span>':''}</span>
-        ${existing&&existing.name===item.name?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
-      </button>`).join('')
+        <div class="lunch-opt-name">
+          <div style="font-weight:600;margin-bottom:3px">School Lunch</div>
+          ${schoolItems.map(i=>`<div style="font-size:11px;color:var(--muted)">${i.name}</div>`).join('')}
+        </div>
+        ${existing&&existing.type==='school'?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
+      </button>`
     : `<div style="color:var(--muted);font-size:12px;padding:8px">No school menu available for this day</div>`;
 
+  // Store school items on window for the onclick to access safely (avoids escaping issues)
+  window._avaSchoolItems = schoolItems;
+  window._avaPickerDate  = dateStr;
+
   const customOpts = avaCustoms.length
-    ? avaCustoms.map(name => `
-      <button class="lunch-opt" onclick="logLunch('Ava','${dateStr}',${JSON.stringify(name).replace(/'/g,"\\'")},'custom');document.querySelector('.lunch-picker-overlay').remove()">
+    ? avaCustoms.map((name,i) => `
+      <button class="lunch-opt" data-custom-idx="${i}" onclick="pickAvaCustomLunch(this)">
         <span class="lunch-opt-icon">🏠</span>
-        <span class="lunch-opt-name">${name}</span>
+        <span class="lunch-opt-name">${name.replace(/</g,'&lt;')}</span>
         ${existing&&existing.name===name?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
       </button>`).join('')
     : '';
 
   body.innerHTML = `
     <div class="lunch-option-section">🏫 Today's School Menu</div>
-    <div class="lunch-opts">${schoolOpts}</div>
+    <div class="lunch-opts">${schoolOptHtml}</div>
     ${customOpts?`<div class="lunch-option-section">Recent Custom Lunches</div><div class="lunch-opts">${customOpts}</div>`:''}
     <div class="lunch-option-section">Custom</div>
     <div class="lunch-custom-row">
-      <input class="fin" id="lunch-custom-input" type="text" placeholder="Type something else…" value="${existing&&existing.type==='custom'?existing.name:''}">
-      <button class="btn btn-p" onclick="
-        const v=document.getElementById('lunch-custom-input').value.trim();
-        if(v){logLunch('Ava','${dateStr}',v,'custom');document.querySelector('.lunch-picker-overlay').remove();}
-      ">Save</button>
+      <input class="fin" id="lunch-custom-input" type="text" placeholder="Type something else…" value="">
+      <button class="btn btn-p" id="lunch-custom-save">Save</button>
     </div>
     ${existing?`<button class="lunch-opt" style="margin-top:8px;color:#c44;border-color:#f5c5c5" onclick="clearLunch('Ava','${dateStr}');document.querySelector('.lunch-picker-overlay').remove()">
       <span class="lunch-opt-icon">🗑️</span><span class="lunch-opt-name">Clear</span>
     </button>`:''}`;
+
+  // Wire custom save button safely (no inline string escaping needed)
+  document.getElementById('lunch-custom-save').onclick = () => {
+    const v = document.getElementById('lunch-custom-input').value.trim();
+    if(v){ logLunch('Ava', dateStr, v, 'custom'); document.querySelector('.lunch-picker-overlay').remove(); }
+  };
 }
+
+function pickCollinPreset(btn){
+  const dateStr = window._collinPickerDate;
+  const idx     = parseInt(btn.dataset.presetIdx);
+  const preset  = COLLIN_PRESETS[idx];
+  if(preset && dateStr){ logLunch('Collin', dateStr, preset.name, 'preset'); }
+  document.querySelector('.lunch-picker-overlay')?.remove();
+}
+
+function pickAvaSchoolLunch(dateStr){
+  // Build combined name from all school items
+  const items = window._avaSchoolItems || [];
+  const name = items.map(i=>i.name).join(', ');
+  if(name){ logLunch('Ava', dateStr, name, 'school'); }
+  document.querySelector('.lunch-picker-overlay')?.remove();
+}
+
+function pickAvaCustomLunch(btn){
+  const dateStr = window._avaPickerDate;
+  const idx     = parseInt(btn.dataset.customIdx);
+  const name    = (lunches._avaCustoms || [])[idx];
+  if(name && dateStr){ logLunch('Ava', dateStr, name, 'custom'); }
+  document.querySelector('.lunch-picker-overlay')?.remove();
+}
+
 
 function logLunch(kid, dateStr, name, type){
   if(!lunches[kid]) lunches[kid] = {};
