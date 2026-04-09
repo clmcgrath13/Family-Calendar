@@ -141,5 +141,19 @@
     "who": [
       "Ava"
     ]
+  },
+  {
+    "id": 1775696663826,
+    "title": "Take out the garbage",
+    "done": false,
+    "date": "",
+    "recur": "weekly",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad",
+      "Mom"
+    ]
   }
 ]
