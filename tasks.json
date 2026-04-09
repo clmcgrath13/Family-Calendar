@@ -280,5 +280,18 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775759462130,
+    "title": "Replace hot tub filter",
+    "done": false,
+    "date": "2026-05-14",
+    "recur": "weekly",
+    "recurN": 6,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
   }
 ]
