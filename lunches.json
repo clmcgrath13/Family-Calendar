@@ -41,11 +41,15 @@
     "2026-04-21": {
       "name": "Seasoned Beef Scoop-A-Bowl with Rice, Cheddar Cheese, Lettuce, Tomatoes, Salsa and Tostitos Scoops, Black Bean & Corn Salad",
       "type": "school"
+    },
+    "2026-04-22": {
+      "name": "Pasta with Mariners sauce",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
-    "Chili",
     "Pasta with Mariners sauce",
+    "Chili",
     "Bagel"
   ]
 }
