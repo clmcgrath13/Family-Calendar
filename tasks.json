@@ -187,5 +187,19 @@
     "doneOn": [
       "2026-04-09"
     ]
+  },
+  {
+    "id": 1775744191897,
+    "title": "Fix hot tub cover",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ],
+    "doneOn": []
   }
 ]
