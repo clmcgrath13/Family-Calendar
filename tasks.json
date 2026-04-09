@@ -68,7 +68,7 @@
   {
     "id": 1775688679226,
     "title": "Empty dads car (eggs, seltzer, everything!)",
-    "done": false,
+    "done": true,
     "date": "2026-04-08",
     "recur": "",
     "recurN": 1,
@@ -81,7 +81,7 @@
   {
     "id": 1775688691930,
     "title": "Unpack your lunch",
-    "done": false,
+    "done": true,
     "date": "2026-04-08",
     "recur": "",
     "recurN": 1,
