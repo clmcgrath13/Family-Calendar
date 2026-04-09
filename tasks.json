@@ -158,5 +158,19 @@
     "doneOn": [
       "2026-04-08"
     ]
+  },
+  {
+    "id": 1775696700727,
+    "title": "Take out the Recycling (Botttles)",
+    "done": false,
+    "date": "",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad",
+      "Mom"
+    ]
   }
 ]
