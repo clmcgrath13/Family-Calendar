@@ -560,77 +560,63 @@ body {
 
 /* LUNCH TRACKER */
 .lunchwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
-/* Kid toggle */
-.lunch-toggle { display:flex; gap:8px; padding:10px 12px; background:var(--header-bg); border-bottom:1px solid var(--border); flex-shrink:0; }
-.lunch-tab {
-  flex:1; padding:8px; border-radius:9px; border:1px solid var(--border);
-  background:var(--bg); font-size:13px; font-weight:600; cursor:pointer;
-  font-family:var(--font); color:var(--muted); transition:all 0.12s;
-  display:flex; align-items:center; justify-content:center; gap:6px;
-}
-.lunch-tab.active { color:white; border-color:transparent; }
-/* Weekly grid */
-.lunch-grid { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-.lunch-grid-days { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:10px 10px 0; flex-shrink:0; }
-.lunch-day-hdr {
-  text-align:center; font-size:10px; font-weight:700; text-transform:uppercase;
-  letter-spacing:0.07em; color:var(--muted); padding-bottom:6px;
-  border-bottom:2px solid var(--border);
-}
-.lunch-day-hdr.today { color:var(--today-ring); border-color:var(--today-ring); }
-.lunch-day-hdr .lunch-day-num { font-size:16px; font-weight:400; font-family:'DM Serif Display',serif; display:block; margin-top:2px; color:var(--text); }
-.lunch-cells { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; padding:8px 10px; flex:1; overflow-y:auto; align-content:start; }
+.lunch-grid { flex:1; display:flex; flex-direction:column; overflow:hidden; padding:10px; gap:12px; }
+.lunch-grid-days { display:grid; grid-template-columns:90px repeat(5,1fr); gap:8px; flex-shrink:0; }
+.lunch-day-hdr { text-align:center; padding-bottom:8px; border-bottom:2px solid var(--border); }
+.lunch-day-hdr.today { border-color:var(--today-ring); }
+.lunch-day-hdr .lunch-day-dow { display:block; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.07em; color:var(--muted); }
+.lunch-day-hdr.today .lunch-day-dow { color:var(--today-ring); }
+.lunch-day-hdr .lunch-day-num { display:block; font-size:12px; font-weight:600; color:var(--text); margin-top:2px; }
+.lunch-row { display:grid; grid-template-columns:90px repeat(5,1fr); gap:8px; }
+.lunch-row-lbl { display:flex; align-items:center; justify-content:flex-end; font-size:15px; font-weight:700; padding-right:10px; }
 .lunch-cell {
   background:var(--bg); border:1px solid var(--border); border-radius:10px;
-  padding:10px 8px; min-height:70px; cursor:pointer;
-  display:flex; flex-direction:column; gap:4px;
-  transition:box-shadow 0.12s; position:relative;
+  padding:10px 8px; min-height:72px; cursor:pointer;
+  display:flex; flex-direction:column; gap:5px; transition:box-shadow 0.12s;
 }
 .lunch-cell:active { box-shadow:var(--shadow); }
 .lunch-cell.today { border-color:var(--today-ring); border-width:2px; }
 .lunch-cell.empty { align-items:center; justify-content:center; }
-.lunch-cell-plus { font-size:24px; color:var(--border); line-height:1; }
-.lunch-cell-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:2px; }
-.lunch-cell-name { font-size:11px; font-weight:500; line-height:1.3; flex:1; }
-.lunch-cell-row { display:flex; align-items:flex-start; gap:6px; }
-/* Picker overlay */
+.lunch-cell-plus { font-size:28px; color:var(--border); line-height:1; }
+.lunch-cell-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+.lunch-cell-name { font-size:13px; font-weight:600; line-height:1.35; color:var(--text); }
+/* Picker — centered */
 .lunch-picker-overlay {
   position:fixed; inset:0; z-index:550; background:rgba(0,0,0,0.25);
-  display:flex; align-items:flex-end; justify-content:center;
-}
-.lunch-picker {
-  background:var(--bg); border-radius:16px 16px 0 0;
-  width:100%; max-width:600px; max-height:80vh;
-  box-shadow:0 -8px 40px rgba(0,0,0,0.15);
-  display:flex; flex-direction:column; overflow:hidden;
-  animation:slideUp 0.2s ease;
-}
-@keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
-.lunch-picker-hd {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 16px 10px; border-bottom:1px solid var(--border); flex-shrink:0;
-}
-.lunch-picker-title { font-size:15px; font-weight:600; }
-.lunch-picker-close {
-  width:28px; height:28px; border-radius:7px; border:none;
-  background:var(--sidebar-bg); cursor:pointer; font-size:14px; color:var(--muted);
   display:flex; align-items:center; justify-content:center;
 }
-.lunch-picker-body { overflow-y:auto; padding:10px 12px; }
-.lunch-option-section { font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin:8px 0 6px; }
-.lunch-opts { display:flex; flex-direction:column; gap:6px; }
-.lunch-opt {
-  display:flex; align-items:center; gap:10px;
-  padding:12px 14px; border-radius:10px; border:1px solid var(--border);
-  background:var(--bg); cursor:pointer; transition:background 0.1s;
-  font-size:13px; font-weight:500; font-family:var(--font); text-align:left;
+.lunch-picker {
+  background:var(--bg); border-radius:16px;
+  width:420px; max-width:92vw; max-height:80vh;
+  box-shadow:0 20px 60px rgba(0,0,0,0.2);
+  display:flex; flex-direction:column; overflow:hidden;
+  animation:peekIn 0.15s ease;
 }
-.lunch-opt:hover { background:var(--sidebar-bg); }
+.lunch-picker-hd {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:16px 18px 12px; border-bottom:1px solid var(--border); flex-shrink:0;
+}
+.lunch-picker-title { font-size:16px; font-weight:700; }
+.lunch-picker-close {
+  width:32px; height:32px; border-radius:8px; border:none;
+  background:var(--sidebar-bg); cursor:pointer; font-size:16px; color:var(--muted);
+  display:flex; align-items:center; justify-content:center;
+}
+.lunch-picker-body { overflow-y:auto; padding:12px 16px 16px; }
+.lunch-option-section { font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); margin:10px 0 6px; }
+.lunch-opts { display:flex; flex-direction:column; gap:8px; }
+.lunch-opt {
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; border-radius:12px; border:1px solid var(--border);
+  background:var(--bg); cursor:pointer; transition:background 0.1s;
+  font-size:15px; font-weight:500; font-family:var(--font); text-align:left; width:100%;
+}
+.lunch-opt:hover, .lunch-opt:active { background:var(--sidebar-bg); }
 .lunch-opt.school { border-color:#c5d8f8; background:#f5f8ff; }
-.lunch-opt-icon { font-size:20px; line-height:1; flex-shrink:0; }
+.lunch-opt-icon { font-size:24px; line-height:1; flex-shrink:0; }
 .lunch-opt-name { flex:1; }
 .lunch-custom-row { display:flex; gap:8px; margin-top:8px; }
-.lunch-custom-row .fin { flex:1; }
+.lunch-custom-row .fin { flex:1; font-size:15px; padding:12px; }
 
 /* FAB */
 .fab {
@@ -978,7 +964,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.5</div>
+  <div style="font-size:9px;color:var(--muted);text-align:center;padding:4px 0 2px;opacity:0.6;user-select:none">v1.6</div>
 </nav>
 
 <div class="main">
@@ -1386,9 +1372,9 @@ function scv(v){
 }
 
 // Unified nav — arrows and Today button call these regardless of view
-function navPrev()  { appV==='tasks' ? taskNav(-1)    : navP();    }
-function navNext()  { appV==='tasks' ? taskNav(1)     : navN();    }
-function navToday() { appV==='tasks' ? taskGoToday()  : gotoday(); }
+function navPrev()  { appV==='tasks' ? taskNav(-1)   : appV==='meals' ? (lunchWeekOffset--,render()) : navP();    }
+function navNext()  { appV==='tasks' ? taskNav(1)    : appV==='meals' ? (lunchWeekOffset++,render()) : navN();    }
+function navToday() { appV==='tasks' ? taskGoToday() : appV==='meals' ? (lunchWeekOffset=0,render()) : gotoday(); }
 
 function navP(){
   if(appV==='calendar'){
@@ -2260,72 +2246,51 @@ function _listSettingsRows(){
 }
 
 function rMeals(){
-  // Get Mon–Fri dates for current week offset
   const weekDates = getLunchWeekDates();
   const todayStr  = fmt(T);
-  const kid       = lunchKid;
-  const kidColor  = mColor(kid);
-  const isCollin  = kid === 'Collin';
+  const KIDS      = ['Collin','Ava'];
 
-  // Day headers
-  const DAY_LABELS = ['Mon','Tue','Wed','Thu','Fri'];
-  const hdrs = weekDates.map((d,i) => {
-    const ds = fmt(d);
+  // Day headers: Mon Apr 7
+  const hdrs = weekDates.map(d => {
+    const ds      = fmt(d);
     const isToday = ds === todayStr;
+    const mon     = MOS[d.getMonth()];
     return `<div class="lunch-day-hdr${isToday?' today':''}">
-      ${DAY_LABELS[i]}<span class="lunch-day-num">${d.getDate()}</span>
+      <span class="lunch-day-dow">${['Mon','Tue','Wed','Thu','Fri'][weekDates.indexOf(d)]}</span>
+      <span class="lunch-day-num">${mon} ${d.getDate()}</span>
     </div>`;
   }).join('');
 
-  // Day cells
-  const cells = weekDates.map(d => {
-    const ds   = fmt(d);
-    const entry = (lunches[kid] || {})[ds];
-    const isToday = ds === todayStr;
-    if(entry){
-      const dotColor = entry.type==='school' ? '#2c6bed' : kidColor;
-      const typeIcon = entry.type==='school' ? '🏫' : '🏠';
-      return `<div class="lunch-cell${isToday?' today':''}" onclick="openLunchPicker('${ds}')">
-        <div class="lunch-cell-row">
+  // One row per kid
+  const rows = KIDS.map(kid => {
+    const color = mColor(kid);
+    const cells = weekDates.map(d => {
+      const ds      = fmt(d);
+      const entry   = (lunches[kid] || {})[ds];
+      const isToday = ds === todayStr;
+      if(entry){
+        const dotColor = entry.type==='school' ? '#2c6bed' : color;
+        const typeIcon = entry.type==='school' ? '🏫' : '🏠';
+        return `<div class="lunch-cell${isToday?' today':''}" onclick="lunchKid='${kid}';openLunchPicker('${ds}')">
           <div class="lunch-cell-dot" style="background:${dotColor}"></div>
           <div class="lunch-cell-name">${typeIcon} ${entry.name}</div>
-        </div>
+        </div>`;
+      }
+      return `<div class="lunch-cell empty${isToday?' today':''}" onclick="lunchKid='${kid}';openLunchPicker('${ds}')">
+        <div class="lunch-cell-plus">+</div>
       </div>`;
-    }
-    return `<div class="lunch-cell empty${isToday?' today':''}" onclick="openLunchPicker('${ds}')">
-      <div class="lunch-cell-plus">+</div>
+    }).join('');
+
+    return `<div class="lunch-row">
+      <div class="lunch-row-lbl" style="color:${color}">${kid}</div>
+      <div class="lunch-row-cells">${cells}</div>
     </div>`;
   }).join('');
 
-  // Week label
-  const wStart = weekDates[0], wEnd = weekDates[4];
-  const wLbl = MOS[wStart.getMonth()]+' '+wStart.getDate()+' – '+MOS[wEnd.getMonth()]+' '+wEnd.getDate();
-
   return `<div class="lunchwrap">
-    <div class="lunch-toggle">
-      <button class="lunch-tab${kid==='Collin'?' active':''}"
-        style="${kid==='Collin'?'background:'+mColor('Collin'):''}"
-        onclick="lunchKid='Collin';render()">
-        ${mColor('Collin')?'':''}C Collin
-      </button>
-      <button class="lunch-tab${kid==='Ava'?' active':''}"
-        style="${kid==='Ava'?'background:'+mColor('Ava'):''}"
-        onclick="lunchKid='Ava';render()">
-        A Ava
-      </button>
-    </div>
     <div class="lunch-grid">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;flex-shrink:0">
-        <button class="arr-btn" onclick="lunchWeekOffset--;render()">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-        <span style="font-size:13px;font-weight:600;color:var(--muted)">${wLbl}</span>
-        <button class="arr-btn" onclick="lunchWeekOffset++;render()">
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4 2l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </button>
-      </div>
       <div class="lunch-grid-days">${hdrs}</div>
-      <div class="lunch-cells">${cells}</div>
+      ${rows}
     </div>
   </div>`;
 }
