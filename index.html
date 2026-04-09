@@ -631,6 +631,29 @@ body {
 .fab:hover { transform: scale(1.07); box-shadow: 0 6px 24px rgba(44,107,237,.52); }
 .fab:active { transform: scale(0.96); }
 
+/* ASSIGN POPUP */
+.assign-popup-overlay {
+  position:fixed; inset:0; z-index:700; background:rgba(0,0,0,0.3);
+  display:flex; align-items:center; justify-content:center;
+}
+.assign-popup {
+  background:var(--bg); border-radius:16px; width:320px; max-width:88vw;
+  box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  animation:peekIn 0.15s ease; overflow:hidden;
+}
+.assign-popup-hd {
+  padding:16px 18px 10px; border-bottom:1px solid var(--border);
+}
+.assign-popup-title { font-size:15px; font-weight:700; color:#e05b30; }
+.assign-popup-sub { font-size:12px; color:var(--muted); margin-top:3px; }
+.assign-popup-body { padding:14px 18px 18px; }
+.assign-popup-who { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+.assign-popup-btn {
+  flex:1; padding:11px; border-radius:10px;
+  background:var(--today-ring); color:white; border:none;
+  font-size:14px; font-weight:600; cursor:pointer; font-family:var(--font);
+}
+
 /* DAY PEEK (month-view day popup) */
 .day-peek-overlay {
   position:fixed; inset:0; z-index:550;
@@ -964,7 +987,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v1.9</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.1</div>
 </nav>
 
 <div class="main">
@@ -1037,7 +1060,7 @@ body {
 </div>
 
 <script>
-const T=new Date();
+let T=new Date();
 let cur=new Date(T), appV='calendar', calV='threeday';
 
 // Weather state — declared here so render() can reference them on first call
@@ -1523,7 +1546,14 @@ function updateNowBar(){
   }
 }
 
-setInterval(() => { if(appV !== 'lists' && appV !== 'settings') updateNowBar(); }, 60000);
+setInterval(() => {
+  const prev = fmt(T);
+  T = new Date();
+  const now  = fmt(T);
+  // If the date rolled over midnight, re-render to move the today indicator
+  if(now !== prev) render();
+  if(appV !== 'lists' && appV !== 'settings') updateNowBar();
+}, 60000);
 
 
 function wstart(d,ww){
@@ -1857,8 +1887,14 @@ function rTasks(){
   const visibleFor = (t, who) => {
     if(!whoArr(t).includes(who)) return false;
     if(!t.recur){
-      if(t.date === d) return true;
-      if(!t.date) return true; // anytime
+      if(t.date === d) return true;       // specific date task: show on its date
+      if(!t.date){
+        // Anytime task: show on today (if not done), OR on any day it was completed
+        if((t.doneOn||[]).includes(d)) return true;  // show on completion date
+        if((t.doneOn||[]).length === 0) return true;  // not yet done: show on all days (until completed)
+        // Done on other date(s): only show on those dates, not today
+        return false;
+      }
       return false;
     }
     const base = new Date((t.date||fmt(T))+'T12:00:00');
@@ -1895,7 +1931,6 @@ function rTasks(){
   // For recurring tasks, done is tracked per-date in doneOn[]
   // Quarterly tasks use quarter key ("2026-Q2"); other recur use the date string
   function isDoneOn(t, date){
-    if(!t.recur) return t.done;
     if(t.recur === 'quarterly') return (t.doneOn||[]).includes(qKey(date));
     return (t.doneOn||[]).includes(date);
   }
@@ -1983,22 +2018,20 @@ function toggleT(id){
   const t = tasks.find(t => t.id === id);
   if(!t) return;
 
-  // Recurring tasks track completion per-date; one-off tasks use plain boolean
-  if(t.recur){
-    if(!t.doneOn) t.doneOn = [];
-    const key = t.recur === 'quarterly'
-      ? `${new Date(taskDate+'T12:00:00').getFullYear()}-Q${Math.floor(new Date(taskDate+'T12:00:00').getMonth()/3)+1}`
-      : taskDate;
-    const idx = t.doneOn.indexOf(key);
-    if(idx === -1) t.doneOn.push(key);
-    else t.doneOn.splice(idx, 1);
-  } else {
-    t.done = !t.done;
-  }
+  // All tasks now track completion per-date in doneOn[]
+  // This ensures completed tasks only show as done on the day they were completed
+  if(!t.doneOn) t.doneOn = [];
+  const key = t.recur === 'quarterly'
+    ? `${new Date(taskDate+'T12:00:00').getFullYear()}-Q${Math.floor(new Date(taskDate+'T12:00:00').getMonth()/3)+1}`
+    : taskDate;
+  const idx = t.doneOn.indexOf(key);
+  if(idx === -1) t.doneOn.push(key);
+  else t.doneOn.splice(idx, 1);
 
-  const isNowDone = t.recur
-    ? (() => { const key = t.recur==='quarterly' ? `${new Date(taskDate+'T12:00:00').getFullYear()}-Q${Math.floor(new Date(taskDate+'T12:00:00').getMonth()/3)+1}` : taskDate; return (t.doneOn||[]).includes(key); })()
-    : t.done;
+  // Keep t.done in sync for backwards compatibility
+  t.done = t.doneOn.length > 0;
+
+  const isNowDone = (t.doneOn||[]).includes(key);
 
   if(isNowDone){
     const section = t.timeOfDay || 'anytime';
@@ -2007,7 +2040,11 @@ function toggleT(id){
       if(!whoArr(tk).includes(who)) return false;
       if(!tk.recur){
         if(tk.date===d) return true;
-        if(!tk.date) return true;
+        if(!tk.date){
+          if((tk.doneOn||[]).includes(d)) return true;
+          if((tk.doneOn||[]).length === 0) return true;
+          return false;
+        }
         return false;
       }
       const base = new Date((tk.date||fmt(T))+'T12:00:00');
@@ -2024,7 +2061,7 @@ function toggleT(id){
     const taskDoneKey = (tk, date) => tk.recur==='quarterly'
       ? `${new Date(date+'T12:00:00').getFullYear()}-Q${Math.floor(new Date(date+'T12:00:00').getMonth()/3)+1}`
       : date;
-    const taskDone = tk => tk.recur ? (tk.doneOn||[]).includes(taskDoneKey(tk,d)) : tk.done;
+    const taskDone = tk => (tk.doneOn||[]).includes(taskDoneKey(tk,d));
     whoArr(t).forEach(who => {
       const sectionTasks = tasks.filter(tk => isVisible(tk, who) && (tk.timeOfDay||'anytime') === section);
       if(sectionTasks.length > 0 && sectionTasks.every(tk => taskDone(tk))){
@@ -2585,7 +2622,7 @@ function ppHtml(sel){
   return `<div class="ppicker" style="flex-wrap:wrap;gap:6px">${pickable.map(m=>`<div class="ppick${selArr.includes(m.name)?' sel':''}" style="background:${selArr.includes(m.name)?m.color:m.bg};color:${selArr.includes(m.name)?'#fff':m.color};border:2px solid ${m.color}" data-p="${m.name}" onclick="pickP(this,'${m.name}')" title="${m.name}">${m.name.charAt(0)}</div>`).join('')}</div>
   <div style="font-size:10px;color:var(--muted);margin-top:4px">Tap to toggle — multiple allowed</div>`;
 }
-window._selPeople = ['Mom'];
+window._selPeople = [];
 function pickP(el, n){
   if(window._selPeople.includes(n)){
     if(window._selPeople.length > 1) window._selPeople = window._selPeople.filter(x=>x!==n);
@@ -2773,7 +2810,7 @@ function openAdd(){
 }
 
 function addEvent(){
-  window._selPeople = ['Mom'];
+  window._selPeople = [];
   const ds=fmt(cur);
   document.getElementById('mttl').textContent='New Event';
   document.getElementById('mbd').innerHTML=`
@@ -2797,7 +2834,7 @@ function addEvent(){
     </div>
     <div class="fld"><label class="flbl">Location</label><input class="fin" id="eloc2" type="text" placeholder="Optional"></div>
     <div class="fld"><label class="flbl">Description</label><textarea class="fin" id="edesc" rows="3" placeholder="Notes, details…" style="resize:vertical;min-height:60px"></textarea></div>
-    <div class="fld"><label class="flbl">Who</label>${ppHtml(['Mom'])}</div>`;
+    <div class="fld"><label class="flbl">Who <span id="who-required" style="color:#e05b30;font-size:10px;font-weight:700;display:none">* required</span></label>${ppHtml([])}</div>`;
   // Wire start time → end time auto-advance after modal renders
   setTimeout(()=>{
     const es = document.getElementById('es');
@@ -2822,6 +2859,22 @@ function addEvent(){
     const multiOpen = document.getElementById('multiday-fields').style.display!=='none';
     const startDate = multiOpen ? (document.getElementById('edate2').value||document.getElementById('edate').value) : document.getElementById('edate').value;
     const endDate = multiOpen ? (document.getElementById('eenddate').value||startDate) : startDate;
+
+    // Validate person assigned
+    if(!window._selPeople || window._selPeople.length === 0){
+      const req = document.getElementById('who-required');
+      if(req) req.style.display = 'inline';
+      // Show assign popup
+      showAssignPopup({
+        title:t, startDate, endDate,
+        time:document.getElementById('es').value+':00',
+        end:document.getElementById('ee').value+':00',
+        loc:(document.getElementById('eloc2')?.value||'').trim(),
+        desc:(document.getElementById('edesc')?.value||'').trim(),
+      });
+      return;
+    }
+
     evs.push({
       id:Date.now(), title:t,
       date:startDate, endDate:endDate,
@@ -2857,7 +2910,7 @@ function toggleMultiDay(){
 function _taskModalHtml(t){
   // t = existing task for edit, null for new
   const isEdit   = !!t;
-  const initWho  = isEdit ? whoArr(t) : [members.find(m=>m.name!=='Zorro')?.name||'Mom'];
+  const initWho  = isEdit ? whoArr(t) : [];
   window._selPeople = [...initWho];
   const hasRecur = isEdit && !!t.recur;
   const hasDate  = isEdit ? !!t.date : true;
@@ -2951,12 +3004,97 @@ function toggleDow(btn, day){
   btn.classList.toggle('sel');
 }
 
+// Assign popup — shown when user tries to save without selecting a person
+function showAssignPopup(pendingData){
+  document.querySelectorAll('.assign-popup-overlay').forEach(el=>el.remove());
+
+  const overlay = document.createElement('div');
+  overlay.className = 'assign-popup-overlay';
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+
+  let tempPeople = [];
+
+  const pickable = members.filter(m=>m.name!=='Zorro');
+  const peopleHtml = pickable.map(m =>
+    `<div class="ppick" id="ap-${m.name}"
+      style="background:${m.bg};color:${m.color};border:2px solid ${m.color}"
+      data-name="${m.name}"
+      onclick="apToggle(this,'${m.name}')">${m.name.charAt(0)}</div>`
+  ).join('');
+
+  overlay.innerHTML = `<div class="assign-popup">
+    <div class="assign-popup-hd">
+      <div class="assign-popup-title">⚠️ Who is this for?</div>
+      <div class="assign-popup-sub">"${pendingData.title}" needs at least one person assigned.</div>
+    </div>
+    <div class="assign-popup-body">
+      <div class="assign-popup-who" id="ap-people">${peopleHtml}</div>
+      <button class="assign-popup-btn" id="ap-save">Assign &amp; Save</button>
+    </div>
+  </div>`;
+
+  document.body.appendChild(overlay);
+
+  // Toggle selection
+  window.apToggle = (el, name) => {
+    const idx = tempPeople.indexOf(name);
+    if(idx > -1){
+      tempPeople.splice(idx, 1);
+      el.style.background = members.find(m=>m.name===name).bg;
+      el.style.color      = members.find(m=>m.name===name).color;
+      el.style.fontWeight = '500';
+    } else {
+      tempPeople.push(name);
+      el.style.background = members.find(m=>m.name===name).color;
+      el.style.color      = 'white';
+      el.style.fontWeight = '700';
+    }
+  };
+
+  // Save button
+  overlay.querySelector('#ap-save').onclick = () => {
+    if(tempPeople.length === 0) return;
+    overlay.remove();
+    window._selPeople = tempPeople;
+
+    if(pendingData._isTask){
+      tasks.push({
+        id:Date.now(), title:pendingData.title, done:false,
+        date:pendingData.date, recur:pendingData.recur,
+        recurN:pendingData.recurN||1, recurDays:pendingData.recurDays||[],
+        timeOfDay:pendingData.timeOfDay||'', who:[...tempPeople],
+        doneOn:[],
+      });
+      closeM(); render(); ghScheduleSave();
+    } else {
+      evs.push({
+        id:Date.now(), title:pendingData.title,
+        date:pendingData.startDate, endDate:pendingData.endDate,
+        time:pendingData.time, end:pendingData.end,
+        who:[...tempPeople],
+        loc:pendingData.loc||'', desc:pendingData.desc||'',
+      });
+      closeM(); render();
+    }
+  };
+}
+
 function addTask(){
   document.getElementById('mttl').textContent = 'New Task';
   document.getElementById('mbd').innerHTML = _taskModalHtml(null);
   window._save = () => {
     const title = document.getElementById('ttl').value.trim();
     if(!title) return;
+    if(!window._selPeople || window._selPeople.length === 0){
+      showAssignPopup({_isTask:true, title,
+        date: document.getElementById('t-has-date').checked ? (document.getElementById('tdate').value||taskDate) : '',
+        recur: document.getElementById('t-has-recur').checked ? document.getElementById('trecur').value : '',
+        recurN: parseInt(document.getElementById('t-interval')?.value)||1,
+        recurDays: [...document.querySelectorAll('#t-dow-picker .dow-btn.sel')].map(b=>parseInt(b.getAttribute('onclick').match(/\d+/)[0])),
+        timeOfDay: document.getElementById('ttod')?.value||'',
+      });
+      return;
+    }
     const hasDate  = document.getElementById('t-has-date').checked;
     const hasRecur = document.getElementById('t-has-recur').checked;
     const date     = hasDate ? (document.getElementById('tdate').value||taskDate) : '';
@@ -2968,7 +3106,7 @@ function addTask(){
                     .map(b => parseInt(b.getAttribute('onclick').match(/\d+/)[0]));
     }
     const timeOfDay = document.getElementById('ttod')?.value || '';
-    tasks.push({id:Date.now(), title, done:false, date:hasRecur?'':date, recur, recurN, recurDays, timeOfDay, who:[...window._selPeople]});
+    tasks.push({id:Date.now(), title, done:false, date:date, recur, recurN, recurDays, timeOfDay, who:[...window._selPeople]});
     closeM(); render(); ghScheduleSave();
   };
   openM();
@@ -2992,7 +3130,7 @@ function editTask(id){
       recurDays = [...document.querySelectorAll('#t-dow-picker .dow-btn.sel')]
                     .map(b => parseInt(b.getAttribute('onclick').match(/\d+/)[0]));
     }
-    t.title = title; t.date = hasRecur?'':date; t.recur = recur;
+    t.title = title; t.date = date; t.recur = recur;
     t.recurN = recurN; t.recurDays = recurDays; t.who = [...window._selPeople];
     t.timeOfDay = document.getElementById('ttod')?.value || '';
     closeM(); render(); ghScheduleSave();
