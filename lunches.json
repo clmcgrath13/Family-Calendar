@@ -25,9 +25,14 @@
     "2026-04-15": {
       "name": "Fluffy Buttermilk Pancakes, Juicy Breakfast Sausages, Emoji Fries",
       "type": "school"
+    },
+    "2026-04-16": {
+      "name": "Pasta with Mariners sauce",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Pasta with Mariners sauce",
     "Bagel"
   ]
 }
