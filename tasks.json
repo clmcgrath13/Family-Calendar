@@ -172,5 +172,19 @@
       "Dad",
       "Mom"
     ]
+  },
+  {
+    "id": 1775744075613,
+    "title": "Take out recycling (bottles & cans)",
+    "done": false,
+    "date": "2026-04-09",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad",
+      "Mom"
+    ]
   }
 ]
