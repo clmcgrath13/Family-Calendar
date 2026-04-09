@@ -17,6 +17,13 @@
     "2026-04-13": {
       "name": "Chicken Tenders, BBQ Baked Beans, Fresh Dinner Roll",
       "type": "school"
+    },
+    "2026-04-14": {
+      "name": "Bagel",
+      "type": "custom"
     }
-  }
+  },
+  "_avaCustoms": [
+    "Bagel"
+  ]
 }
