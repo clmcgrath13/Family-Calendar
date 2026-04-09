@@ -987,7 +987,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.1</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.3</div>
 </nav>
 
 <div class="main">
@@ -1886,6 +1886,8 @@ function rTasks(){
 
   const visibleFor = (t, who) => {
     if(!whoArr(t).includes(who)) return false;
+    // Skip explicitly excluded dates
+    if(t.skipDates && t.skipDates.includes(d)) return false;
     if(!t.recur){
       if(t.date === d) return true;       // specific date task: show on its date
       if(!t.date){
@@ -1900,31 +1902,52 @@ function rTasks(){
     const base = new Date((t.date||fmt(T))+'T12:00:00');
     const cur  = new Date(d+'T12:00:00');
     const n    = t.recurN || 1;
-    if(t.recur === 'daily'){
-      const diffDays = Math.round((cur - base) / 86400000);
-      return diffDays >= 0 && diffDays % n === 0;
+    // Stop recurring from recurEnd date onwards
+    if(t.recurEnd && d >= t.recurEnd) return false;
+
+    // Helper: does this recurring task naturally fire on date ds?
+    const firesOn = (ds) => {
+      const c = new Date(ds+'T12:00:00');
+      if(c < base) return false;
+      if(t.recur === 'daily'){ const diff=Math.round((c-base)/86400000); return diff>=0&&diff%n===0; }
+      if(t.recur === 'weekly'){ const diff=Math.round((c-base)/86400000); return diff>=0&&diff%(n*7)===0; }
+      if(t.recur === 'monthly') return c>=base&&c.getDate()===base.getDate()&&((c.getFullYear()-base.getFullYear())*12+c.getMonth()-base.getMonth())%n===0;
+      if(t.recur === 'quarterly'){ const qs=new Date(c.getFullYear(),Math.floor(c.getMonth()/3)*3,1); return c>=qs; }
+      if(t.recur === 'yearly') return c>=base&&c.getDate()===base.getDate()&&c.getMonth()===base.getMonth()&&(c.getFullYear()-base.getFullYear())%n===0;
+      if(t.recur === 'custom'&&t.recurDays?.length) return t.recurDays.includes(c.getDay());
+      return false;
+    };
+
+    // stayUntilDone: show every day from the most recent fire date until it's completed
+    if(t.stayUntilDone){
+      if(cur < base) return false;
+      // Walk back from d to find the most recent occurrence date
+      let mostRecent = null;
+      const check = new Date(cur);
+      for(let i=0; i<400; i++){  // max 400 days lookback
+        const ds = fmt(check);
+        if(firesOn(ds)){ mostRecent = ds; break; }
+        check.setDate(check.getDate()-1);
+        if(check < base) break;
+      }
+      if(!mostRecent) return false;
+      // If completed on or after mostRecent, only show on the completion date(s)
+      const completedAfter = (t.doneOn||[]).filter(dd => dd >= mostRecent);
+      if(completedAfter.length > 0) return completedAfter.includes(d);
+      // Not completed yet — show every day from mostRecent up to today
+      return d >= mostRecent && d <= fmt(T);
     }
-    if(t.recur === 'weekly'){
-      const diffDays = Math.round((cur - base) / 86400000);
-      return diffDays >= 0 && diffDays % (n * 7) === 0;
-    }
-    if(t.recur === 'monthly'){
-      return cur >= base && cur.getDate() === base.getDate() &&
-        ((cur.getFullYear() - base.getFullYear()) * 12 + cur.getMonth() - base.getMonth()) % n === 0;
-    }
+
+    if(t.recur === 'daily'){ const diffDays = Math.round((cur - base) / 86400000); return diffDays >= 0 && diffDays % n === 0; }
+    if(t.recur === 'weekly'){ const diffDays = Math.round((cur - base) / 86400000); return diffDays >= 0 && diffDays % (n * 7) === 0; }
+    if(t.recur === 'monthly'){ return cur >= base && cur.getDate() === base.getDate() && ((cur.getFullYear() - base.getFullYear()) * 12 + cur.getMonth() - base.getMonth()) % n === 0; }
     if(t.recur === 'quarterly'){
-      // Visible for the entire quarter (Jan–Mar, Apr–Jun, Jul–Sep, Oct–Dec)
       if(cur < base) return false;
       const qStart = new Date(cur.getFullYear(), Math.floor(cur.getMonth()/3)*3, 1);
       return cur >= qStart;
     }
-    if(t.recur === 'yearly'){
-      return cur >= base && cur.getDate() === base.getDate() &&
-        cur.getMonth() === base.getMonth() &&
-        (cur.getFullYear() - base.getFullYear()) % n === 0;
-    }
-    if(t.recur === 'custom' && t.recurDays?.length)
-      return t.recurDays.includes(cur.getDay());
+    if(t.recur === 'yearly'){ return cur >= base && cur.getDate() === base.getDate() && cur.getMonth() === base.getMonth() && (cur.getFullYear() - base.getFullYear()) % n === 0; }
+    if(t.recur === 'custom' && t.recurDays?.length) return t.recurDays.includes(cur.getDay());
     return false;
   };
 
@@ -2997,6 +3020,14 @@ function _taskModalHtml(t){
         <label class="flbl">On these days</label>
         <div class="dow-picker" id="t-dow-picker">${dowBtns}</div>
       </div>
+      <div class="fld" style="margin-top:6px">
+        <div class="tog-wrap">
+          <label class="tog"><input type="checkbox" id="t-stay-until-done" ${isEdit&&t.stayUntilDone?'checked':''}>
+            <span class="tog-slider"></span></label>
+          <span style="font-size:13px;color:var(--muted)">Keep showing until completed</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px;margin-left:48px">If unchecked, task disappears after its scheduled day</div>
+      </div>
     </div>`;
 }
 
@@ -3059,11 +3090,12 @@ function showAssignPopup(pendingData){
 
     if(pendingData._isTask){
       tasks.push({
-        id:Date.now(), title:pendingData.title, done:false,
+        id:Date.now(), title:pendingData.title, done:false, doneOn:[],
         date:pendingData.date, recur:pendingData.recur,
         recurN:pendingData.recurN||1, recurDays:pendingData.recurDays||[],
-        timeOfDay:pendingData.timeOfDay||'', who:[...tempPeople],
-        doneOn:[],
+        timeOfDay:pendingData.timeOfDay||'',
+        stayUntilDone:pendingData.stayUntilDone||false,
+        who:[...tempPeople],
       });
       closeM(); render(); ghScheduleSave();
     } else {
@@ -3092,6 +3124,7 @@ function addTask(){
         recurN: parseInt(document.getElementById('t-interval')?.value)||1,
         recurDays: [...document.querySelectorAll('#t-dow-picker .dow-btn.sel')].map(b=>parseInt(b.getAttribute('onclick').match(/\d+/)[0])),
         timeOfDay: document.getElementById('ttod')?.value||'',
+        stayUntilDone: document.getElementById('t-has-recur')?.checked && (document.getElementById('t-stay-until-done')?.checked||false),
       });
       return;
     }
@@ -3106,7 +3139,8 @@ function addTask(){
                     .map(b => parseInt(b.getAttribute('onclick').match(/\d+/)[0]));
     }
     const timeOfDay = document.getElementById('ttod')?.value || '';
-    tasks.push({id:Date.now(), title, done:false, date:date, recur, recurN, recurDays, timeOfDay, who:[...window._selPeople]});
+    const stayUntilDone = hasRecur && (document.getElementById('t-stay-until-done')?.checked || false);
+    tasks.push({id:Date.now(), title, done:false, doneOn:[], date, recur, recurN, recurDays, timeOfDay, stayUntilDone, who:[...window._selPeople]});
     closeM(); render(); ghScheduleSave();
   };
   openM();
@@ -3130,10 +3164,21 @@ function editTask(id){
       recurDays = [...document.querySelectorAll('#t-dow-picker .dow-btn.sel')]
                     .map(b => parseInt(b.getAttribute('onclick').match(/\d+/)[0]));
     }
-    t.title = title; t.date = date; t.recur = recur;
-    t.recurN = recurN; t.recurDays = recurDays; t.who = [...window._selPeople];
-    t.timeOfDay = document.getElementById('ttod')?.value || '';
-    closeM(); render(); ghScheduleSave();
+    const newData = {
+      title, date, recur, recurN, recurDays,
+      who: [...window._selPeople],
+      timeOfDay: document.getElementById('ttod')?.value || '',
+      stayUntilDone: recur ? (document.getElementById('t-stay-until-done')?.checked||false) : false,
+    };
+
+    // If recurring, ask scope
+    if(t.recur){
+      closeM();
+      showTaskScopePrompt('edit', t, newData);
+    } else {
+      Object.assign(t, newData);
+      closeM(); render(); ghScheduleSave();
+    }
   };
   // Add delete button to footer
   setTimeout(()=>{
@@ -3144,14 +3189,110 @@ function editTask(id){
       del.textContent = 'Delete';
       del.style.cssText = 'color:#c44;border:1px solid #f5c5c5;margin-right:auto';
       del.onclick = () => {
-        tasks = tasks.filter(tk => tk.id !== id);
-        closeM(); render(); ghScheduleSave();
+        if(t.recur){
+          closeM();
+          showTaskScopePrompt('delete', t, null);
+        } else {
+          tasks = tasks.filter(tk => tk.id !== id);
+          closeM(); render(); ghScheduleSave();
+        }
       };
       ft.insertBefore(del, ft.firstChild);
     }
   }, 0);
   openM();
 }
+
+// Prompt: edit/delete just this occurrence, or all remaining
+function showTaskScopePrompt(action, t, newData){
+  document.querySelectorAll('.scope-prompt-overlay').forEach(el=>el.remove());
+
+  const isDelete = action === 'delete';
+  const overlay  = document.createElement('div');
+  overlay.className = 'assign-popup-overlay scope-prompt-overlay';
+  overlay.onclick = e => { if(e.target===overlay) overlay.remove(); };
+
+  const d = new Date(taskDate+'T12:00:00');
+  const dateLbl = d.toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+
+  overlay.innerHTML = `<div class="assign-popup">
+    <div class="assign-popup-hd">
+      <div class="assign-popup-title">${isDelete?'Delete':'Edit'} "${t.title}"</div>
+      <div class="assign-popup-sub">Choose which occurrences to ${isDelete?'delete':'update'}.</div>
+    </div>
+    <div class="assign-popup-body" style="display:flex;flex-direction:column;gap:10px">
+      <button class="lunch-opt" id="scope-this" style="border-color:var(--border)">
+        <span class="lunch-opt-icon">${isDelete?'🗑️':'✏️'}</span>
+        <div class="lunch-opt-name">
+          <div style="font-weight:700">${isDelete?'Delete':'Edit'} this occurrence</div>
+          <div style="font-size:11px;color:var(--muted)">${dateLbl} only</div>
+        </div>
+      </button>
+      <button class="lunch-opt" id="scope-all" style="border-color:#f5c5c5;${isDelete?'color:#c44':''}">
+        <span class="lunch-opt-icon">${isDelete?'🗑️':'✏️'}</span>
+        <div class="lunch-opt-name">
+          <div style="font-weight:700">${isDelete?'Delete':'Edit'} all remaining</div>
+          <div style="font-size:11px;color:var(--muted)">${dateLbl} and all future occurrences</div>
+        </div>
+      </button>
+      <button class="btn btn-s" id="scope-cancel" style="margin-top:2px">Cancel</button>
+    </div>
+  </div>`;
+
+  document.body.appendChild(overlay);
+
+  overlay.querySelector('#scope-cancel').onclick = () => overlay.remove();
+
+  overlay.querySelector('#scope-this').onclick = () => {
+    overlay.remove();
+    if(isDelete){
+      // Add this date to skipDates so visibleFor skips it
+      if(!t.skipDates) t.skipDates = [];
+      if(!t.skipDates.includes(taskDate)) t.skipDates.push(taskDate);
+    } else {
+      // Create a one-off exception task for this date
+      // Skip this date on the original
+      if(!t.skipDates) t.skipDates = [];
+      if(!t.skipDates.includes(taskDate)) t.skipDates.push(taskDate);
+      // Add one-off copy with edits applied
+      tasks.push({
+        ...t,
+        id: Date.now(),
+        recur: '',
+        recurN: 1,
+        recurDays: [],
+        stayUntilDone: false,
+        skipDates: [],
+        doneOn: [],
+        done: false,
+        date: taskDate,
+        ...newData,
+        recur: '',
+      });
+    }
+    render(); ghScheduleSave();
+  };
+
+  overlay.querySelector('#scope-all').onclick = () => {
+    overlay.remove();
+    if(isDelete){
+      // If taskDate is the first occurrence, delete entirely
+      // Otherwise, set an endDate so it stops at the day before taskDate
+      if(taskDate <= (t.date||'9999')){
+        tasks = tasks.filter(tk => tk.id !== t.id);
+      } else {
+        t.recurEnd = taskDate; // stop recurring from this date onwards
+      }
+    } else {
+      // Apply all edits to the task, keep recur but update from taskDate
+      Object.assign(t, newData);
+      t.date = taskDate; // restart from this occurrence
+      t.doneOn = (t.doneOn||[]).filter(d => d < taskDate); // clear future completions
+    }
+    render(); ghScheduleSave();
+  };
+}
+
 
 function addListItem(){
   const currentId = lists[_focusedList]?.id;
