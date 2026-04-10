@@ -346,5 +346,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775828441251,
+    "title": "Clean Zorro's Water Bowl",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-12",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
