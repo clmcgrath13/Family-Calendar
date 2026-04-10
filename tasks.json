@@ -295,49 +295,15 @@
     ]
   },
   {
-    "id": 1775784054230,
-    "title": "Take out the recycling (cardboard)",
+    "id": 1775826072227,
+    "title": "Fix muffler",
     "done": false,
-    "doneOn": [],
-    "date": "2026-04-16",
-    "recur": "weekly",
-    "recurN": 2,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Mom",
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775818905626,
-    "title": "Set Alexa to volume 3 in the morning",
-    "done": false,
-    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "",
-    "stayUntilDone": false,
     "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775820350305,
-    "title": "Take the garbage out",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-04-11",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Mom",
       "Dad"
     ]
   }
