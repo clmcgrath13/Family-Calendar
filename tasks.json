@@ -324,5 +324,21 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775820350305,
+    "title": "Take the garbage out",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-11",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Mom",
+      "Dad"
+    ]
   }
 ]
