@@ -361,5 +361,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775828477429,
+    "title": "Change Zorro's Water Filter",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-19",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
