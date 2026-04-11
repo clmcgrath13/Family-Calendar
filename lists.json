@@ -28,24 +28,7 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [
-      {
-        "t": "Sweet potatos",
-        "d": false
-      },
-      {
-        "t": "Frozen broccoli",
-        "d": false
-      },
-      {
-        "t": "Rice",
-        "d": false
-      },
-      {
-        "t": "eggs",
-        "d": false
-      }
-    ]
+    "items": []
   },
   {
     "id": 1775936985913,
