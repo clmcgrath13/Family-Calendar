@@ -191,7 +191,7 @@
   {
     "id": 1775744191897,
     "title": "Fix hot tub cover",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -200,7 +200,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-04-11"
+    ]
   },
   {
     "id": 1775755960905,
@@ -493,7 +495,7 @@
   },
   {
     "id": 1775922913717,
-    "title": "Set up 50Ã¢ÂÂ pitchers mound in backyard",
+    "title": "Set up 50ÃÂ¢ÃÂÃÂ pitchers mound in backyard",
     "done": false,
     "doneOn": [],
     "date": "",
