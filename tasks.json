@@ -380,8 +380,10 @@
   {
     "id": 1775916499918,
     "title": "Clean your room",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-11"
+    ],
     "date": "2026-04-11",
     "recur": "",
     "recurN": 1,
@@ -420,66 +422,6 @@
     "stayUntilDone": false,
     "who": [
       "Ava"
-    ]
-  },
-  {
-    "id": 1775918012029,
-    "title": "Clean the basement workbench area",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1775918022548,
-    "title": "Clean up the legos",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1775918055692,
-    "title": "Clean up workbench in garage",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1775918073745,
-    "title": "Put rocks from driveway in the woods",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
     ]
   }
 ]
