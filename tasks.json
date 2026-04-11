@@ -305,7 +305,7 @@
   {
     "id": 1775826092780,
     "title": "Declutter Master Bathroom",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -314,6 +314,9 @@
     "who": [
       "Mom",
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-11"
     ]
   },
   {
