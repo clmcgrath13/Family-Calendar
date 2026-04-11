@@ -68,6 +68,10 @@
       {
         "t": "Mexican cheese",
         "d": false
+      },
+      {
+        "t": "String cheese",
+        "d": false
       }
     ]
   },
