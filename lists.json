@@ -52,6 +52,10 @@
       {
         "t": "Burgers",
         "d": false
+      },
+      {
+        "t": "Hot dogs",
+        "d": false
       }
     ]
   },
