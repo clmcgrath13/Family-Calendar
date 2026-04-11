@@ -104,6 +104,10 @@
       {
         "t": "Blueberries",
         "d": false
+      },
+      {
+        "t": "Rice",
+        "d": false
       }
     ]
   },
