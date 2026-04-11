@@ -1149,7 +1149,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1404,15 +1404,11 @@ function attachMobSwipe(el, onPrev, onNext){
     const cy = e.touches[0].clientY;
     dx = cx - sx;
     const dy = cy - sy;
-
-    // Decide direction once we have 8px of movement
     if(!decided && (Math.abs(dx)>8 || Math.abs(dy)>8)){
       decided = true;
       isHoriz = Math.abs(dx) > Math.abs(dy);
     }
     if(!isHoriz) return;
-
-    // Live drag — follow the finger, fade slightly
     el.style.transform = `translateX(${dx}px)`;
     el.style.opacity   = String(1 - Math.abs(dx)/W * 0.3);
   }, {signal:sig, passive:true});
@@ -1421,22 +1417,21 @@ function attachMobSwipe(el, onPrev, onNext){
     if(!dragging) return;
     dragging = false;
     if(!isHoriz || Math.abs(dx) < 30){
-      // Snap back
       el.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
       el.style.transform  = '';
       el.style.opacity    = '';
       return;
     }
-    // Animate out then call callback
-    const dir = dx < 0 ? -1 : 1;
+    const goNext = dx < 0; // swipe left = go to next
+    // Slide out in correct direction
     el.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
-    el.style.transform  = `translateX(${dir * -W}px)`;
+    el.style.transform  = `translateX(${goNext ? -W : W}px)`;
     el.style.opacity    = '0';
     setTimeout(()=>{
       el.style.transition = '';
       el.style.transform  = '';
       el.style.opacity    = '';
-      if(dx < 0) onNext(); else onPrev();
+      if(goNext) onNext(); else onPrev();
     }, 180);
   }, {signal:sig, passive:true});
 
@@ -1448,11 +1443,33 @@ function attachMobSwipe(el, onPrev, onNext){
   }, {signal:sig, passive:true});
 }
 
-// List swipe: switches _focusedList index and re-renders
+// Slide the content div in from a direction after a render
+function mobSlideIn(el, fromRight){
+  if(!el) return;
+  const W = window.innerWidth;
+  el.style.transition = 'none';
+  el.style.transform  = `translateX(${fromRight ? W : -W}px)`;
+  el.style.opacity    = '0';
+  // Force reflow then animate in
+  el.getBoundingClientRect();
+  el.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
+  el.style.transform  = '';
+  el.style.opacity    = '';
+}
+
+// List swipe: wrap-around, full-page slide
 function attachMobListSwipe(el){
   attachMobSwipe(el,
-    ()=>{ if(_focusedList>0){ _focusedList--; render(); } },
-    ()=>{ if(_focusedList<lists.length-1){ _focusedList++; render(); } }
+    ()=>{
+      _focusedList = (_focusedList - 1 + lists.length) % lists.length;
+      render();
+      mobSlideIn(document.getElementById('content'), false);
+    },
+    ()=>{
+      _focusedList = (_focusedList + 1) % lists.length;
+      render();
+      mobSlideIn(document.getElementById('content'), true);
+    }
   );
 }
 // ── End mobile swipe helpers ──────────────────────────────────────
@@ -1765,7 +1782,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.3</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -1911,8 +1928,11 @@ function render(preserveScroll){
     const savedScroll = taskCols ? taskCols.scrollLeft : 0;
     c.innerHTML=rTasks();
     if(savedScroll > 0){
-      const newCols = c.querySelector('.task-cols');
-      if(newCols) newCols.scrollLeft = savedScroll;
+      // Use rAF to wait for layout before restoring scroll
+      requestAnimationFrame(()=>{
+        const newCols = c.querySelector('.task-cols');
+        if(newCols){ newCols.scrollLeft = savedScroll; }
+      });
     }
     return;
   }
@@ -1923,7 +1943,10 @@ function render(preserveScroll){
   }
   if(appV==='meals'){
     c.innerHTML=rMeals();
-    if(window.innerWidth<=600) attachMobSwipe(c, ()=>{ lunchWeekOffset--; render(); }, ()=>{ lunchWeekOffset++; render(); });
+    if(window.innerWidth<=600) attachMobSwipe(c,
+      ()=>{ lunchWeekOffset--; render(); mobSlideIn(document.getElementById('content'), false); },
+      ()=>{ lunchWeekOffset++; render(); mobSlideIn(document.getElementById('content'), true); }
+    );
     return;
   }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
@@ -1964,8 +1987,8 @@ function render(preserveScroll){
       drawNow();
       saved!==null ? (document.querySelector('.daybody').scrollTop=saved) : scrollToNow();
       if(window.innerWidth<=600) attachMobSwipe(c,
-        ()=>{ cur.setDate(cur.getDate()-1); render(); },
-        ()=>{ cur.setDate(cur.getDate()+1); render(); }
+        ()=>{ cur.setDate(cur.getDate()-1); render(); mobSlideIn(document.getElementById('content'), false); },
+        ()=>{ cur.setDate(cur.getDate()+1); render(); mobSlideIn(document.getElementById('content'), true); }
       );
     },0);
     return;
