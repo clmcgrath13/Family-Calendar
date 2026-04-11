@@ -148,7 +148,14 @@
       {
         "t": "Pasta",
         "d": false
+      },
+      {
+        "t": "seltzer",
+        "d": false
       }
+    ],
+    "_history": [
+      "seltzer"
     ]
   },
   {
