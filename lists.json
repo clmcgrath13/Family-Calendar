@@ -40,6 +40,10 @@
       {
         "t": "Butter",
         "d": false
+      },
+      {
+        "t": "Cream",
+        "d": false
       }
     ]
   },
