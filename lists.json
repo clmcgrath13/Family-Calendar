@@ -30,62 +30,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Mozzarella Cheese",
-        "d": false
-      },
-      {
-        "t": "Mexican cheese",
-        "d": false
-      },
-      {
-        "t": "String cheese",
-        "d": false
-      },
-      {
-        "t": "Yogurt smoothie",
-        "d": false
-      },
-      {
-        "t": "Yogurt",
-        "d": false
-      },
-      {
-        "t": "Oranges",
-        "d": false
-      },
-      {
-        "t": "Strawberries",
-        "d": false
-      },
-      {
-        "t": "Butter",
-        "d": false
-      },
-      {
-        "t": "Milk",
-        "d": false
-      },
-      {
-        "t": "Cream",
-        "d": false
-      },
-      {
-        "t": "Wraps",
-        "d": false
-      },
-      {
-        "t": "Beef broth",
-        "d": false
-      },
-      {
-        "t": "Chicken broth",
-        "d": false
-      },
-      {
-        "t": "Tomato sauce",
-        "d": false
-      },
-      {
         "t": "Seltzer",
         "d": false
       },
