@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.8</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.0</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.8</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.0</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2620,7 +2620,10 @@ function rLists(){
       <div class="licheck${it.d?' done':''}" onclick="toggleI(${fl.id},${idx})">
         ${it.d?`<svg width="13" height="13" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
       </div>
-      <div class="litxt${it.d?' done':''}" onclick="startInlineEdit(${fl.id},${idx})">${it.t}</div>
+      <div class="litxt${it.d?' done':''}">${it.t}</div>
+      <button class="litem-menu" onclick="startInlineEdit(${fl.id},${idx})" title="Edit">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Delete" style="color:#c44">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
@@ -2681,7 +2684,10 @@ function laddCommit(){
     div.id = `litem-${fl.id}-${idx}`;
     div.innerHTML = `
       <div class="licheck" onclick="toggleI(${fl.id},${idx})"></div>
-      <div class="litxt" onclick="startInlineEdit(${fl.id},${idx})">${t}</div>
+      <div class="litxt">${t}</div>
+      <button class="litem-menu" onclick="startInlineEdit(${fl.id},${idx})" title="Edit">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
       <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Delete" style="color:#c44">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>`;
@@ -2781,11 +2787,26 @@ function attachInlineTypeahead(inp){
 }
 
 // Wire typeahead to the add bar after lists render
+// Items from the current list only (for empty-state suggestions)
+function getCurrentListItems(){
+  const fl = lists[_focusedList];
+  if(!fl) return [];
+  const seen = new Set();
+  const items = [];
+  for(let j = fl.items.length-1; j >= 0; j--){
+    const t = fl.items[j].t.trim();
+    const key = t.toLowerCase();
+    if(!seen.has(key)){ seen.add(key); items.push(t); }
+  }
+  return items;
+}
+
 function attachLaddTypeahead(){
   const input = document.getElementById('ladd-input');
   const drop  = document.getElementById('ladd-drop');
   if(!input || !drop) return;
-  const allItems = getAllPastItems();
+  const allItems     = getAllPastItems();       // all lists — used when typing
+  const currentItems = getCurrentListItems();  // this list only — used on empty focus
 
   function highlight(text, query){
     if(!query) return text;
@@ -2796,9 +2817,12 @@ function attachLaddTypeahead(){
 
   function showSuggestions(query){
     const q = query.trim().toLowerCase();
+    // Empty field: suggest from current list only (recent items in this list)
+    // Typing: suggest from all lists matching the query
+    const pool   = q ? allItems : currentItems;
     const matches = q
-      ? allItems.filter(t=>t.toLowerCase().includes(q)).slice(0,8)
-      : allItems.slice(0,5);
+      ? pool.filter(t=>t.toLowerCase().includes(q)).slice(0,8)
+      : pool.slice(0,5);
     if(!matches.length){ drop.style.display='none'; return; }
     drop.innerHTML = matches.map(t=>`<div class="typeahead-item" data-val="${t.replace(/"/g,'&quot;')}">
       <span class="typeahead-item-icon">${q?'🔍':'🕐'}</span><span>${highlight(t,q)}</span></div>`).join('');
