@@ -96,6 +96,10 @@
       {
         "t": "Strawberries",
         "d": false
+      },
+      {
+        "t": "Oranges",
+        "d": false
       }
     ]
   },
