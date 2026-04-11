@@ -72,6 +72,10 @@
       {
         "t": "String cheese",
         "d": false
+      },
+      {
+        "t": "Yogurt smoothie",
+        "d": false
       }
     ]
   },
