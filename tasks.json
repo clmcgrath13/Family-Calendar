@@ -391,5 +391,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1775916514788,
+    "title": "Clean your room",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-11",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Ava"
+    ]
   }
 ]
