@@ -406,5 +406,20 @@
     "who": [
       "Ava"
     ]
+  },
+  {
+    "id": 1775916538325,
+    "title": "Clean dance studio",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-11",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Ava"
+    ]
   }
 ]
