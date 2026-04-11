@@ -48,6 +48,10 @@
       {
         "t": "Ground beef",
         "d": false
+      },
+      {
+        "t": "Burgers",
+        "d": false
       }
     ]
   },
