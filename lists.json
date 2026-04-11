@@ -1,1 +1,25 @@
-{}
+[
+  {
+    "id": 1775919128457,
+    "name": "Home Depot",
+    "icon": "🗒️",
+    "items": [
+      {
+        "t": "Rigid Foam Insulation",
+        "d": false
+      }
+    ]
+  },
+  {
+    "id": 1775919131565,
+    "name": "Costco",
+    "icon": "🗒️",
+    "items": []
+  },
+  {
+    "id": 1775919137615,
+    "name": "Stop n Shop",
+    "icon": "🗒️",
+    "items": []
+  }
+]
