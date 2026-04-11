@@ -6,15 +6,15 @@
     "items": [
       {
         "t": "Rigid Foam Insulation",
-        "d": false
+        "d": true
       },
       {
         "t": "2\" pipe clamp",
-        "d": false
+        "d": true
       },
       {
         "t": "2.5\" pipe clamp",
-        "d": false
+        "d": true
       }
     ]
   },
