@@ -453,5 +453,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1775919257796,
+    "title": "Clean your workbench area in the basement",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
