@@ -92,6 +92,10 @@
       {
         "t": "String Cheese",
         "d": false
+      },
+      {
+        "t": "Strawberries",
+        "d": false
       }
     ]
   },
