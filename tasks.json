@@ -205,7 +205,7 @@
   {
     "id": 1775755960905,
     "title": "Review Finances in Quicken",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -214,6 +214,9 @@
     "who": [
       "Dad",
       "Mom"
+    ],
+    "doneOn": [
+      "2026-04-11"
     ]
   },
   {
@@ -490,7 +493,7 @@
   },
   {
     "id": 1775922913717,
-    "title": "Set up 50â pitchers mound in backyard",
+    "title": "Set up 50Ã¢ÂÂ pitchers mound in backyard",
     "done": false,
     "doneOn": [],
     "date": "",
