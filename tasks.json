@@ -436,5 +436,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1775918022548,
+    "title": "Clean up the legos",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
