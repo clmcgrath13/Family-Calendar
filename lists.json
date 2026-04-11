@@ -136,6 +136,10 @@
       {
         "t": "Potatos",
         "d": false
+      },
+      {
+        "t": "Sweet potatos",
+        "d": false
       }
     ]
   },
