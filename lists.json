@@ -112,6 +112,10 @@
       {
         "t": "Frozen Veggies",
         "d": false
+      },
+      {
+        "t": "Potatos",
+        "d": false
       }
     ]
   },
