@@ -76,6 +76,10 @@
       {
         "t": "Yogurt smoothie",
         "d": false
+      },
+      {
+        "t": "Yogurt",
+        "d": false
       }
     ]
   },
