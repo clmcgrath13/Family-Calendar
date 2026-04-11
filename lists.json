@@ -36,6 +36,10 @@
       {
         "t": "Pasta",
         "d": false
+      },
+      {
+        "t": "Chicken",
+        "d": false
       }
     ]
   },
