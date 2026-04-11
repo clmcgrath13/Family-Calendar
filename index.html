@@ -716,6 +716,24 @@ body {
 .day-peek-ev-title { font-size:13px; font-weight:500; }
 .day-peek-ev-time { font-size:11px; color:var(--muted); margin-top:1px; }
 
+/* TYPEAHEAD */
+.typeahead-wrap { position:relative; }
+.typeahead-list {
+  position:absolute; top:calc(100% + 2px); left:0; right:0; z-index:800;
+  background:var(--bg); border:1px solid var(--border); border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12); overflow:hidden;
+  max-height:220px; overflow-y:auto;
+}
+.typeahead-item {
+  padding:11px 14px; font-size:14px; cursor:pointer;
+  border-bottom:1px solid var(--border); color:var(--text);
+  transition:background 0.1s; display:flex; align-items:center; gap:8px;
+}
+.typeahead-item:last-child { border-bottom:none; }
+.typeahead-item:hover, .typeahead-item:active { background:var(--sidebar-bg); }
+.typeahead-item-icon { font-size:12px; color:var(--muted); flex-shrink:0; }
+.typeahead-match { color:var(--today-ring); font-weight:700; }
+
 /* MODAL */
 .overlay {
   position: fixed; inset: 0; background: rgba(0,0,0,0.28);
@@ -1149,7 +1167,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.5</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.6</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1783,7 +1801,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.5</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.6</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2673,8 +2691,9 @@ function editItemPrompt(lid, idx){
   document.getElementById('mttl').textContent = 'Edit Item';
   document.getElementById('mbd').innerHTML = `
     <div class="fld"><label class="flbl">Item</label>
-      <input class="fin" id="ieditnm" type="text" value="${it.t}">
+      <input class="fin" id="ieditnm" type="text" value="${it.t.replace(/"/g,'&quot;')}" autocomplete="off">
     </div>`;
+  attachTypeahead('ieditnm');
   window._save = () => {
     const val = document.getElementById('ieditnm').value.trim();
     if(val) it.t = val;
@@ -3806,12 +3825,101 @@ function showTaskScopePrompt(action, t, newData){
 }
 
 
+// ── List item typeahead ───────────────────────────────────────────
+// Collects all past items across all lists, deduped, most recent first
+function getAllPastItems(){
+  const seen = new Set();
+  const items = [];
+  // Iterate lists in reverse so most recently added tend to come first
+  for(let i = lists.length-1; i >= 0; i--){
+    const l = lists[i];
+    for(let j = l.items.length-1; j >= 0; j--){
+      const t = l.items[j].t.trim();
+      const key = t.toLowerCase();
+      if(!seen.has(key)){ seen.add(key); items.push(t); }
+    }
+  }
+  return items; // already deduped, most-recent-first
+}
+
+// Attach typeahead to an input element inside a container
+// inputId: id of the <input>, wrapperId: id of the wrapper div
+function attachTypeahead(inputId){
+  setTimeout(()=>{
+    const input = document.getElementById(inputId);
+    if(!input) return;
+
+    // Wrap input in a relative-positioned div
+    const wrap = document.createElement('div');
+    wrap.className = 'typeahead-wrap';
+    input.parentNode.insertBefore(wrap, input);
+    wrap.appendChild(input);
+
+    // Dropdown element
+    const drop = document.createElement('div');
+    drop.className = 'typeahead-list';
+    drop.style.display = 'none';
+    wrap.appendChild(drop);
+
+    const allItems = getAllPastItems();
+
+    function highlight(text, query){
+      if(!query) return text;
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if(idx === -1) return text;
+      return text.slice(0,idx)
+        + `<span class="typeahead-match">${text.slice(idx,idx+query.length)}</span>`
+        + text.slice(idx+query.length);
+    }
+
+    function showSuggestions(query){
+      const q = query.trim().toLowerCase();
+      let matches;
+      if(!q){
+        matches = allItems.slice(0,5);
+      } else {
+        matches = allItems.filter(t => t.toLowerCase().includes(q)).slice(0,8);
+      }
+      if(!matches.length){ drop.style.display='none'; return; }
+      drop.innerHTML = matches.map(t=>`
+        <div class="typeahead-item" data-val="${t.replace(/"/g,'&quot;')}">
+          <span class="typeahead-item-icon">${q?'🔍':'🕐'}</span>
+          <span>${highlight(t, q)}</span>
+        </div>`).join('');
+      drop.style.display = 'block';
+      // Wire clicks
+      drop.querySelectorAll('.typeahead-item').forEach(el=>{
+        el.addEventListener('mousedown', e=>{
+          e.preventDefault(); // don't blur input
+          input.value = el.dataset.val;
+          drop.style.display = 'none';
+          input.focus();
+        });
+        el.addEventListener('touchstart', e=>{
+          e.preventDefault();
+          input.value = el.dataset.val;
+          drop.style.display = 'none';
+          input.focus();
+        }, {passive:false});
+      });
+    }
+
+    input.addEventListener('focus', ()=> showSuggestions(input.value));
+    input.addEventListener('input', ()=> showSuggestions(input.value));
+    input.addEventListener('blur',  ()=> setTimeout(()=>{ drop.style.display='none'; }, 150));
+    // Show on focus if field already has content (edit mode)
+    if(input.value) showSuggestions(input.value);
+  }, 50); // wait for modal to render
+}
+// ── End typeahead ─────────────────────────────────────────────────
+
 function addListItem(){
   const currentId = lists[_focusedList]?.id;
   document.getElementById('mttl').textContent='Add to List';
   document.getElementById('mbd').innerHTML=`
     <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}"${l.id===currentId?' selected':''}>${LIST_ICON_LABELS[l.icon]||'List'} — ${l.name}</option>`).join('')}</select></div>
-    <div class="fld"><label class="flbl">Item</label><input class="fin" id="litem" type="text" placeholder="Add item…"></div>`;
+    <div class="fld"><label class="flbl">Item</label><input class="fin" id="litem" type="text" placeholder="Add item…" autocomplete="off"></div>`;
+  attachTypeahead('litem');
   window._save=()=>{
     const lid=parseInt(document.getElementById('lsel').value);
     const t=document.getElementById('litem').value.trim();
