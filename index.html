@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.4</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.5</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.4</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.5</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4389,7 +4389,7 @@ async function fetchWeather(dateStr){
   wxError    = false;
   try {
     const url = `https://api.open-meteo.com/v1/forecast?latitude=${WX_LAT}&longitude=${WX_LON}`
-      + `&hourly=temperature_2m,precipitation_probability,weathercode,windspeed_10m,relativehumidity_2m`
+      + `&hourly=temperature_2m,precipitation_probability,precipitation,weathercode,windspeed_10m,relativehumidity_2m`
       + `&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_probability_max,sunrise,sunset`
       + `&temperature_unit=fahrenheit&windspeed_unit=mph`
       + `&timezone=America%2FNew_York&forecast_days=14`;
@@ -4412,6 +4412,7 @@ async function fetchWeather(dateStr){
           time    : data.hourly.time[i].slice(11,16),
           temp    : Math.round(data.hourly.temperature_2m[i]),
           prec    : data.hourly.precipitation_probability[i],
+          mm      : data.hourly.precipitation[i] || 0,
           code    : data.hourly.weathercode[i],
           wind    : Math.round(data.hourly.windspeed_10m[i]),
           humidity: data.hourly.relativehumidity_2m[i],
@@ -4665,20 +4666,24 @@ function injectWeatherStrip(numDays){
   dates.forEach((d, di) => {
     const dayHours = wxCache[d]?.hours || [];
     dayHours.forEach((h, hi) => {
-      if(hi < hoursPerDay) allPoints.push({ x: toX(di, hi), y: toY(h.temp), temp: h.temp, code: h.code, prec: h.prec||0 });
+      if(hi < hoursPerDay) allPoints.push({ x: toX(di, hi), y: toY(h.temp), temp: h.temp, code: h.code, prec: h.prec||0, mm: h.mm||0 });
     });
   });
 
   if(allPoints.length < 2) return;
 
-  // Precipitation bars — opacity = prec/100, only show if prec >= 25
+  // Precipitation bars — height based on mm of precipitation, opacity based on % chance
+  // Only show bar if chance >= 25%. Scale: cap at 5mm = full GRAPH_H height
   const barW = Math.max(1, colW / hoursPerDay - 1);
+  const MM_MAX = 5; // mm at which bar reaches full graph height
   const precipBars = allPoints.map(p => {
     if(p.prec < 25) return '';
     const opacity = (p.prec / 100).toFixed(2);
-    const barH = GRAPH_H; // full height bar — opacity conveys intensity
-    const bx   = (p.x - barW/2).toFixed(1);
-    return `<rect x="${bx}" y="0" width="${barW.toFixed(1)}" height="${GRAPH_H}" fill="#60a5fa" opacity="${opacity}" rx="1"/>`;
+    const barH = Math.min((p.mm / MM_MAX) * GRAPH_H, GRAPH_H);
+    if(barH < 1) return ''; // no meaningful amount, skip even if chance >= 25
+    const bx = (p.x - barW/2).toFixed(1);
+    const by = (GRAPH_H - barH).toFixed(1);
+    return `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#60a5fa" opacity="${opacity}" rx="1"/>`;
   }).join('');
 
   // Temp curve
