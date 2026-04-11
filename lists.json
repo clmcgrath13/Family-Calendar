@@ -96,6 +96,10 @@
       {
         "t": "Milk",
         "d": false
+      },
+      {
+        "t": "Cream",
+        "d": false
       }
     ]
   },
