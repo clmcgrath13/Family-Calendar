@@ -108,6 +108,10 @@
       {
         "t": "Beef broth",
         "d": false
+      },
+      {
+        "t": "Chicken broth",
+        "d": false
       }
     ]
   },
