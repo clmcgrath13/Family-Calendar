@@ -1107,7 +1107,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.6</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.7</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1289,26 +1289,31 @@ let _schoolMenuCache = {}; // dateStr → [{name, category}]
 function fmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
 // ── Mobile swipe helpers ──────────────────────────────────────────
-// Generic horizontal swipe: calls onLeft (swipe left = next) or onRight (swipe right = prev)
-// Ignores vertical scrolls and small movements
+let _swipeController = null; // AbortController — cancels old listeners before adding new ones
+
 function attachMobSwipe(el, onPrev, onNext){
-  let sx=0, sy=0, moved=false;
+  // Cancel any previous swipe listeners to prevent accumulation
+  if(_swipeController) _swipeController.abort();
+  _swipeController = new AbortController();
+  const sig = { signal: _swipeController.signal, passive: true };
+
+  let sx=0, sy=0, tracking=false;
+
   el.addEventListener('touchstart', e=>{
-    sx=e.touches[0].clientX;
-    sy=e.touches[0].clientY;
-    moved=false;
-  }, {passive:true});
-  el.addEventListener('touchmove', e=>{
-    if(Math.abs(e.touches[0].clientX-sx)>10) moved=true;
-  }, {passive:true});
+    sx = e.touches[0].clientX;
+    sy = e.touches[0].clientY;
+    tracking = true;
+  }, sig);
+
   el.addEventListener('touchend', e=>{
-    if(!moved) return;
-    const dx=e.changedTouches[0].clientX-sx;
-    const dy=e.changedTouches[0].clientY-sy;
-    // Only trigger if horizontal movement dominates (not a scroll)
-    if(Math.abs(dx)<40 || Math.abs(dy)>Math.abs(dx)*0.8) return;
-    if(dx<0) onNext(); else onPrev();
-  }, {passive:true});
+    if(!tracking) return;
+    tracking = false;
+    const dx = e.changedTouches[0].clientX - sx;
+    const dy = e.changedTouches[0].clientY - sy;
+    // Require 50px horizontal, horizontal must dominate vertical
+    if(Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.75) return;
+    if(dx < 0) onNext(); else onPrev();
+  }, sig);
 }
 
 // List swipe: switches _focusedList index and re-renders
@@ -1751,7 +1756,17 @@ function render(preserveScroll){
   // Auto-disable weatherMode if we navigate away from a time-grid view
   if(weatherMode && (!isTimeView || appV!=='calendar')) weatherMode = false;
   if(appV==='settings'){ c.innerHTML=rSettings(); return; }
-  if(appV==='tasks'){ c.innerHTML=rTasks(); return; }
+  if(appV==='tasks'){
+    // Preserve horizontal scroll position across re-renders (CSS snap)
+    const taskCols = document.querySelector('.task-cols');
+    const savedScroll = taskCols ? taskCols.scrollLeft : 0;
+    c.innerHTML=rTasks();
+    if(savedScroll > 0){
+      const newCols = c.querySelector('.task-cols');
+      if(newCols) newCols.scrollLeft = savedScroll;
+    }
+    return;
+  }
   if(appV==='lists'){
     c.innerHTML=rLists();
     if(window.innerWidth<=600) attachMobListSwipe(c);
