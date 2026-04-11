@@ -485,6 +485,20 @@ body {
 
 /* LISTS */
 /* ── Lists ───────────────────────────────────────────────────── */
+/* List icon picker */
+.list-icon-pick { display:flex; gap:8px; flex-wrap:wrap; }
+.list-icon-opt {
+  width:48px; height:48px; border-radius:10px; border:2px solid var(--border);
+  background:var(--bg); cursor:pointer; display:flex; align-items:center;
+  justify-content:center; color:var(--muted); transition:all 0.12s;
+  flex-shrink:0;
+}
+.list-icon-opt:hover { border-color:var(--today-ring); color:var(--today-ring); }
+.list-icon-opt.sel {
+  border-color:var(--today-ring); background:#dceeff; color:var(--today-ring);
+}
+/* List icon display in header and cells */
+.list-icon-svg { display:inline-flex; align-items:center; justify-content:center; }
 .listwrap {
   height: 100%; display: flex; flex-direction: column; overflow: hidden;
 }
@@ -525,7 +539,7 @@ body {
 .ldrop-item:last-child { border-bottom: none; }
 .ldrop-item:hover { background: var(--sidebar-bg); }
 .ldrop-item.active { background: #f0f6ff; }
-.ldrop-item-icon { font-size: 18px; flex-shrink: 0; }
+.ldrop-item-icon { width:20px; height:20px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; color:var(--muted); }
 .ldrop-item-name { font-size: 14px; font-weight: 500; flex: 1; }
 .ldrop-item-menu {
   width: 30px; height: 30px; border-radius: 7px; border: none;
@@ -924,6 +938,8 @@ body {
 .set-cols { display: flex; gap: 20px; align-items: flex-start; }
 .set-col-left { flex: 1; min-width: 0; }
 .set-col-right { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+/* Save/Cancel footer — inline on desktop */
+.set-footer { display:flex; gap:10px; padding-top:16px; border-top:1px solid var(--border); margin-top:20px; }
 .set-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
 .member-row {
   display: flex; align-items: center; gap: 12px;
@@ -1063,6 +1079,34 @@ body {
   .assign-popup { width: 96vw !important; max-width: unset !important; }
   .day-peek { width: 96vw !important; max-width: unset !important; }
 
+  /* Settings — single column, sticky footer */
+  .set-cols {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+  .set-col-left, .set-col-right {
+    width: 100% !important;
+    flex: unset !important;
+  }
+  .setwrap {
+    padding: 14px 14px calc(80px + env(safe-area-inset-bottom)) !important;
+    overflow-y: auto !important;
+    height: 100% !important;
+  }
+  /* Sticky save/cancel footer on mobile */
+  .set-footer {
+    position: fixed !important;
+    bottom: calc(56px + env(safe-area-inset-bottom)) !important;
+    left: 0 !important; right: 0 !important;
+    background: var(--header-bg) !important;
+    border-top: 1px solid var(--border) !important;
+    padding: 10px 16px !important;
+    margin: 0 !important;
+    z-index: 100 !important;
+    gap: 10px !important;
+    display: flex !important;
+  }
+
   /* FAB — adjust for bottom nav */
   .fab { bottom: calc(68px + env(safe-area-inset-bottom)) !important; }
 
@@ -1107,7 +1151,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.7</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.0</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1144,7 +1188,7 @@ body {
     </div>
     <div id="tb-left-lists" style="display:none;align-items:center;position:relative">
       <button onclick="event.stopPropagation();toggleLDrop()" style="padding:4px 6px;background:transparent;border:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">
-        <span id="tb-list-icon"></span>
+        <span id="tb-list-icon" style="display:inline-flex;align-items:center;color:var(--text)"></span>
         <span id="tb-list-name"></span>
         <span id="tb-list-chevron" style="font-size:13px;color:var(--muted);font-family:var(--font);display:inline-block;transition:transform 0.2s">▾</span>
       </button>
@@ -1187,7 +1231,7 @@ body {
   <div class="content" id="content"></div>
 </div>
 
-<button class="fab" onclick="openAdd()">+</button>
+<button class="fab" id="fab" onclick="openAdd()">+</button>
 
 <div class="overlay" id="ov" onclick="ovClick(event)">
   <div class="modal">
@@ -1264,6 +1308,18 @@ let taskDate = fmt(T); // currently viewed task date
 let tasks=[];
 let lists=[];
 const MDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// Predefined list icons (SVG strings, render consistently on all devices)
+const LIST_ICONS = {
+  checklist: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  cart:      `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 3h2l2.5 9h8l2-6H6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/><circle cx="14.5" cy="15.5" r="1.5" fill="currentColor"/></svg>`,
+  tools:     `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3a4 4 0 00-3.87 5L3 14a1.41 1.41 0 002 2l6-6.13A4 4 0 0013 3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 14.5l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  beach:     `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 16c2-4 5-6 7-6s5 2 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 10V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 8l3-2 3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+};
+const LIST_ICON_KEYS = ['checklist','cart','tools','beach'];
+const LIST_ICON_LABELS = {checklist:'Checklist', cart:'Shopping', tools:'Tools', beach:'Beach'};
+const DEFAULT_LIST_ICON = 'checklist';
+
 
 // ── Lunch tracker data ───────────────────────────────────────────
 // lunches[kid][dateStr] = { name, type: 'preset'|'school'|'custom' }
@@ -1624,12 +1680,29 @@ function utb(){
   const inTasks    = appV === 'tasks';
   const inLists    = appV === 'lists';
   const inSettings = appV === 'settings';
+  const isMobile   = window.innerWidth <= 600;
   const showNow    = !inLists && !inSettings;
+  // On mobile settings: show "Settings  v2.8" in the now-bar area
+  const showMobSettings = inSettings && isMobile;
+
+  if(nowBar){
+    if(showMobSettings){
+      nowBar.style.display = 'flex';
+      nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.0</div>`;
+    } else {
+      nowBar.style.display = showNow ? 'flex' : 'none';
+      if(showNow && nowBar.querySelector('#tb-now-date') === null){
+        // Restore original now-bar content if it was replaced
+        nowBar.innerHTML = `<div id="tb-now-date" style="font-family:'DM Serif Display',serif;font-size:24px;font-weight:400;line-height:1;color:var(--text)"></div>
+          <div id="tb-now-time" style="font-size:24px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--text)"></div>
+          <div id="tb-now-season" style="font-size:20px;font-weight:400;font-family:'DM Serif Display',serif;color:var(--muted)"></div>`;
+      }
+    }
+  }
+  if(listLeft)  listLeft.style.display  = inLists  ? 'flex'   : 'none';
   const isTimeView = calV==='week'||calV==='workweek'||calV==='threeday'||calV==='day';
   const showWx     = appV==='calendar' && isTimeView;
-
-  if(nowBar)    nowBar.style.display    = showNow  ? 'flex'   : 'none';
-  if(listLeft)  listLeft.style.display  = inLists  ? 'flex'   : 'none';
   if(navCtrl)   navCtrl.style.display   = (!inLists && !inSettings) ? 'flex' : 'none';
   if(vdropWrap) vdropWrap.style.display = (appV==='calendar') ? 'flex' : 'none';
   if(syncEl)    syncEl.style.display    = (inTasks || syncEl.textContent) ? 'inline' : 'none';
@@ -1649,14 +1722,14 @@ function utb(){
     const nameEl = document.getElementById('tb-list-name');
     const chevEl = document.getElementById('tb-list-chevron');
     const dropEl = document.getElementById('ldrop');
-    if(iconEl) iconEl.textContent = fl ? fl.icon : '';
+    if(iconEl) iconEl.innerHTML = fl ? listIconSvg(fl.icon) : '';
     if(nameEl) nameEl.textContent = fl ? fl.name : '';
     if(chevEl) chevEl.style.transform = _listDropOpen ? 'rotate(180deg)' : 'rotate(0deg)';
     if(dropEl){
       dropEl.className = 'ldrop' + (_listDropOpen ? ' open' : '');
       dropEl.innerHTML = lists.map((l,i)=>
         '<div class="ldrop-item'+(i===_focusedList?' active':'')+'" onclick="focusList('+i+')">'
-        +'<span class="ldrop-item-icon">'+l.icon+'</span>'
+        +'<span class="ldrop-item-icon">'+listIconSvg(l.icon)+'</span>'
         +'<span class="ldrop-item-name">'+l.name+'</span>'
         +'<button class="ldrop-item-menu" onclick="event.stopPropagation();editListPrompt('+i+')">⋮</button>'
         +'</div>').join('')
@@ -2349,7 +2422,7 @@ function rLists(){
   // Dropdown items + Add new list at bottom
   const dropItems = lists.map((l, i) => `
     <div class="ldrop-item${i===_focusedList?' active':''}" onclick="focusList(${i})">
-      <span class="ldrop-item-icon">${l.icon}</span>
+      <span class="ldrop-item-icon">${listIconSvg(l.icon)}</span>
       <span class="ldrop-item-name">${l.name}</span>
       <button class="ldrop-item-menu" onclick="event.stopPropagation();editListPrompt(${i})">⋮</button>
     </div>`).join('') +
@@ -2393,13 +2466,38 @@ function toggleI(lid, idx){
   if(l){ l.items[idx].d = !l.items[idx].d; render(); listsScheduleSave(); }
 }
 
+// Returns HTML for the 4-icon picker; selectedKey is the currently selected icon key
+function listIconPickerHtml(selectedKey){
+  return `<div class="list-icon-pick" id="list-icon-pick">
+    ${LIST_ICON_KEYS.map(k=>`
+      <button type="button" class="list-icon-opt${k===selectedKey?' sel':''}"
+        data-icon-key="${k}" title="${LIST_ICON_LABELS[k]}"
+        onclick="listIconPickSel(this,'${k}')">
+        ${LIST_ICONS[k]}
+      </button>`).join('')}
+  </div>
+  <input type="hidden" id="ledit-icon" value="${selectedKey||DEFAULT_LIST_ICON}">`;
+}
+
+function listIconPickSel(btn, key){
+  document.querySelectorAll('#list-icon-pick .list-icon-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const inp = document.getElementById('ledit-icon');
+  if(inp) inp.value = key;
+}
+
+// Returns the SVG for a given icon key (falls back to checklist)
+function listIconSvg(key){
+  return LIST_ICONS[key] || LIST_ICONS[DEFAULT_LIST_ICON];
+}
+
 // Add a new list from the dropdown
 function newListPrompt(){
   _listDropOpen = false;
   document.getElementById('mttl').textContent = 'New List';
   document.getElementById('mbd').innerHTML = `
     <div class="fld"><label class="flbl">Icon</label>
-      <input class="fin" id="ledit-icon" type="text" placeholder="🗒️" style="font-size:20px;text-align:center;width:60px">
+      ${listIconPickerHtml(DEFAULT_LIST_ICON)}
     </div>
     <div class="fld"><label class="flbl">Name</label>
       <input class="fin" id="ledit-name" type="text" placeholder="List name">
@@ -2407,7 +2505,7 @@ function newListPrompt(){
   window._save = () => {
     const name = document.getElementById('ledit-name').value.trim();
     if(!name) return;
-    const icon = document.getElementById('ledit-icon').value.trim() || '🗒️';
+    const icon = document.getElementById('ledit-icon').value || DEFAULT_LIST_ICON;
     lists.push({ id: Date.now(), name, icon, items: [] });
     _focusedList = lists.length - 1;
     closeM(); render(); listsScheduleSave();
@@ -2421,13 +2519,13 @@ function editListPrompt(idx){
   document.getElementById('mttl').textContent = 'Edit List';
   document.getElementById('mbd').innerHTML = `
     <div class="fld"><label class="flbl">Icon</label>
-      <input class="fin" id="ledit-icon" type="text" value="${l.icon}" style="font-size:20px;text-align:center;width:60px">
+      ${listIconPickerHtml(l.icon||DEFAULT_LIST_ICON)}
     </div>
     <div class="fld"><label class="flbl">Name</label>
       <input class="fin" id="ledit-name" type="text" value="${l.name}">
     </div>`;
   window._save = () => {
-    l.icon = document.getElementById('ledit-icon').value.trim() || l.icon;
+    l.icon = document.getElementById('ledit-icon').value || DEFAULT_LIST_ICON;
     l.name = document.getElementById('ledit-name').value.trim() || l.name;
     closeM(); render(); listsScheduleSave();
   };
@@ -2483,18 +2581,30 @@ function editItemPrompt(lid, idx){
   openM();
 }
 
+function settingsIconSel(btn, key){
+  document.querySelectorAll('#new-list-icon-pick .list-icon-opt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+  const inp = document.getElementById('new-list-icon');
+  if(inp) inp.value = key;
+}
+
 function addList(){
   const iconEl = document.getElementById('new-list-icon');
   const nameEl = document.getElementById('new-list-name');
   const name = nameEl?.value.trim();
   if(!name) return;
-  const icon = iconEl?.value.trim() || '🗒️';
+  const icon = iconEl?.value || DEFAULT_LIST_ICON;
   lists.push({ id: Date.now(), name, icon, items: [] });
   _focusedList = lists.length - 1;
   if(nameEl) nameEl.value = '';
-  if(iconEl) iconEl.value = '';
+  if(iconEl) iconEl.value = DEFAULT_LIST_ICON;
+  // Reset icon selection in settings UI
+  document.querySelectorAll('#new-list-icon-pick .list-icon-opt').forEach((b,i)=>{
+    b.classList.toggle('sel', LIST_ICON_KEYS[i]===DEFAULT_LIST_ICON);
+  });
   const rows = document.getElementById('list-rows');
   if(rows) rows.innerHTML = _listSettingsRows();
+  listsScheduleSave();
 }
 
 function removeList(idx){
@@ -2958,18 +3068,20 @@ function rSettings(){
           <div id="list-rows">
             ${lists.map((l,i)=>`
               <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-                <span style="font-size:18px;flex-shrink:0">${l.icon}</span>
+                <span style="font-size:18px;flex-shrink:0;display:inline-flex;align-items:center;color:var(--muted)">${listIconSvg(l.icon)}</span>
                 <input class="fin" style="flex:1;font-size:13px;padding:8px 10px" value="${l.name}"
                   oninput="lists[${i}].name=this.value">
                 <button class="member-row-del" style="width:36px;height:36px;font-size:15px"
                   onclick="removeList(${i})">✕</button>
               </div>`).join('')}
           </div>
-          <div style="display:flex;gap:8px;margin-top:4px;align-items:center">
-            <input class="fin" id="new-list-icon" type="text" placeholder="🗒️"
-              style="width:48px;font-size:18px;padding:8px;text-align:center">
+          <div style="display:flex;gap:8px;margin-top:4px;align-items:center;flex-wrap:wrap">
+            <div class="list-icon-pick" id="new-list-icon-pick">
+              ${LIST_ICON_KEYS.map(k=>`<button type="button" class="list-icon-opt${k===DEFAULT_LIST_ICON?' sel':''}" data-icon-key="${k}" title="${LIST_ICON_LABELS[k]}" onclick="settingsIconSel(this,'${k}')">${LIST_ICONS[k]}</button>`).join('')}
+            </div>
+            <input type="hidden" id="new-list-icon" value="${DEFAULT_LIST_ICON}">
             <input class="fin" id="new-list-name" type="text" placeholder="List name"
-              style="flex:1;font-size:13px;padding:8px 10px">
+              style="flex:1;min-width:120px;font-size:13px;padding:8px 10px">
             <button class="btn btn-p" onclick="addList()" style="padding:8px 14px;font-size:13px;white-space:nowrap">Add</button>
           </div>
         </div>
@@ -2996,7 +3108,7 @@ function rSettings(){
     </div>
 
     <!-- Save / Cancel always visible at bottom -->
-    <div style="display:flex;gap:10px;padding-top:16px;border-top:1px solid var(--border);margin-top:20px">
+    <div class="set-footer">
       <button class="btn btn-s" style="flex:1;padding:12px;font-size:14px" onclick="cancelSettings()">Cancel</button>
       <button class="btn btn-p" style="flex:2;padding:12px;font-size:14px" onclick="saveSettings()">Save Changes</button>
     </div>
@@ -3548,7 +3660,7 @@ function addListItem(){
   const currentId = lists[_focusedList]?.id;
   document.getElementById('mttl').textContent='Add to List';
   document.getElementById('mbd').innerHTML=`
-    <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}"${l.id===currentId?' selected':''}>${l.icon} ${l.name}</option>`).join('')}</select></div>
+    <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}"${l.id===currentId?' selected':''}>${LIST_ICON_LABELS[l.icon]||'List'} — ${l.name}</option>`).join('')}</select></div>
     <div class="fld"><label class="flbl">Item</label><input class="fin" id="litem" type="text" placeholder="Add item…"></div>`;
   window._save=()=>{
     const lid=parseInt(document.getElementById('lsel').value);
