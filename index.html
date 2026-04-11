@@ -488,18 +488,16 @@ body {
 /* List icon picker */
 .list-icon-pick { display:flex; gap:8px; flex-wrap:wrap; }
 .list-icon-opt {
-  width:48px; height:48px; border-radius:10px; border:2px solid var(--border);
+  width:52px; height:52px; border-radius:12px; border:2px solid var(--border);
   background:var(--bg); cursor:pointer; display:flex; align-items:center;
-  justify-content:center; color:var(--muted); transition:all 0.12s;
-  flex-shrink:0;
+  justify-content:center; transition:all 0.12s; flex-shrink:0; padding:4px;
 }
-.list-icon-opt:hover { border-color:var(--today-ring); color:var(--today-ring); }
-.list-icon-opt.sel {
-  border-color:var(--today-ring); background:#dceeff; color:var(--today-ring);
-}
+.list-icon-opt:hover { border-color:var(--today-ring); transform:scale(1.05); }
+.list-icon-opt.sel { border-color:var(--today-ring); border-width:3px; box-shadow:0 0 0 3px #dceeff; }
 /* List icon display in header and cells */
 .list-icon-svg { display:inline-flex; align-items:center; justify-content:center; }
-.listwrap {
+/* ldrop icon — colored, larger */
+.ldrop-item-icon { width:24px; height:24px; flex-shrink:0; display:inline-flex; align-items:center; justify-content:center; }.listwrap {
   height: 100%; display: flex; flex-direction: column; overflow: hidden;
 }
 .lhdr {
@@ -1151,7 +1149,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.2</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.3</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1311,10 +1309,47 @@ const MDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 // Predefined list icons (SVG strings, render consistently on all devices)
 const LIST_ICONS = {
-  checklist: `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="3" width="14" height="14" rx="2.5" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10l2.5 2.5 4.5-4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  cart:      `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2 3h2l2.5 9h8l2-6H6.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="8.5" cy="15.5" r="1.5" fill="currentColor"/><circle cx="14.5" cy="15.5" r="1.5" fill="currentColor"/></svg>`,
-  tools:     `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 3a4 4 0 00-3.87 5L3 14a1.41 1.41 0 002 2l6-6.13A4 4 0 0013 3z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M15.5 14.5l-3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
-  beach:     `<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 16c2-4 5-6 7-6s5 2 7 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10 10V6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 8l3-2 3 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 16h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>`,
+  checklist: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect x="3" y="2" width="18" height="20" rx="3" fill="#4ade80"/>
+    <rect x="3" y="2" width="18" height="20" rx="3" fill="url(#cg)" opacity="0.3"/>
+    <defs><linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+    <rect x="7" y="1" width="10" height="4" rx="1.5" fill="#16a34a"/>
+    <circle cx="8" cy="3" r="1" fill="#bbf7d0"/>
+    <path d="M7 10.5l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <line x1="7" y1="15" x2="17" y2="15" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+    <line x1="7" y1="18" x2="14" y2="18" stroke="white" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+  </svg>`,
+  cart: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#60a5fa"/>
+    <rect width="24" height="24" rx="5" fill="url(#carg)" opacity="0.25"/>
+    <defs><linearGradient id="carg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+    <path d="M4 5h1.5l2.2 8h8l2-6H8" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    <circle cx="10" cy="17.5" r="1.5" fill="white"/>
+    <circle cx="15.5" cy="17.5" r="1.5" fill="white"/>
+    <path d="M4 5h1.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/>
+  </svg>`,
+  tools: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#fb923c"/>
+    <rect width="24" height="24" rx="5" fill="url(#tog)" opacity="0.25"/>
+    <defs><linearGradient id="tog" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+    <rect x="6" y="13" width="12" height="7" rx="1.5" fill="white" opacity="0.9"/>
+    <rect x="8" y="11" width="8" height="3" rx="1" fill="white" opacity="0.7"/>
+    <rect x="10" y="9" width="4" height="3" rx="1" fill="white" opacity="0.5"/>
+    <line x1="9" y1="15" x2="9" y2="19" stroke="#fb923c" stroke-width="1" opacity="0.5"/>
+    <line x1="12" y1="15" x2="12" y2="19" stroke="#fb923c" stroke-width="1" opacity="0.5"/>
+    <line x1="15" y1="15" x2="15" y2="19" stroke="#fb923c" stroke-width="1" opacity="0.5"/>
+  </svg>`,
+  beach: `<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="5" fill="#2dd4bf"/>
+    <rect width="24" height="24" rx="5" fill="url(#beg)" opacity="0.25"/>
+    <defs><linearGradient id="beg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="white"/><stop offset="1" stop-color="transparent"/></linearGradient></defs>
+    <ellipse cx="12" cy="19" rx="8" ry="2" fill="#0e7490" opacity="0.5"/>
+    <path d="M5 10 Q12 4 19 10" fill="#fbbf24" stroke="none"/>
+    <path d="M5 10 Q12 4 19 10 L12 10 Z" fill="#f59e0b" stroke="none"/>
+    <line x1="12" y1="10" x2="12" y2="19" stroke="white" stroke-width="1.8" stroke-linecap="round"/>
+    <ellipse cx="17" cy="18" rx="3" ry="1.2" fill="#fde68a" transform="rotate(-10,17,18)"/>
+    <line x1="14" y1="18.5" x2="14" y2="21" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+  </svg>`,
 };
 const LIST_ICON_KEYS = ['checklist','cart','tools','beach'];
 const LIST_ICON_LABELS = {checklist:'Checklist', cart:'Shopping', tools:'Tools', beach:'Beach'};
@@ -1730,7 +1765,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.2</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.3</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
