@@ -28,6 +28,11 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": []
+    "items": [
+      {
+        "t": "Bread",
+        "d": false
+      }
+    ]
   }
 ]
