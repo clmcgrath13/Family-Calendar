@@ -57,7 +57,7 @@
   {
     "id": 1775672431043,
     "title": "Organize the junk drawer",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -66,7 +66,9 @@
     "who": [
       "Mom"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-04-11"
+    ]
   },
   {
     "id": 1775688679226,
