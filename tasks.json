@@ -335,7 +335,7 @@
   {
     "id": 1775826152755,
     "title": "Declutter Collin's room",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -343,6 +343,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-11"
     ]
   },
   {
