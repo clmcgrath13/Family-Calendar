@@ -551,6 +551,7 @@ body {
 .litem {
   display: flex; align-items: center; gap: 12px;
   padding: 14px 16px; border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
 }
 .litem:last-child { border-bottom: none; }
 .licheck {
@@ -560,7 +561,7 @@ body {
   transition: all 0.13s;
 }
 .licheck.done { background: #22a06b; border-color: #22a06b; }
-.litxt { font-size: 15px; line-height: 1.3; flex: 1; }
+.litxt { font-size: 15px; line-height: 1.3; flex: 1; cursor: pointer; }
 .litxt.done { text-decoration: line-through; color: var(--muted); }
 .litem-menu {
   width: 30px; height: 30px; border-radius: 7px; border: none;
@@ -569,6 +570,41 @@ body {
   flex-shrink: 0; transition: background 0.1s;
 }
 .litem-menu:hover { background: var(--sidebar-bg); }
+/* Inline edit mode */
+.litem.editing { background: #f5f8ff; }
+.litem-edit-input {
+  flex: 1; font-size: 15px; border: none; outline: none;
+  background: transparent; font-family: var(--font); color: var(--text);
+  padding: 0;
+}
+/* Add bar — always visible at bottom of list */
+.ladd-bar {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-top: 1px solid var(--border);
+  background: var(--header-bg); flex-shrink: 0; position: relative;
+}
+.ladd-input {
+  flex: 1; font-size: 15px; padding: 10px 14px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: var(--bg);
+  font-family: var(--font); color: var(--text); outline: none;
+  transition: border-color 0.15s;
+}
+.ladd-input:focus { border-color: var(--today-ring); }
+.ladd-btn {
+  width: 40px; height: 40px; border-radius: 10px; border: none;
+  background: var(--today-ring); color: white; font-size: 22px; font-weight: 300;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: opacity 0.1s;
+}
+.ladd-btn:hover { opacity: 0.85; }
+/* Typeahead above add bar */
+.ladd-bar .typeahead-wrap { flex: 1; }
+.ladd-bar .typeahead-list {
+  bottom: calc(100% + 4px); top: auto;
+  border-radius: 12px;
+  max-height: 260px;
+}
+.ladd-bar .typeahead-item { padding: 13px 16px; font-size: 15px; }
 
 /* LUNCH TRACKER */
 .lunchwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
@@ -1167,7 +1203,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.6</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.7</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1706,7 +1742,7 @@ function sv(v){
   const calTabs=document.getElementById('cal-tabs');
   if(calTabs) calTabs.style.display=v==='calendar'?'flex':'none';
   const fab=document.getElementById('fab');
-  if(fab) fab.style.display=v==='settings'?'none':'flex';
+  if(fab) fab.style.display=(v==='settings'||v==='lists')?'none':'flex';
   // On mobile, calendar defaults to day view
   if(v==='calendar' && window.innerWidth<=600 && calV!=='day'){
     calV='day'; cur=new Date(T);
@@ -1801,7 +1837,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.6</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.7</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -1962,6 +1998,7 @@ function render(preserveScroll){
   }
   if(appV==='lists'){
     c.innerHTML=rLists();
+    setTimeout(attachLaddTypeahead, 30);
     if(window.innerWidth<=600) attachMobListSwipe(c);
     return;
   }
@@ -2553,7 +2590,7 @@ function rLists(){
   const fl  = lists[_focusedList];
   const rem = fl.items.filter(it => !it.d).length;
 
-  // Dropdown items + Add new list at bottom
+  // Dropdown items
   const dropItems = lists.map((l, i) => `
     <div class="ldrop-item${i===_focusedList?' active':''}" onclick="focusList(${i})">
       <span class="ldrop-item-icon">${listIconSvg(l.icon)}</span>
@@ -2565,18 +2602,33 @@ function rLists(){
       <span class="ldrop-item-name" style="color:var(--today-ring);font-weight:600">New List</span>
     </div>`;
 
-  // List items
+  // List items — tap text to inline-edit, ⋮ for delete
   const items = fl.items.map((it, idx) => `
-    <div class="litem">
+    <div class="litem" id="litem-${fl.id}-${idx}">
       <div class="licheck${it.d?' done':''}" onclick="toggleI(${fl.id},${idx})">
         ${it.d?`<svg width="13" height="13" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
       </div>
-      <div class="litxt${it.d?' done':''}">${it.t}</div>
-      <button class="litem-menu" onclick="editItemPrompt(${fl.id},${idx})">⋮</button>
+      <div class="litxt${it.d?' done':''}" onclick="startInlineEdit(${fl.id},${idx})">${it.t}</div>
+      <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Delete" style="color:#c44">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>`).join('');
 
+  const emptyMsg = fl.items.length === 0
+    ? `<div style="text-align:center;padding:48px 16px;color:var(--muted);font-size:14px">Nothing here yet.<br>Add your first item below.</div>`
+    : '';
+
   return `<div class="listwrap" onclick="closeLDrop(event)">
-    <div class="lbody">${items}</div>
+    <div class="lbody">${items}${emptyMsg}</div>
+    <div class="ladd-bar" onclick="event.stopPropagation()">
+      <div class="typeahead-wrap" style="flex:1;position:relative">
+        <input class="ladd-input" id="ladd-input" type="text"
+          placeholder="Add item…" autocomplete="off"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();laddCommit();}">
+        <div class="typeahead-list" id="ladd-drop" style="display:none;position:absolute;bottom:calc(100% + 6px);top:auto;left:0;right:0"></div>
+      </div>
+      <button class="ladd-btn" onclick="laddCommit()" title="Add">+</button>
+    </div>
   </div>`;
 }
 
@@ -2594,6 +2646,163 @@ function focusList(idx){
   _listDropOpen = false;
   render();
 }
+
+// Commit item from the add bar
+function laddCommit(){
+  const input = document.getElementById('ladd-input');
+  if(!input) return;
+  const t = input.value.trim();
+  if(!t) return;
+  const fl = lists[_focusedList];
+  if(!fl) return;
+  fl.items.push({t, d:false});
+  listsScheduleSave();
+  // Append item to DOM without full re-render (keeps keyboard open)
+  const lbody = document.querySelector('.lbody');
+  if(lbody){
+    // Remove empty message if present
+    const empty = lbody.querySelector('[style*="Nothing here"]');
+    if(empty) empty.remove();
+    const idx = fl.items.length - 1;
+    const div = document.createElement('div');
+    div.className = 'litem';
+    div.id = `litem-${fl.id}-${idx}`;
+    div.innerHTML = `
+      <div class="licheck" onclick="toggleI(${fl.id},${idx})"></div>
+      <div class="litxt" onclick="startInlineEdit(${fl.id},${idx})">${t}</div>
+      <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Delete" style="color:#c44">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>`;
+    lbody.appendChild(div);
+    // Scroll new item into view
+    div.scrollIntoView({behavior:'smooth', block:'nearest'});
+  }
+  // Clear input and dropdown, keep focus
+  input.value = '';
+  const drop = document.getElementById('ladd-drop');
+  if(drop) drop.style.display = 'none';
+  input.focus();
+}
+
+// Delete item directly (no confirm needed — swipe to undo is native behavior)
+function deleteListItem(lid, idx){
+  const l = lists.find(l => l.id === lid);
+  if(!l) return;
+  l.items.splice(idx, 1);
+  render(); listsScheduleSave();
+}
+
+// Inline edit: replace litxt div with an input
+function startInlineEdit(lid, idx){
+  const l = lists.find(l => l.id === lid);
+  if(!l) return;
+  const itemDiv = document.getElementById(`litem-${lid}-${idx}`);
+  if(!itemDiv) return;
+  const litxt = itemDiv.querySelector('.litxt');
+  if(!litxt) return;
+  const original = l.items[idx].t;
+
+  // Replace text with input
+  itemDiv.classList.add('editing');
+  const inp = document.createElement('input');
+  inp.className = 'litem-edit-input';
+  inp.type = 'text';
+  inp.value = original;
+  inp.autocomplete = 'off';
+  litxt.replaceWith(inp);
+  inp.focus();
+  inp.select();
+
+  // Attach typeahead to the inline input
+  attachInlineTypeahead(inp);
+
+  function commit(){
+    const val = inp.value.trim();
+    if(val && val !== original){
+      l.items[idx].t = val;
+      listsScheduleSave();
+    }
+    render();
+  }
+  inp.addEventListener('keydown', e=>{
+    if(e.key==='Enter'){ e.preventDefault(); commit(); }
+    if(e.key==='Escape'){ render(); } // cancel
+  });
+  inp.addEventListener('blur', ()=> setTimeout(commit, 150));
+}
+
+// Typeahead for the inline edit input (simpler — no wrapping, just a floating list)
+function attachInlineTypeahead(inp){
+  const allItems = getAllPastItems();
+  const drop = document.createElement('div');
+  drop.className = 'typeahead-list';
+  drop.style.cssText = 'position:fixed;z-index:900;width:280px;display:none';
+  document.body.appendChild(drop);
+
+  function position(){
+    const r = inp.getBoundingClientRect();
+    drop.style.left = r.left+'px';
+    drop.style.top  = (r.top - drop.offsetHeight - 4)+'px';
+    if(parseFloat(drop.style.top) < 60) drop.style.top = (r.bottom+4)+'px';
+  }
+
+  function showSuggestions(query){
+    const q = query.trim().toLowerCase();
+    const matches = q
+      ? allItems.filter(t=>t.toLowerCase().includes(q) && t!==inp.value).slice(0,6)
+      : allItems.filter(t=>t!==inp.value).slice(0,5);
+    if(!matches.length){ drop.style.display='none'; return; }
+    drop.innerHTML = matches.map(t=>`<div class="typeahead-item" data-val="${t.replace(/"/g,'&quot;')}">
+      <span class="typeahead-item-icon">${q?'🔍':'🕐'}</span><span>${t}</span></div>`).join('');
+    drop.style.display='block';
+    position();
+    drop.querySelectorAll('.typeahead-item').forEach(el=>{
+      el.addEventListener('mousedown', e=>{ e.preventDefault(); inp.value=el.dataset.val; drop.style.display='none'; inp.focus(); });
+      el.addEventListener('touchstart', e=>{ e.preventDefault(); inp.value=el.dataset.val; drop.style.display='none'; inp.focus(); },{passive:false});
+    });
+  }
+
+  inp.addEventListener('input', ()=> showSuggestions(inp.value));
+  inp.addEventListener('focus', ()=> showSuggestions(inp.value));
+  inp.addEventListener('blur',  ()=> setTimeout(()=>{ drop.remove(); },200));
+  showSuggestions(inp.value);
+}
+
+// Wire typeahead to the add bar after lists render
+function attachLaddTypeahead(){
+  const input = document.getElementById('ladd-input');
+  const drop  = document.getElementById('ladd-drop');
+  if(!input || !drop) return;
+  const allItems = getAllPastItems();
+
+  function highlight(text, query){
+    if(!query) return text;
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if(idx === -1) return text;
+    return text.slice(0,idx)+`<span class="typeahead-match">${text.slice(idx,idx+query.length)}</span>`+text.slice(idx+query.length);
+  }
+
+  function showSuggestions(query){
+    const q = query.trim().toLowerCase();
+    const matches = q
+      ? allItems.filter(t=>t.toLowerCase().includes(q)).slice(0,8)
+      : allItems.slice(0,5);
+    if(!matches.length){ drop.style.display='none'; return; }
+    drop.innerHTML = matches.map(t=>`<div class="typeahead-item" data-val="${t.replace(/"/g,'&quot;')}">
+      <span class="typeahead-item-icon">${q?'🔍':'🕐'}</span><span>${highlight(t,q)}</span></div>`).join('');
+    drop.style.display='block';
+    drop.querySelectorAll('.typeahead-item').forEach(el=>{
+      el.addEventListener('mousedown', e=>{ e.preventDefault(); input.value=el.dataset.val; drop.style.display='none'; laddCommit(); });
+      el.addEventListener('touchstart', e=>{ e.preventDefault(); input.value=el.dataset.val; drop.style.display='none'; laddCommit(); },{passive:false});
+    });
+  }
+
+  input.addEventListener('focus', ()=> showSuggestions(input.value));
+  input.addEventListener('input', ()=> showSuggestions(input.value));
+  input.addEventListener('blur',  ()=> setTimeout(()=>{ drop.style.display='none'; },150));
+}
+
+
 
 function toggleI(lid, idx){
   const l = lists.find(l => l.id === lid);
