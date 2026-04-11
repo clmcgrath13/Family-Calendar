@@ -30,22 +30,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Blueberries",
-        "d": false
-      },
-      {
-        "t": "Bananas",
-        "d": false
-      },
-      {
-        "t": "Onions",
-        "d": false
-      },
-      {
-        "t": "Potatos",
-        "d": false
-      },
-      {
         "t": "Sweet potatos",
         "d": false
       },
