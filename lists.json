@@ -40,6 +40,10 @@
       {
         "t": "Chicken",
         "d": false
+      },
+      {
+        "t": "Steak",
+        "d": false
       }
     ]
   },
