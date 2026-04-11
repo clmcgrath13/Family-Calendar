@@ -88,6 +88,10 @@
       {
         "t": "Strawberries",
         "d": false
+      },
+      {
+        "t": "Butter",
+        "d": false
       }
     ]
   },
