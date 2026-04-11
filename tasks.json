@@ -276,7 +276,7 @@
   {
     "id": 1775756069942,
     "title": "Fix Muffler",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -284,6 +284,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-11"
     ]
   },
   {
