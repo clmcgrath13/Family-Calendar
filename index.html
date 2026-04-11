@@ -1151,7 +1151,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.0</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v3.2</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1348,28 +1348,69 @@ function fmt(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0
 let _swipeController = null; // AbortController — cancels old listeners before adding new ones
 
 function attachMobSwipe(el, onPrev, onNext){
-  // Cancel any previous swipe listeners to prevent accumulation
+  // Cancel any previous swipe listeners
   if(_swipeController) _swipeController.abort();
   _swipeController = new AbortController();
-  const sig = { signal: _swipeController.signal, passive: true };
+  const sig = _swipeController.signal;
 
-  let sx=0, sy=0, tracking=false;
+  let sx=0, sy=0, dx=0, dragging=false, decided=false, isHoriz=false;
+  const W = window.innerWidth;
 
   el.addEventListener('touchstart', e=>{
     sx = e.touches[0].clientX;
     sy = e.touches[0].clientY;
-    tracking = true;
-  }, sig);
+    dx = 0; dragging = true; decided = false; isHoriz = false;
+    el.style.transition = 'none';
+  }, {signal:sig, passive:true});
+
+  el.addEventListener('touchmove', e=>{
+    if(!dragging) return;
+    const cx = e.touches[0].clientX;
+    const cy = e.touches[0].clientY;
+    dx = cx - sx;
+    const dy = cy - sy;
+
+    // Decide direction once we have 8px of movement
+    if(!decided && (Math.abs(dx)>8 || Math.abs(dy)>8)){
+      decided = true;
+      isHoriz = Math.abs(dx) > Math.abs(dy);
+    }
+    if(!isHoriz) return;
+
+    // Live drag — follow the finger, fade slightly
+    el.style.transform = `translateX(${dx}px)`;
+    el.style.opacity   = String(1 - Math.abs(dx)/W * 0.3);
+  }, {signal:sig, passive:true});
 
   el.addEventListener('touchend', e=>{
-    if(!tracking) return;
-    tracking = false;
-    const dx = e.changedTouches[0].clientX - sx;
-    const dy = e.changedTouches[0].clientY - sy;
-    // Require 50px horizontal, horizontal must dominate vertical
-    if(Math.abs(dx) < 50 || Math.abs(dy) > Math.abs(dx) * 0.75) return;
-    if(dx < 0) onNext(); else onPrev();
-  }, sig);
+    if(!dragging) return;
+    dragging = false;
+    if(!isHoriz || Math.abs(dx) < 30){
+      // Snap back
+      el.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+      el.style.transform  = '';
+      el.style.opacity    = '';
+      return;
+    }
+    // Animate out then call callback
+    const dir = dx < 0 ? -1 : 1;
+    el.style.transition = 'transform 0.18s ease, opacity 0.18s ease';
+    el.style.transform  = `translateX(${dir * -W}px)`;
+    el.style.opacity    = '0';
+    setTimeout(()=>{
+      el.style.transition = '';
+      el.style.transform  = '';
+      el.style.opacity    = '';
+      if(dx < 0) onNext(); else onPrev();
+    }, 180);
+  }, {signal:sig, passive:true});
+
+  el.addEventListener('touchcancel', ()=>{
+    dragging = false;
+    el.style.transition = 'transform 0.2s ease';
+    el.style.transform  = '';
+    el.style.opacity    = '';
+  }, {signal:sig, passive:true});
 }
 
 // List swipe: switches _focusedList index and re-renders
@@ -1399,10 +1440,10 @@ const vev=()=>evs.filter(e=>whoArr(e).some(w=>active.has(w)));
 // Reserved group-event color — not available for individual members
 const GROUP_BG   = '#dceeff';
 const GROUP_TEXT = '#1a6bb5';
-const ec=e=>whoArr(e).length>1?GROUP_TEXT:mColor(whoArr(e)[0]);
-const eb=e=>whoArr(e).length>1?GROUP_BG:mBg(whoArr(e)[0]);
+const ec=e=>whoArr(e).length!==1?GROUP_TEXT:mColor(whoArr(e)[0]);
+const eb=e=>whoArr(e).length!==1?GROUP_BG:mBg(whoArr(e)[0]);
+const eprimary=e=>whoArr(e).length===1?mColor(whoArr(e)[0]):GROUP_TEXT;
 // For border accents: always use first person's color (gives multi-person bars a meaningful stripe)
-const eprimary=e=>mColor(whoArr(e)[0]);
 
 // Striped left accent for multi-person events.
 // Uses background-image gradient instead of border-image so border-radius is preserved on all corners.
@@ -1689,7 +1730,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.0</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v3.2</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2960,7 +3001,7 @@ function mcc(ds){
   });
 
   const evHtml = dayEvs.length ? dayEvs.map(e => {
-    const color = whoArr(e).length>1 ? '#1a6bb5' : mColor(whoArr(e)[0]);
+    const color = whoArr(e).length===1 ? mColor(whoArr(e)[0]) : GROUP_TEXT;
     const timeStr = e.allDay ? 'All day' : (e.time ? fmt12(e.time)+(e.end?'–'+fmt12(e.end):'') : '');
     return `<div class="day-peek-ev" onclick="peekEditEvent('${e.id}')">
       <div class="day-peek-dot" style="background:${color}"></div>
@@ -3040,27 +3081,23 @@ function rSettings(){
       <div style="font-size:10px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Color</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">${PALETTE.map(c=>`<div class="cswatch${m.color===c?' sel':''}" style="background:${c}" onclick="draftSetColor(${i},'${c}')"></div>`).join('')}</div>
     </div>`).join('');
-  return `<div class="setwrap">
-    <div class="set-cols">
+  const addPersonRow = `
+    <div class="member-row" onclick="showAddPersonDialog()"
+      style="cursor:pointer;opacity:0.7;border-style:dashed">
+      <div class="member-row-swatch" style="background:var(--border);color:var(--muted);font-size:20px;font-weight:300">+</div>
+      <span style="flex:1;font-size:15px;padding:10px 12px;color:var(--muted)">Add Person</span>
+    </div>`;
+  return `<div class="setwrap"><div class="set-cols">
 
       <!-- Left: current members -->
       <div class="set-col-left">
         <div class="set-section-title">Family Members</div>
         <p style="font-size:11px;color:var(--muted);margin-bottom:14px">Tap the circle to change color. Changes are not saved until you tap Save.</p>
-        <div id="member-rows">${rows}</div>
+        <div id="member-rows">${rows}${addPersonRow}</div>
       </div>
 
-      <!-- Right: add member + google sync -->
+      <!-- Right: lists + google sync -->
       <div class="set-col-right">
-
-        <div class="set-card">
-          <div class="set-section-title">Add Member</div>
-          <div class="color-swatches" id="new-swatches">${newSwatches}</div>
-          <div class="add-member-row">
-            <input class="fin" id="new-member-name" type="text" placeholder="Name" style="font-size:15px;padding:10px 12px">
-            <button class="btn btn-p" onclick="draftAdd()" style="padding:10px 16px;font-size:14px;white-space:nowrap">Add</button>
-          </div>
-        </div>
 
         <div class="set-card">
           <div class="set-section-title">Lists</div>
@@ -3132,19 +3169,57 @@ function draftToggleColorPicker(idx){
 }
 function draftSetNewColor(c){
   window._draftNewColor = c;
-  document.querySelectorAll('#new-swatches .cswatch').forEach(s=>{
-    s.classList.toggle('sel', s.style.background===c || s.style.backgroundColor===c);
+  // Update both old swatches location and dialog swatches
+  ['new-swatches','add-person-swatches'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.querySelectorAll('.cswatch').forEach(s=>{
+      s.classList.toggle('sel', s.style.background===c||s.style.backgroundColor===c);
+    });
   });
 }
 function draftAdd(){
-  const nameEl = document.getElementById('new-member-name');
+  const nameEl = document.getElementById('new-member-name') || document.getElementById('add-person-name');
   const name = nameEl ? nameEl.value.trim() : '';
   if(!name || !_draft) return;
   if(_draft.find(m=>m.name.toLowerCase()===name.toLowerCase())) return;
   const color = window._draftNewColor || PALETTE[_draft.length % PALETTE.length];
   _draft.push({ name, color, bg: colorToBg(color) });
   window._draftNewColor = PALETTE[0];
+  // Close dialog if open
+  document.querySelectorAll('.add-person-overlay').forEach(el=>el.remove());
   document.getElementById('content').innerHTML = rSettings();
+}
+function showAddPersonDialog(){
+  if(!_draft) return;
+  document.querySelectorAll('.add-person-overlay').forEach(el=>el.remove());
+  window._draftNewColor = window._draftNewColor || PALETTE[_draft.length % PALETTE.length];
+  const swatches = PALETTE.map(c=>`<div class="cswatch${c===window._draftNewColor?' sel':''}" style="background:${c}" onclick="draftSetNewColor('${c}')"></div>`).join('');
+  const overlay = document.createElement('div');
+  overlay.className = 'assign-popup-overlay add-person-overlay';
+  overlay.onclick = e=>{ if(e.target===overlay) overlay.remove(); };
+  overlay.innerHTML = `<div class="assign-popup">
+    <div class="assign-popup-hd">
+      <div class="assign-popup-title" style="color:var(--text)">Add Person</div>
+      <div class="assign-popup-sub">Choose a name and color.</div>
+    </div>
+    <div class="assign-popup-body">
+      <div class="fld" style="margin-bottom:14px">
+        <label class="flbl">Name</label>
+        <input class="fin" id="add-person-name" type="text" placeholder="e.g. Grandma"
+          style="font-size:15px;padding:10px 12px" autofocus>
+      </div>
+      <div class="fld">
+        <label class="flbl">Color</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px" id="add-person-swatches">${swatches}</div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:18px">
+        <button class="btn btn-s" style="flex:1" onclick="this.closest('.add-person-overlay').remove()">Cancel</button>
+        <button class="assign-popup-btn" style="flex:2" onclick="draftAdd()">Add Person</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+  setTimeout(()=>overlay.querySelector('#add-person-name')?.focus(), 50);
 }
 function draftDel(idx){
   if(!_draft || _draft.length <= 1) return;
@@ -4311,7 +4386,7 @@ function parseGcalWho(title, desc){
     const key = match[1].toLowerCase().trim();
     if(tagMap[key]) return tagMap[key];
   }
-  return [members[0]?.name || 'Mom'];
+  return []; // no [Name] tag — unassigned, will use group color
 }
 
 function cleanGcalTitle(title){
