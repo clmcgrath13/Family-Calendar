@@ -64,6 +64,10 @@
       {
         "t": "Mozzarella Cheese",
         "d": false
+      },
+      {
+        "t": "Mexican cheese",
+        "d": false
       }
     ]
   },
