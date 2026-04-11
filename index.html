@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Family Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <script src="https://script.google.com/macros/s/AKfycbxI2nDM9s-S9-1U_jz_YfkCCUywxDgKrzjtCX0ZvXgbHUfq52W28e05_hfcn8FDDyKEFg/exec"></script>
@@ -961,6 +961,115 @@ body {
 
 /* mday-bar defined above */
 
+.mob-nav { display: none; } /* shown only in mobile media query */
+
+/* ── MOBILE (≤600px) ─────────────────────────────────────────── */
+@media (max-width: 600px) {
+  /* Safe area padding for notch/home indicator */
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* Hide left sidebar — replaced by bottom nav */
+  .sidebar { display: none !important; }
+
+  /* Show bottom nav */
+  .mob-nav { display: flex !important; }
+
+  /* Bottom nav bar */
+  .mob-nav {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    height: 56px;
+    padding-bottom: env(safe-area-inset-bottom);
+    background: var(--header-bg);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-around;
+    z-index: 200;
+  }
+  .mob-nav-btn {
+    flex: 1; height: 100%; border: none; background: transparent;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px; cursor: pointer; color: var(--muted);
+    font-family: var(--font); font-size: 10px; font-weight: 500;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mob-nav-btn svg { width: 22px; height: 22px; }
+  .mob-nav-btn.active { color: var(--today-ring); }
+  .mob-nav-btn.active svg path, .mob-nav-btn.active svg rect { stroke: var(--today-ring); }
+
+  /* Push content up above bottom nav */
+  .main { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+
+  /* Slim topbar */
+  .topbar {
+    height: 54px !important;
+    padding: 0 12px !important;
+    gap: 8px !important;
+  }
+
+  /* Hide weather and season on mobile */
+  #tb-now-season, #wx-btn { display: none !important; }
+
+  /* Smaller date/time text */
+  #tb-now-date { font-size: 16px !important; }
+  #tb-now-time { font-size: 15px !important; }
+
+  /* Nav controls — tighter */
+  #tb-nav-controls { gap: 4px !important; width: auto !important; }
+  .vdrop-wrap { display: none !important; } /* hide view picker on mobile */
+
+  /* Tasks — mobile: one column, scroll vertically */
+  .task-cols { 
+    flex-direction: column !important;
+    gap: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+  }
+  .task-col { 
+    min-width: unset !important;
+    width: 100% !important;
+    flex-shrink: unset !important;
+  }
+
+  /* Lists — full width single list */
+  .lbody { padding: 8px 12px !important; }
+
+  /* Lunch grid — single day column */
+  .lunch-grid-days { grid-template-columns: 70px 1fr !important; }
+  .lunch-row { grid-template-columns: 70px 1fr !important; }
+  .lunch-row-lbl { font-size: 13px !important; padding-right: 6px !important; }
+
+  /* Modal — full width on mobile */
+  .modal { 
+    width: 96vw !important;
+    margin: 8px !important;
+    max-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 80px) !important;
+  }
+
+  /* Picker overlays — full width */
+  .lunch-picker { width: 96vw !important; max-width: unset !important; }
+  .assign-popup { width: 96vw !important; max-width: unset !important; }
+  .day-peek { width: 96vw !important; max-width: unset !important; }
+
+  /* FAB — adjust for bottom nav */
+  .fab { bottom: calc(68px + env(safe-area-inset-bottom)) !important; }
+
+  /* Month view — tighter cells */
+  .mcell { min-height: 52px !important; }
+  .dnum { font-size: 11px !important; }
+  .epill { font-size: 9px !important; padding: 2px 4px !important; }
+
+  /* Week header text size */
+  .wh-dow { font-size: 8px !important; }
+  .wh-date { font-size: 11px !important; }
+
+  /* Agenda view */
+  .ag-time { min-width: 56px !important; font-size: 9px !important; }
+
+  /* Task progress ring header — smaller on mobile */
+  .task-col-hd { padding: 8px 10px !important; }
+}
 </style>
 </head>
 <body>
@@ -987,8 +1096,32 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.4</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.5</div>
 </nav>
+
+<!-- Mobile bottom nav (hidden on desktop via CSS) -->
+<div class="mob-nav" id="mob-nav">
+  <button class="mob-nav-btn active" data-v="calendar" onclick="sv('calendar')">
+    <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M7 2v3M13 2v3M3 8h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Calendar
+  </button>
+  <button class="mob-nav-btn" data-v="tasks" onclick="sv('tasks')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M4 6h12M4 10h12M4 14h7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Tasks
+  </button>
+  <button class="mob-nav-btn" data-v="lists" onclick="sv('lists')">
+    <svg viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><rect x="3" y="11" width="6" height="6" rx="1.5" stroke="currentColor" stroke-width="1.5"/><path d="M13 6h4M13 14h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Lists
+  </button>
+  <button class="mob-nav-btn" data-v="meals" onclick="sv('meals')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M6 3v5a3 3 0 006 0V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 8v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 3v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    Meals
+  </button>
+  <button class="mob-nav-btn" data-v="settings" onclick="_draft=members.map(m=>({...m}));window._draftNewColor=PALETTE[0];sv('settings')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
+    Settings
+  </button>
+</div>
 
 <div class="main">
   <div class="topbar">
@@ -1351,11 +1484,16 @@ function rebuildFullSidebarDots(){
 
 function sv(v){
   appV=v;
-  document.querySelectorAll('.nav-btn').forEach(el=>el.classList.toggle('active',el.dataset.v===v));
+  // Sync both sidebar and mobile nav active states
+  document.querySelectorAll('.nav-btn, .mob-nav-btn').forEach(el=>el.classList.toggle('active',el.dataset.v===v));
   const calTabs=document.getElementById('cal-tabs');
   if(calTabs) calTabs.style.display=v==='calendar'?'flex':'none';
   const fab=document.getElementById('fab');
   if(fab) fab.style.display=v==='settings'?'none':'flex';
+  // On mobile, calendar defaults to day view
+  if(v==='calendar' && window.innerWidth<=600 && calV!=='day'){
+    calV='day'; cur=new Date(T);
+  }
   render();
 }
 
@@ -2308,6 +2446,45 @@ function rMeals(){
   const weekDates = getLunchWeekDates();
   const todayStr  = fmt(T);
   const KIDS      = ['Collin','Ava'];
+  const isMobile  = window.innerWidth <= 600;
+
+  // Mobile: show one day at a time (the current lunchWeekOffset day = today + offset days)
+  if(isMobile){
+    // On mobile, lunchWeekOffset acts as day offset from today
+    const d = new Date(T);
+    d.setDate(T.getDate() + lunchWeekOffset);
+    const ds      = fmt(d);
+    const isToday = ds === todayStr;
+    const mon     = MOS[d.getMonth()];
+    const dow     = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()];
+    const dateLbl = `${dow} ${mon} ${d.getDate()}`;
+
+    const rows = KIDS.map(kid => {
+      const color = mColor(kid);
+      const entry = (lunches[kid]||{})[ds];
+      const cellContent = entry
+        ? `<div class="lunch-cell-dot" style="background:${entry.type==='school'?'#2c6bed':color}"></div>
+           <div class="lunch-cell-name" style="font-size:16px">${entry.type==='school'?'🏫':'🏠'} ${entry.name}</div>`
+        : `<div class="lunch-cell-plus" style="font-size:36px">+</div>`;
+      return `<div style="display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">
+        <div style="width:70px;text-align:right;font-size:16px;font-weight:700;color:${color};flex-shrink:0">${kid}</div>
+        <div class="lunch-cell${isToday?' today':''} ${entry?'':'empty'}"
+          onclick="openLunchPicker('${ds}','${kid}')"
+          style="flex:1;min-height:64px">
+          ${cellContent}
+        </div>
+      </div>`;
+    }).join('');
+
+    return `<div class="lunchwrap">
+      <div class="lunch-grid" style="padding:12px">
+        <div style="text-align:center;font-size:18px;font-weight:600;padding-bottom:12px;border-bottom:2px solid ${isToday?'var(--today-ring)':'var(--border)'};color:${isToday?'var(--today-ring)':'var(--text)'}">
+          ${dateLbl}${isToday?' <span style="font-size:12px;font-weight:500;background:var(--today-ring);color:white;padding:2px 7px;border-radius:99px;vertical-align:middle">Today</span>':''}
+        </div>
+        <div style="margin-top:8px">${rows}</div>
+      </div>
+    </div>`;
+  }
 
   // Day headers: Mon Apr 7
   const hdrs = weekDates.map(d => {
