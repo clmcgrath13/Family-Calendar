@@ -987,7 +987,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v2.4</div>
 </nav>
 
 <div class="main">
@@ -1118,12 +1118,7 @@ let evs=[
 let taskDate = fmt(T); // currently viewed task date
 
 let tasks=[];
-let lists=[
-  {id:1,name:'Grocery',icon:'🛒',items:[{t:'Milk',d:false},{t:'Eggs',d:false},{t:'Bread',d:true},{t:'Chicken',d:false},{t:'Apples',d:false},{t:'Pasta',d:false}]},
-  {id:2,name:'Home Projects',icon:'🔧',items:[{t:'Fix porch light',d:false},{t:'Caulk master bath',d:false},{t:'Touch up hallway paint',d:true}]},
-  {id:3,name:'Costco Run',icon:'📦',items:[{t:'Paper towels',d:false},{t:'Laundry pods',d:false},{t:'Olive oil',d:false},{t:'Granola bars',d:false}]},
-  {id:4,name:'Amazon',icon:'📬',items:[{t:'Phone case – Colin',d:false},{t:'AA batteries',d:false}]},
-];
+let lists=[];
 const MDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 // ── Lunch tracker data ───────────────────────────────────────────
@@ -1550,8 +1545,12 @@ setInterval(() => {
   const prev = fmt(T);
   T = new Date();
   const now  = fmt(T);
-  // If the date rolled over midnight, re-render to move the today indicator
-  if(now !== prev) render();
+  // If the date rolled over midnight, advance cur and taskDate then re-render
+  if(now !== prev){
+    cur = new Date(T);
+    taskDate = fmt(T);
+    render();
+  }
   if(appV !== 'lists' && appV !== 'settings') updateNowBar();
 }, 60000);
 
@@ -2179,7 +2178,7 @@ function focusList(idx){
 
 function toggleI(lid, idx){
   const l = lists.find(l => l.id === lid);
-  if(l){ l.items[idx].d = !l.items[idx].d; render(); }
+  if(l){ l.items[idx].d = !l.items[idx].d; render(); listsScheduleSave(); }
 }
 
 // Add a new list from the dropdown
@@ -2199,7 +2198,7 @@ function newListPrompt(){
     const icon = document.getElementById('ledit-icon').value.trim() || '🗒️';
     lists.push({ id: Date.now(), name, icon, items: [] });
     _focusedList = lists.length - 1;
-    closeM(); render();
+    closeM(); render(); listsScheduleSave();
   };
   openM();
 }
@@ -2218,7 +2217,7 @@ function editListPrompt(idx){
   window._save = () => {
     l.icon = document.getElementById('ledit-icon').value.trim() || l.icon;
     l.name = document.getElementById('ledit-name').value.trim() || l.name;
-    closeM(); render();
+    closeM(); render(); listsScheduleSave();
   };
   // Delete button
   setTimeout(()=>{
@@ -2232,7 +2231,7 @@ function editListPrompt(idx){
         if(lists.length <= 1){ alert('Cannot delete the last list.'); return; }
         lists.splice(idx, 1);
         if(_focusedList >= lists.length) _focusedList = lists.length - 1;
-        closeM(); render();
+        closeM(); render(); listsScheduleSave();
       };
       ft.insertBefore(del, ft.firstChild);
     }
@@ -2253,7 +2252,7 @@ function editItemPrompt(lid, idx){
   window._save = () => {
     const val = document.getElementById('ieditnm').value.trim();
     if(val) it.t = val;
-    closeM(); render();
+    closeM(); render(); listsScheduleSave();
   };
   setTimeout(()=>{
     const ft = document.querySelector('#ov .modal-ft');
@@ -2264,7 +2263,7 @@ function editItemPrompt(lid, idx){
       del.style.cssText = 'color:#c44;border:1px solid #f5c5c5;margin-right:auto';
       del.onclick = () => {
         l.items.splice(idx, 1);
-        closeM(); render();
+        closeM(); render(); listsScheduleSave();
       };
       ft.insertBefore(del, ft.firstChild);
     }
@@ -3306,7 +3305,7 @@ function addListItem(){
     if(!t) return;
     const l=lists.find(l=>l.id===lid);
     if(l) l.items.push({t,d:false});
-    closeM(); render();
+    closeM(); render(); listsScheduleSave();
   };
   openM();
 }
@@ -3477,6 +3476,9 @@ setTimeout(()=>{
     console.log('[tasks] token found, loading tasks…');
     ghLoadTasks();
     lunchLoadData();
+    listsLoadData();
+    // Start background sync poll after initial load settles
+    setTimeout(pollForRemoteChanges, 65000);
   } else {
     console.log('[tasks] waiting for token…');
     setTimeout(pollForToken, 500);
@@ -4223,6 +4225,114 @@ window.addEventListener('beforeunload', () => {
 });
 
 // ─── END GITHUB TASKS STORAGE ───────────────────────────────────────────────
+
+// ─── GITHUB LISTS STORAGE ───────────────────────────────────────────────────
+function listsApi(){ return 'https://api.github.com/repos/'+ghOwner()+'/'+ghRepo()+'/contents/lists.json'; }
+
+let _listsSha       = null;
+let _listsSaveTimer = null;
+let _listsLoaded    = false;
+
+function listsScheduleSave(){
+  if(!_listsLoaded) return;
+  clearTimeout(_listsSaveTimer);
+  _listsSaveTimer = setTimeout(listsSaveNow, 800);
+}
+
+async function listsSaveNow(){
+  if(!ghToken()||!ghOwner()||!ghRepo()) return;
+  try {
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(lists, null, 2))));
+    const body = { message:'Update lists', content, ...(_listsSha?{sha:_listsSha}:{}) };
+    const r = await fetch(listsApi(), {
+      method:'PUT',
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
+      body: JSON.stringify(body),
+    });
+    if(!r.ok){
+      let msg='HTTP '+r.status;
+      try{ const e=await r.json(); msg=e.message||msg; }catch(e){}
+      if(r.status===409||r.status===422){
+        const rg=await fetch(listsApi(),{headers:{Authorization:'token '+ghToken(),Accept:'application/vnd.github+json'}});
+        if(rg.ok){ const d=await rg.json(); _listsSha=d.sha; }
+        return listsSaveNow();
+      }
+      throw new Error(msg);
+    }
+    const result = await r.json();
+    _listsSha = result.content.sha;
+  } catch(e){ console.error('Lists save failed:', e); }
+}
+
+async function listsLoadData(){
+  if(!ghToken()||!ghOwner()||!ghRepo()) return;
+  try {
+    const r = await fetch(listsApi()+'?t='+Date.now(), {
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json' }
+    });
+    if(r.status===404){ _listsLoaded=true; await listsSaveNow(); return; }
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const data = await r.json();
+    _listsSha = data.sha;
+    const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
+    if(Array.isArray(loaded)){ lists = loaded; }
+    _listsLoaded = true;
+    if(appV==='lists') render();
+  } catch(e){ console.error('Lists load failed:', e); _listsLoaded=true; }
+}
+
+window.addEventListener('beforeunload', () => {
+  if(_listsSaveTimer && _listsLoaded){ clearTimeout(_listsSaveTimer); listsSaveNow(); }
+});
+// ─── END GITHUB LISTS STORAGE ───────────────────────────────────────────────
+
+// ─── BACKGROUND SYNC POLL ────────────────────────────────────────────────────
+// Poll GitHub every 60s to pick up changes made on other devices
+// Uses SHA comparison to avoid unnecessary downloads
+let _pollTimer = null;
+
+async function pollForRemoteChanges(){
+  if(!ghToken()||!ghOwner()||!ghRepo()) return;
+  try {
+    // Check tasks.json
+    const tr = await fetch(ghApi()+'?t='+Date.now(), {
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json' }
+    });
+    if(tr.ok){
+      const td = await tr.json();
+      if(_ghSha && td.sha !== _ghSha){
+        console.log('[sync] tasks.json changed, reloading…');
+        _ghSha = td.sha;
+        const loaded = JSON.parse(atob(td.content.replace(/\n/g,'')));
+        if(Array.isArray(loaded)){ tasks = loaded; }
+        if(appV==='tasks') render();
+        ghStatusSet('saved', '↻ Synced');
+        setTimeout(()=>ghStatusSet('',''), 2000);
+      }
+    }
+  } catch(e){ /* silent — don't spam console on network hiccup */ }
+
+  try {
+    // Check lists.json
+    const lr = await fetch(listsApi()+'?t='+Date.now(), {
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json' }
+    });
+    if(lr.ok){
+      const ld = await lr.json();
+      if(_listsSha && ld.sha !== _listsSha){
+        console.log('[sync] lists.json changed, reloading…');
+        _listsSha = ld.sha;
+        const loaded = JSON.parse(atob(ld.content.replace(/\n/g,'')));
+        if(Array.isArray(loaded)){ lists = loaded; }
+        if(appV==='lists') render();
+      }
+    }
+  } catch(e){ /* silent */ }
+
+  _pollTimer = setTimeout(pollForRemoteChanges, 60000);
+}
+// ─── END BACKGROUND SYNC POLL ────────────────────────────────────────────────
+
 
 </script>
 </body>
