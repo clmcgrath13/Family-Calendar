@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.3</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4647,38 +4647,43 @@ function injectWeatherStrip(numDays){
   const globalMin = Math.floor(Math.min(...allTemps)/10)*10;
   const globalMax = Math.ceil(Math.max(...allTemps)/10)*10 + 5;
 
-  // Strip dimensions — two zones: temp on top, rain on bottom
-  const STRIP_H    = Math.round(wwrap.clientHeight * 0.32); // slightly taller for two zones
+  // Strip dimensions — single zone
+  const STRIP_H    = Math.round(wwrap.clientHeight * 0.25);
   const ICON_H     = 20;
   const TIME_H     = 16;
-  const RAIN_H     = 36;  // rain probability chart height
-  const RAIN_GAP   = 2;   // gap between zones
-  const TEMP_H     = STRIP_H - ICON_H - TIME_H - RAIN_H - RAIN_GAP;
+  const GRAPH_H    = STRIP_H - ICON_H - TIME_H;
   const SCALE_W    = 46;
   const totalW     = wwrap.clientWidth - SCALE_W;
   const colW       = totalW / numDays;
   const hoursPerDay = 24;
 
-  // Build unified X/Y mapping
-  const toX    = (dayIdx, hourIdx) => dayIdx * colW + (hourIdx / (hoursPerDay-1)) * colW;
-  const toYtemp = t => TEMP_H - ((t - globalMin) / (globalMax - globalMin)) * TEMP_H;
-  const toYrain = p => RAIN_H - (Math.min(p,100) / 100) * RAIN_H;
+  const toX = (dayIdx, hourIdx) => dayIdx * colW + (hourIdx / (hoursPerDay-1)) * colW;
+  const toY = t => GRAPH_H - ((t - globalMin) / (globalMax - globalMin)) * GRAPH_H;
 
   // Collect all points
   let allPoints = [];
   dates.forEach((d, di) => {
     const dayHours = wxCache[d]?.hours || [];
     dayHours.forEach((h, hi) => {
-      if(hi < hoursPerDay) allPoints.push({ x: toX(di, hi), y: toYtemp(h.temp), temp: h.temp, code: h.code, prec: h.prec||0 });
+      if(hi < hoursPerDay) allPoints.push({ x: toX(di, hi), y: toY(h.temp), temp: h.temp, code: h.code, prec: h.prec||0 });
     });
   });
 
   if(allPoints.length < 2) return;
 
-  // ── TEMP CHART SVG ────────────────────────────────────────────
+  // Precipitation bars — opacity = prec/100, only show if prec >= 25
+  const barW = Math.max(1, colW / hoursPerDay - 1);
+  const precipBars = allPoints.map(p => {
+    if(p.prec < 25) return '';
+    const opacity = (p.prec / 100).toFixed(2);
+    const barH = GRAPH_H; // full height bar — opacity conveys intensity
+    const bx   = (p.x - barW/2).toFixed(1);
+    return `<rect x="${bx}" y="0" width="${barW.toFixed(1)}" height="${GRAPH_H}" fill="#60a5fa" opacity="${opacity}" rx="1"/>`;
+  }).join('');
+
+  // Temp curve
   const linePoints = allPoints.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
-  const fillPoints = linePoints
-    + ` ${allPoints[allPoints.length-1].x.toFixed(1)},${TEMP_H} 0,${TEMP_H}`;
+  const fillPoints = linePoints + ` ${allPoints[allPoints.length-1].x.toFixed(1)},${GRAPH_H} 0,${GRAPH_H}`;
 
   // H/L markers per day
   let hlMarkers = '';
@@ -4692,81 +4697,43 @@ function injectWeatherStrip(numDays){
     const maxIdx = dayHours.indexOf(maxH);
     const minIdx = dayHours.indexOf(minH);
     const hx = toX(di, maxIdx).toFixed(1);
-    const hy = (toYtemp(maxH.temp)-12).toFixed(1);
+    const hy = (toY(maxH.temp)-12).toFixed(1);
     const lx = toX(di, minIdx).toFixed(1);
-    const ly = (toYtemp(minH.temp)+3).toFixed(1);
+    const ly = (toY(minH.temp)+3).toFixed(1);
     hlMarkers += `<circle cx="${hx}" cy="${(parseFloat(hy)+10).toFixed(1)}" r="3" fill="#2c6bed"/>`;
     hlMarkers += `<text x="${hx}" y="${hy}" text-anchor="middle" font-size="9" font-weight="700" fill="#1c1c1a">${maxH.temp}°</text>`;
     hlMarkers += `<circle cx="${lx}" cy="${(parseFloat(ly)-5).toFixed(1)}" r="3" fill="#2c6bed"/>`;
     hlMarkers += `<text x="${lx}" y="${(parseFloat(ly)+8).toFixed(1)}" text-anchor="middle" font-size="9" font-weight="700" fill="#6b7280">${minH.temp}°</text>`;
   });
 
-  // Grid lines and day dividers for temp chart
-  let tempGridLines = '';
+  // Grid lines and day dividers
+  let gridLines = '';
   for(let t=globalMin; t<=globalMax; t+=10){
-    const y = toYtemp(t).toFixed(1);
-    tempGridLines += `<line x1="0" y1="${y}" x2="${totalW}" y2="${y}" stroke="#e2e2de" stroke-width="1"/>`;
+    const y = toY(t).toFixed(1);
+    gridLines += `<line x1="0" y1="${y}" x2="${totalW}" y2="${y}" stroke="#e2e2de" stroke-width="1"/>`;
   }
-  let tempDividers = '';
+  let dividers = '';
   for(let di=1; di<numDays; di++){
     const x = (di * colW).toFixed(1);
-    tempDividers += `<line x1="${x}" y1="0" x2="${x}" y2="${TEMP_H}" stroke="#e2e2de" stroke-width="1"/>`;
+    dividers += `<line x1="${x}" y1="0" x2="${x}" y2="${GRAPH_H}" stroke="#e2e2de" stroke-width="1"/>`;
   }
 
-  const tempSvg = `<svg width="${totalW}" height="${TEMP_H}" viewBox="0 0 ${totalW} ${TEMP_H}" style="display:block;overflow:visible">
+  const svg = `<svg width="${totalW}" height="${GRAPH_H}" viewBox="0 0 ${totalW} ${GRAPH_H}" style="display:block;overflow:visible">
     <defs>
       <linearGradient id="wxsg" x1="0" y1="0" x2="0" y2="1">
         <stop offset="0%" stop-color="#2c6bed" stop-opacity="0.18"/>
         <stop offset="100%" stop-color="#2c6bed" stop-opacity="0.04"/>
       </linearGradient>
     </defs>
-    ${tempGridLines}
-    ${tempDividers}
+    ${gridLines}
+    ${dividers}
+    ${precipBars}
     <polygon points="${fillPoints}" fill="url(#wxsg)"/>
     <polyline points="${linePoints}" fill="none" stroke="#2c6bed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     ${hlMarkers}
   </svg>`;
 
-  // ── RAIN CHART SVG ────────────────────────────────────────────
-  // Only show rain zone if any hour has precip >= 25%
-  const hasRain = allPoints.some(p => p.prec >= 25);
-
-  const rainPoints = allPoints.map(p => `${p.x.toFixed(1)},${toYrain(p.prec).toFixed(1)}`).join(' ');
-  const rainFill   = rainPoints + ` ${allPoints[allPoints.length-1].x.toFixed(1)},${RAIN_H} 0,${RAIN_H}`;
-
-  // Per-hour rain % labels: show value at peak of each "rain run" (hours >= 25%)
-  let rainLabels = '';
-  allPoints.forEach((p, i) => {
-    if(p.prec < 25) return;
-    // Only label local peaks (higher than neighbors) to avoid clutter
-    const prev = i > 0 ? allPoints[i-1].prec : 0;
-    const next  = i < allPoints.length-1 ? allPoints[i+1].prec : 0;
-    if(p.prec >= prev && p.prec >= next){
-      const ty = (toYrain(p.prec) - 3).toFixed(1);
-      rainLabels += `<text x="${p.x.toFixed(1)}" y="${ty}" text-anchor="middle" font-size="8" font-weight="700" fill="#1e40af">${p.prec}%</text>`;
-    }
-  });
-
-  let rainDividers = '';
-  for(let di=1; di<numDays; di++){
-    const x = (di * colW).toFixed(1);
-    rainDividers += `<line x1="${x}" y1="0" x2="${x}" y2="${RAIN_H}" stroke="#e2e2de" stroke-width="1"/>`;
-  }
-
-  const rainSvg = hasRain ? `<svg width="${totalW}" height="${RAIN_H}" viewBox="0 0 ${totalW} ${RAIN_H}" style="display:block">
-    <defs>
-      <linearGradient id="wxrg" x1="0" y1="0" x2="0" y2="1">
-        <stop offset="0%" stop-color="#93c5fd" stop-opacity="0.7"/>
-        <stop offset="100%" stop-color="#93c5fd" stop-opacity="0.15"/>
-      </linearGradient>
-    </defs>
-    ${rainDividers}
-    <polygon points="${rainFill}" fill="url(#wxrg)"/>
-    <polyline points="${rainPoints}" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    ${rainLabels}
-  </svg>` : '';
-
-  // ── ICON ROW ──────────────────────────────────────────────────
+  // Icon row
   const iconCols = dates.map(d => {
     const wx  = wxCache[d];
     const hrs = (wx?.hours||[]).filter((_,i)=>i%4===0);
@@ -4774,7 +4741,7 @@ function injectWeatherStrip(numDays){
     return `<div class="wx-strip-icons" style="width:${colW}px;flex-shrink:0">${icons.map(ic=>`<span class="wx-strip-icon">${ic}</span>`).join('')}</div>`;
   }).join('');
 
-  // ── TIME LABELS ───────────────────────────────────────────────
+  // Time labels
   const timeLabels = dates.map(() =>
     `<div class="wx-strip-timelabels" style="width:${colW}px">
       <span class="wx-strip-timelabel" style="left:0%;transform:translateX(0)">12A</span>
@@ -4783,21 +4750,10 @@ function injectWeatherStrip(numDays){
       <span class="wx-strip-timelabel" style="left:75%">6P</span>
     </div>`).join('');
 
-  // ── TEMP SCALE (left column) ─────────────────────────────────
+  // Temp scale
   const scaleSteps = [];
   for(let t=globalMax; t>=globalMin; t-=10) scaleSteps.push(t);
   const scaleTicks = scaleSteps.map(t => `<div class="wx-strip-tlbl">${t}°</div>`).join('');
-
-  // ── RAIN SCALE (left column, bottom) ─────────────────────────
-  const rainScale = hasRain
-    ? `<div style="display:flex;flex-direction:column;justify-content:space-between;height:${RAIN_H}px;padding:2px 0;margin-top:${RAIN_GAP}px">
-        <div style="font-size:8px;color:#3b82f6;font-weight:700;text-align:right;padding-right:4px;line-height:1">100%</div>
-        <div style="font-size:8px;color:#3b82f6;font-weight:600;text-align:right;padding-right:4px;line-height:1">💧</div>
-        <div style="font-size:8px;color:#3b82f6;font-weight:700;text-align:right;padding-right:4px;line-height:1">0%</div>
-      </div>`
-    : `<div style="height:${RAIN_H + RAIN_GAP}px"></div>`;
-
-  const actualStripH = ICON_H + TEMP_H + (hasRain ? RAIN_H + RAIN_GAP : 0) + TIME_H;
 
   const strip = document.createElement('div');
   strip.id = 'wx-strip';
@@ -4805,17 +4761,16 @@ function injectWeatherStrip(numDays){
   const whead = wwrap.querySelector('.whead');
   const topPx = whead ? whead.offsetHeight : 0;
   strip.style.top = topPx + 'px';
-  strip.style.height = actualStripH + 'px';
+  strip.style.height = STRIP_H + 'px';
   strip.innerHTML = `
-    <div class="wx-strip-tcol" style="height:${actualStripH}px">
-      <div style="height:${ICON_H}px"></div>
-      <div class="wx-strip-tscale" style="height:${TEMP_H}px">${scaleTicks}</div>
-      ${hasRain ? rainScale : ''}
+    <div class="wx-strip-tcol" style="height:${STRIP_H}px">
+      <div class="wx-strip-tscale" style="height:${GRAPH_H}px;margin-top:${ICON_H}px">
+        ${scaleTicks}
+      </div>
     </div>
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden">
       <div style="display:flex;flex-shrink:0">${iconCols}</div>
-      <div style="flex-shrink:0;overflow:hidden">${tempSvg}</div>
-      ${hasRain ? `<div style="flex-shrink:0;overflow:hidden;margin-top:${RAIN_GAP}px">${rainSvg}</div>` : ''}
+      <div style="flex-shrink:0;overflow:hidden">${svg}</div>
       <div style="display:flex;flex-shrink:0">${timeLabels}</div>
     </div>`;
 
