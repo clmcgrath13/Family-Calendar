@@ -376,5 +376,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1775916499918,
+    "title": "Clean your room",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-11",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
