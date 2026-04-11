@@ -56,6 +56,10 @@
       {
         "t": "Tortilla Chips",
         "d": false
+      },
+      {
+        "t": "Mexican Cheese",
+        "d": false
       }
     ]
   },
