@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.0</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.2</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.0</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.2</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4674,14 +4674,31 @@ function injectWeatherStrip(numDays){
   if(allPoints.length < 2) return;
 
   // Precipitation bars — hourly prec% as semi-transparent cyan bars behind temp curve
-  // Each bar width = colW / hoursPerDay, height proportional to prec% of GRAPH_H
+  // Only show bars >= 20%, with rotated % text inside if bar is tall enough
   const barW = Math.max(1, colW / hoursPerDay - 1);
   const precipBars = allPoints.map(p => {
-    if(p.prec < 5) return ''; // skip negligible
+    if(p.prec < 20) return ''; // skip — threshold raised to 20%
     const barH = (p.prec / 100) * GRAPH_H;
     const bx   = (p.x - barW/2).toFixed(1);
     const by   = (GRAPH_H - barH).toFixed(1);
-    return `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#93c5fd" opacity="0.55" rx="1"/>`;
+    const rect = `<rect x="${bx}" y="${by}" width="${barW.toFixed(1)}" height="${barH.toFixed(1)}" fill="#93c5fd" opacity="0.65" rx="1"/>`;
+    // Show % text rotated 90° inside bar if bar is tall enough to fit it
+    const txtSize = Math.min(barW - 1, 9);
+    const showTxt = barH >= 18 && barW >= 6;
+    const txt = showTxt
+      ? `<text
+          x="${p.x.toFixed(1)}"
+          y="${(GRAPH_H - barH/2).toFixed(1)}"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-size="${txtSize}"
+          font-weight="700"
+          fill="#1e40af"
+          opacity="0.9"
+          transform="rotate(-90,${p.x.toFixed(1)},${(GRAPH_H - barH/2).toFixed(1)})"
+        >${p.prec}%</text>`
+      : '';
+    return rect + txt;
   }).join('');
 
   // SVG polyline points
@@ -4738,9 +4755,10 @@ function injectWeatherStrip(numDays){
     ${hlMarkers}
   </svg>`;
 
-  // Icon row — one icon per 3 hours per day
+  // Icon row — one icon per 4 hours per day
   const iconCols = dates.map(d => {
-    const hrs = (wxCache[d]?.hours||[]).filter((_,i)=>i%4===0);
+    const wx  = wxCache[d];
+    const hrs = (wx?.hours||[]).filter((_,i)=>i%4===0);
     const icons = hrs.map(h=>wxIcon(h.code).icon);
     return `<div class="wx-strip-icons" style="width:${colW}px;flex-shrink:0">${icons.map(ic=>`<span class="wx-strip-icon">${ic}</span>`).join('')}</div>`;
   }).join('');
