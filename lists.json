@@ -123,10 +123,6 @@
       {
         "t": "Pasta",
         "d": false
-      },
-      {
-        "t": "seltzer",
-        "d": false
       }
     ],
     "_history": [
@@ -166,18 +162,21 @@
     "id": 1775952116026,
     "name": "Costco",
     "icon": "cart",
-    "items": []
+    "items": [],
+    "_history": []
   },
   {
     "id": 1775952123606,
     "name": "Home Depot",
     "icon": "tools",
-    "items": []
+    "items": [],
+    "_history": []
   },
   {
     "id": 1775952130298,
     "name": "Vacation",
     "icon": "beach",
-    "items": []
+    "items": [],
+    "_history": []
   }
 ]
