@@ -123,9 +123,14 @@
       {
         "t": "Pasta",
         "d": false
+      },
+      {
+        "t": "Seltzer",
+        "d": false
       }
     ],
     "_history": [
+      "Seltzer",
       "Milk",
       "Eggs",
       "Butter",
