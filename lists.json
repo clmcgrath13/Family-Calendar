@@ -167,5 +167,11 @@
     "name": "Costco",
     "icon": "cart",
     "items": []
+  },
+  {
+    "id": 1775952123606,
+    "name": "Home Depot",
+    "icon": "tools",
+    "items": []
   }
 ]
