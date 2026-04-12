@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Sweet Potatos",
-        "d": false
-      },
-      {
         "t": "Rice",
         "d": false
       },
