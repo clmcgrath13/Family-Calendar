@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Blueberries",
-        "d": false
-      },
-      {
         "t": "Frozen Veggies",
         "d": false
       },
