@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.3</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4425,12 +4425,22 @@ function editEvent(id){
     const endDate = multiOpen ? (document.getElementById('eenddate').value || startDate) : startDate;
     const idx = evs.findIndex(e=>e.id==id);
     if(idx > -1){
-      evs[idx] = { ...evs[idx], title:t, date:startDate, endDate:endDate,
+      const updated = { ...evs[idx], title:t, date:startDate, endDate:endDate,
         time:document.getElementById('es').value+':00',
         end:document.getElementById('ee').value+':00',
         loc:document.getElementById('eloc').value,
         desc:(document.getElementById('edesc')?.value||'').trim(),
         who:[...window._selPeople] };
+      evs[idx] = updated;
+      // Persist local edits to GCal events in calendar.json
+      if(updated.fromGcal){
+        saveCalOverride(updated.id, {
+          who:   updated.who,
+          title: updated.title,
+          loc:   updated.loc,
+          desc:  updated.desc,
+        });
+      }
     }
     closeM(); render(true);
   };
@@ -4456,6 +4466,7 @@ setTimeout(()=>{
     ghLoadTasks();
     lunchLoadData();
     listsLoadData();
+    calLoad();
     // Start background sync poll after initial load settles
     setTimeout(pollForRemoteChanges, 65000);
   } else {
@@ -5004,6 +5015,7 @@ async function gcalFetch(){
     const data = await r.json();
     evs = evs.filter(e=>!e.fromGcal);
     (data.items||[]).filter(e=>e.status!=='cancelled').forEach(e=>evs.push(gcalToLocal(e)));
+    applyCalOverrides(); // merge any local edits back onto freshly-synced events
     const t = new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
     syncStatusSet('connected','Synced '+t);
     render();
@@ -5266,7 +5278,80 @@ window.addEventListener('beforeunload', () => {
 });
 // ─── END GITHUB LISTS STORAGE ───────────────────────────────────────────────
 
-// ─── BACKGROUND SYNC POLL ────────────────────────────────────────────────────
+// ─── GITHUB CALENDAR OVERRIDES STORAGE ──────────────────────────────────────
+// Stores local edits to GCal events (who, title, loc, desc) so they survive
+// re-syncs and new app versions. Keyed by event id.
+function calApi(){ return 'https://api.github.com/repos/'+ghOwner()+'/'+ghRepo()+'/contents/calendar.json'; }
+
+let _calSha        = null;
+let _calSaveTimer  = null;
+let _calLoaded     = false;
+let calOverrides   = {}; // { [eventId]: { who?, title?, loc?, desc? } }
+
+function calScheduleSave(){
+  if(!_calLoaded) return;
+  clearTimeout(_calSaveTimer);
+  _calSaveTimer = setTimeout(calSaveNow, 800);
+}
+
+async function calSaveNow(){
+  if(!ghToken()||!ghOwner()||!ghRepo()) return;
+  try {
+    const body = { message:'Update calendar.json', content: btoa(unescape(encodeURIComponent(JSON.stringify(calOverrides, null, 2)))) };
+    if(_calSha) body.sha = _calSha;
+    const r = await fetch(calApi(), {
+      method:'PUT',
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+    if(r.ok){ const d=await r.json(); _calSha=d.content?.sha||_calSha; }
+  } catch(e){ console.error('calendar.json save failed:', e); }
+}
+
+async function calLoad(){
+  if(!ghToken()||!ghOwner()||!ghRepo()){ _calLoaded=true; return; }
+  try {
+    const r = await fetch(calApi()+'?t='+Date.now(), {
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json' }
+    });
+    if(r.status===404){ _calLoaded=true; calOverrides={}; return; }
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    _calSha = d.sha;
+    const loaded = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+    if(loaded && typeof loaded==='object') calOverrides = loaded;
+    _calLoaded = true;
+    // Apply overrides to any already-loaded GCal events
+    applyCalOverrides();
+  } catch(e){ console.error('calendar.json load failed:', e); _calLoaded=true; }
+}
+
+// Merge calOverrides into the evs array for all GCal events
+function applyCalOverrides(){
+  evs.forEach(ev => {
+    if(!ev.fromGcal) return;
+    const ov = calOverrides[ev.id];
+    if(!ov) return;
+    if(ov.who  !== undefined) ev.who  = ov.who;
+    if(ov.title!== undefined) ev.title= ov.title;
+    if(ov.loc  !== undefined) ev.loc  = ov.loc;
+    if(ov.desc !== undefined) ev.desc = ov.desc;
+  });
+}
+
+// Save an override for a GCal event and persist
+function saveCalOverride(id, fields){
+  if(!calOverrides[id]) calOverrides[id] = {};
+  Object.assign(calOverrides[id], fields);
+  calScheduleSave();
+}
+
+window.addEventListener('beforeunload', ()=>{
+  if(_calSaveTimer && _calLoaded){ clearTimeout(_calSaveTimer); calSaveNow(); }
+});
+// ─── END GITHUB CALENDAR OVERRIDES STORAGE ──────────────────────────────────
+
+
 // Poll GitHub every 60s to pick up changes made on other devices
 // Uses SHA comparison to avoid unnecessary downloads
 let _pollTimer = null;
