@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Yogurt",
-        "d": false
-      },
-      {
         "t": "Yogurt Smoothies",
         "d": false
       },
