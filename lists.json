@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Wraps",
-        "d": false
-      },
-      {
         "t": "Tortilla Chips",
         "d": false
       },
