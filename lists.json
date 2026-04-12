@@ -173,5 +173,11 @@
     "name": "Home Depot",
     "icon": "tools",
     "items": []
+  },
+  {
+    "id": 1775952130298,
+    "name": "Vacation",
+    "icon": "beach",
+    "items": []
   }
 ]
