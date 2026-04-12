@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.0</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.1</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.0</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.1</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2625,9 +2625,7 @@ function rLists(){
       <button class="litem-menu" onclick="startInlineEdit(${fl.id},${idx})" title="Edit">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Delete" style="color:#c44">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+      <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Remove" style="color:#c44;font-size:16px;font-weight:500">✕</button>
     </div>`).join('');
 
   const emptyMsg = fl.items.length === 0
@@ -2695,9 +2693,7 @@ function laddCommit(){
       <button class="litem-menu" onclick="startInlineEdit(${fl.id},${idx})" title="Edit">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9.5 2.5l2 2-7 7H2.5v-2l7-7z" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
-      <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Delete" style="color:#c44">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>`;
+      <button class="litem-menu" onclick="deleteListItem(${fl.id},${idx})" title="Remove" style="color:#c44;font-size:16px;font-weight:500">✕</button>`;
     lbody.appendChild(div);
     // Scroll new item into view
     div.scrollIntoView({behavior:'smooth', block:'nearest'});
@@ -2715,7 +2711,7 @@ function deleteListItem(lid, idx){
   const l = lists.find(l => l.id === lid);
   if(!l) return;
   const itemName = l.items[idx]?.t || 'this item';
-  document.getElementById('mttl').textContent = 'Delete Item?';
+  document.getElementById('mttl').textContent = 'Remove Item?';
   document.getElementById('mbd').innerHTML = `
     <p style="font-size:14px;color:var(--text);margin:4px 0 8px">
       Remove <strong>${itemName}</strong> from the list?
@@ -2724,10 +2720,9 @@ function deleteListItem(lid, idx){
     l.items.splice(idx, 1);
     closeM(); render(); listsScheduleSave();
   };
-  // Swap Save button to red Delete label
   setTimeout(()=>{
     const saveBtn = document.querySelector('#ov .modal-ft .btn-p');
-    if(saveBtn){ saveBtn.textContent = 'Delete'; saveBtn.style.background = '#dc2626'; saveBtn.style.borderColor = '#dc2626'; }
+    if(saveBtn){ saveBtn.textContent = 'Remove'; saveBtn.style.background = '#dc2626'; saveBtn.style.borderColor = '#dc2626'; }
   }, 0);
   openM();
 }
@@ -2913,8 +2908,10 @@ function attachLaddTypeahead(){
           <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${highlight(t,q)}</span>
         </span>
         <button class="ta-del-btn" data-text="${t.replace(/"/g,'&quot;')}"
-          style="flex-shrink:0;border:none;background:none;color:#c44;font-size:14px;padding:0 2px 0 8px;cursor:pointer;line-height:1"
-          title="Remove from suggestions">×</button>
+          style="flex-shrink:0;border:none;background:none;color:#c44;padding:0 2px 0 8px;cursor:pointer;line-height:1;display:flex;align-items:center"
+          title="Permanently delete from suggestions">
+          <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 4h10M5 4V2.5h4V4M5.5 6.5v4M8.5 6.5v4M3 4l.7 7.5h6.6L11 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </div>`).join('');
 
     drop.style.display='block';
