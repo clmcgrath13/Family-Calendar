@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Ground Beef",
-        "d": false
-      },
-      {
         "t": "American Cheese",
         "d": false
       },
