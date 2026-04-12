@@ -1215,7 +1215,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v4.8</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.0</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1849,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v4.8</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.0</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2702,10 +2702,11 @@ function laddCommit(){
     // Scroll new item into view
     div.scrollIntoView({behavior:'smooth', block:'nearest'});
   }
-  // Clear input and dropdown, keep focus
+  // Clear input and dropdown, keep focus, re-attach typeahead with updated history
   input.value = '';
   const drop = document.getElementById('ladd-drop');
   if(drop) drop.style.display = 'none';
+  attachLaddTypeahead();
   input.focus();
 }
 
@@ -2834,17 +2835,53 @@ function removeFromHistory(listIdx, text){
   openM();
 }
 
+// Backfill _history from existing items for lists that predate the history system
+function backfillHistory(){
+  lists.forEach(l => {
+    if(!l._history) l._history = [];
+    // Add any items not already in history
+    l.items.forEach(it => {
+      const key = it.t.trim().toLowerCase();
+      if(key && !l._history.some(h => h.toLowerCase() === key)){
+        l._history.push(it.t.trim());
+      }
+    });
+  });
+}
+
+function getAllPastItems(){
+  const seen = new Set();
+  const items = [];
+  for(let i = lists.length-1; i >= 0; i--){
+    const l = lists[i];
+    // Combine _history + current items, history first (preserves recency order)
+    const hist = l._history || [];
+    const curr = l.items.map(it => it.t);
+    const combined = [...hist, ...curr];
+    for(const entry of combined){
+      const t = (entry?.t || entry || '').trim();
+      const key = t.toLowerCase();
+      if(t && !seen.has(key)){ seen.add(key); items.push(t); }
+    }
+  }
+  return items;
+}
+
 function getCurrentListItems(){
   const fl = lists[_focusedList];
   if(!fl) return [];
+  // Combine _history + current items for this list, history first
   const hist = fl._history || [];
-  // Dedupe preserving order (most recent first)
+  const curr = fl.items.map(it => it.t);
+  const combined = [...hist, ...curr];
   const seen = new Set();
-  return hist.filter(t => {
-    const key = t.trim().toLowerCase();
-    if(!t.trim() || seen.has(key)) return false;
-    seen.add(key); return true;
-  });
+  const result = [];
+  for(const entry of combined){
+    const t = (entry?.t || entry || '').trim();
+    const key = t.toLowerCase();
+    if(t && !seen.has(key)){ seen.add(key); result.push(t); }
+  }
+  return result;
 }
 
 function attachLaddTypeahead(){
@@ -4165,23 +4202,8 @@ function showTaskScopePrompt(action, t, newData){
 
 // ── List item typeahead ───────────────────────────────────────────
 // Collects all past items across all lists, deduped, most recent first
-function getAllPastItems(){
-  // Read from _history arrays (persisted) — includes deleted/checked items
-  const seen = new Set();
-  const items = [];
-  for(let i = lists.length-1; i >= 0; i--){
-    const hist = lists[i]._history || [];
-    for(let j = 0; j < hist.length; j++){
-      const t = hist[j].trim();
-      const key = t.toLowerCase();
-      if(t && !seen.has(key)){ seen.add(key); items.push(t); }
-    }
-  }
-  return items; // deduped, most-recently-added first
-}
-
-// Attach typeahead to an input element inside a container
-// inputId: id of the <input>, wrapperId: id of the wrapper div
+// Attach typeahead to an input element inside a container (modal forms)
+// inputId: id of the <input>
 function attachTypeahead(inputId){
   setTimeout(()=>{
     const input = document.getElementById(inputId);
@@ -5235,7 +5257,8 @@ async function listsLoadData(){
     const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
     if(Array.isArray(loaded)){ lists = loaded; }
     _listsLoaded = true;
-    purgeCheckedItems(); // remove items checked on a previous day
+    backfillHistory();  // populate _history for lists that predate history system
+    purgeCheckedItems();
     if(appV==='lists') render();
   } catch(e){ console.error('Lists load failed:', e); _listsLoaded=true; }
 }
