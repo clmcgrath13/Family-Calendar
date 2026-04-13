@@ -650,8 +650,10 @@
   {
     "id": 1775919280332,
     "title": "Put stuff back on your dresser and night stand",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-13"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
