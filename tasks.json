@@ -704,10 +704,8 @@
   {
     "id": 1776106453513,
     "title": "put new seltzer box in the mini fridge",
-    "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "done": false,
+    "doneOn": [],
     "date": "2026-04-13",
     "recur": "",
     "recurN": 1,
