@@ -61,6 +61,21 @@
     ]
   },
   {
+    "id": 1776108713307,
+    "title": "Finish the laundry",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775668867871,
     "title": "Order Firewood",
     "done": true,
@@ -517,21 +532,6 @@
     "stayUntilDone": false,
     "who": [
       "Collin"
-    ]
-  },
-  {
-    "id": 1776108713307,
-    "title": "Finish the laundry",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
