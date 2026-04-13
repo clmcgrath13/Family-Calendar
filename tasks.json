@@ -569,7 +569,7 @@
   },
   {
     "id": 1776002477717,
-    "title": "Fix the hole in the fence so Zorro doesnÃ¢ÂÂt escape",
+    "title": "Fix the hole in the fence so Zorro doesnÃÂ¢ÃÂÃÂt escape",
     "done": true,
     "doneOn": [
       "2026-04-12"
@@ -641,6 +641,22 @@
     "timeOfDay": "",
     "stayUntilDone": false,
     "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1776092526494,
+    "title": "Find Zyrtec for collin",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Mom",
       "Dad"
     ]
   }
