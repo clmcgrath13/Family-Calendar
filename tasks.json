@@ -31,7 +31,7 @@
   {
     "id": 1775668858555,
     "title": "Test the generator",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -39,6 +39,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-13"
     ]
   },
   {
@@ -569,7 +572,7 @@
   },
   {
     "id": 1776002477717,
-    "title": "Fix the hole in the fence so Zorro doesnÃÂÃÂ¢ÃÂÃÂÃÂÃÂt escape",
+    "title": "Fix the hole in the fence so Zorro doesnÃÂÃÂÃÂÃÂ¢ÃÂÃÂÃÂÃÂÃÂÃÂÃÂÃÂt escape",
     "done": true,
     "doneOn": [
       "2026-04-12"
