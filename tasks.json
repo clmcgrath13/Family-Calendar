@@ -516,6 +516,21 @@
     ]
   },
   {
+    "id": 1776106453513,
+    "title": "put new seltzer box in the mini fridge",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-13",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
+  },
+  {
     "id": 1775919246479,
     "title": "Clean your workbench area in the garage",
     "done": false,
@@ -708,21 +723,6 @@
     "stayUntilDone": false,
     "who": [
       "Dad"
-    ]
-  },
-  {
-    "id": 1776106453513,
-    "title": "put new seltzer box in the mini fridge",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-04-13",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
     ]
   },
   {
