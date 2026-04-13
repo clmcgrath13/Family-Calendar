@@ -1,5 +1,20 @@
 [
   {
+    "id": 1776108713307,
+    "title": "Finish the laundry",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775828441251,
     "title": "Clean Zorro's Water Bowl",
     "done": false,
@@ -28,21 +43,6 @@
     ],
     "doneOn": [
       "2026-04-08"
-    ]
-  },
-  {
-    "id": 1776108713307,
-    "title": "Finish the laundry",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
