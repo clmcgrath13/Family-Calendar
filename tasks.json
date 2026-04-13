@@ -77,6 +77,21 @@
     ]
   },
   {
+    "id": 1775957529123,
+    "title": "Clean the grill",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775668858555,
     "title": "Test the generator",
     "done": true,
@@ -547,21 +562,6 @@
     "stayUntilDone": false,
     "who": [
       "Collin"
-    ]
-  },
-  {
-    "id": 1775957529123,
-    "title": "Clean the grill",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
