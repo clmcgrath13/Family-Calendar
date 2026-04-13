@@ -59,22 +59,6 @@
     ]
   },
   {
-    "id": 1775668867871,
-    "title": "Order Firewood",
-    "done": true,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ],
-    "doneOn": [
-      "2026-04-13"
-    ]
-  },
-  {
     "id": 1775668825266,
     "title": "Sharpen Knives",
     "done": false,
@@ -169,6 +153,22 @@
   {
     "id": 1775688741874,
     "title": "Clean exhaust fan",
+    "done": true,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ],
+    "doneOn": [
+      "2026-04-13"
+    ]
+  },
+  {
+    "id": 1775668867871,
+    "title": "Order Firewood",
     "done": true,
     "date": "",
     "recur": "",
