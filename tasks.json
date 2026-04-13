@@ -582,8 +582,10 @@
   {
     "id": 1776107853789,
     "title": "Bring a box of seltzer up to the office",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-13"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
