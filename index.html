@@ -353,11 +353,11 @@ body {
 /* TASKS */
 .taskwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
 .task-cols {
-  flex:1; display:flex; overflow-x:auto; overflow-y:hidden;
+  flex:1; display:flex; overflow-x:hidden; overflow-y:hidden;
   gap:8px; padding:8px;
 }
 .task-col {
-  flex:1; min-width:160px; max-width:280px;
+  flex:1; min-width:0; max-width:none;
   display:flex; flex-direction:column;
   background:var(--bg); border:1px solid var(--border);
   border-radius:12px; overflow:hidden;
@@ -402,27 +402,43 @@ body {
   border:1px solid var(--border); border-radius:8px;
   margin-bottom:4px; cursor:pointer;
   border-left-width:3px;
-  transition:box-shadow 0.12s, opacity 0.12s;
+  transition:box-shadow 0.12s, opacity 0.15s;
+  -webkit-user-select:none; user-select:none;
 }
 .task-card:active { box-shadow:var(--shadow); }
 .task-card.done-card { opacity:0.5; }
-.task-card.drag-source { opacity:0.3; box-shadow:none; }
-.task-card.drag-over { border-top:2px solid var(--today-ring); margin-top:-1px; }
+/* Source card becomes invisible while dragging (gap stays in place) */
+.task-card.drag-lifting { opacity:0 !important; pointer-events:none; }
+/* Animated gap that opens to show where card will land */
+.task-drag-gap {
+  height:0; overflow:hidden; pointer-events:none;
+  transition:height 0.2s cubic-bezier(0.25,0.46,0.45,0.94);
+}
+.task-drag-gap.open { height:var(--gap-h,48px); }
 /* Drag handle */
 .task-drag-handle {
   width:18px; height:26px; flex-shrink:0; cursor:grab;
   display:flex; align-items:center; justify-content:center;
-  color:var(--border); touch-action:none;
+  color:#c8c8c0; touch-action:none;
+  -webkit-user-select:none; user-select:none;
 }
 .task-drag-handle:active { cursor:grabbing; }
 .task-drag-handle svg { pointer-events:none; }
-/* Floating drag clone */
+/* Floating drag clone — lifted, scaled up like iOS */
 .task-drag-clone {
   position:fixed; z-index:2000; pointer-events:none;
-  opacity:0.92; box-shadow:0 8px 24px rgba(0,0,0,0.18);
-  border-radius:8px; background:var(--bg);
+  border-radius:10px; background:var(--bg);
   border:1px solid var(--today-ring); border-left-width:3px;
-  transform:scale(1.03);
+  box-shadow:0 16px 40px rgba(0,0,0,0.25), 0 4px 12px rgba(0,0,0,0.15);
+  transform:scale(1.05);
+  opacity:1;
+  transition:transform 0.15s cubic-bezier(0.34,1.56,0.64,1), opacity 0.15s ease;
+  will-change:left,top;
+}
+.task-drag-clone.drop-settle {
+  transform:scale(1) !important;
+  opacity:0 !important;
+  transition:transform 0.2s ease, opacity 0.18s ease !important;
 }
 .task-check {
   width:20px; height:20px; border-radius:50%;
@@ -1235,7 +1251,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.6</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.8</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1869,7 +1885,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.6</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.8</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2529,151 +2545,198 @@ function rTasks(){
   </div>`;
 }
 
+// ── iOS-style task drag-to-reorder ────────────────────────────────
+// Single global drag state — avoids listener accumulation
+const _td = {
+  active: false, clone: null, sourceCard: null, sourceId: null,
+  gap: null, longTimer: null, offsetX: 0, offsetY: 0, lastY: 0
+};
+
 function attachTaskDrag(){
-  const handles = document.querySelectorAll('.task-drag-handle');
-  handles.forEach(handle => {
-    let longPressTimer = null;
-    let dragging = false;
-    let clone = null;
-    let sourceCard = null;
-    let sourceId = null;
-    let offsetX = 0, offsetY = 0;
+  // Abort any leftover state from previous render
+  _tdCleanup(false);
 
-    function startDrag(clientX, clientY){
-      dragging = true;
-      sourceCard = handle.closest('.task-card');
-      if(!sourceCard) return;
-      sourceId = parseInt(sourceCard.dataset.taskId);
-
-      // Create floating clone
-      const rect = sourceCard.getBoundingClientRect();
-      offsetX = clientX - rect.left;
-      offsetY = clientY - rect.top;
-      clone = sourceCard.cloneNode(true);
-      clone.className = 'task-drag-clone';
-      clone.style.cssText += `
-        width:${rect.width}px; left:${rect.left}px; top:${rect.top}px;
-        border-left-color:${sourceCard.style.borderLeftColor};
-      `;
-      document.body.appendChild(clone);
-      sourceCard.classList.add('drag-source');
-
-      // Light haptic if supported
-      if(navigator.vibrate) navigator.vibrate(30);
-    }
-
-    function moveDrag(clientX, clientY){
-      if(!dragging || !clone) return;
-      clone.style.left = (clientX - offsetX) + 'px';
-      clone.style.top  = (clientY - offsetY) + 'px';
-
-      // Highlight nearest drop target
-      document.querySelectorAll('.task-card.drag-over').forEach(el=>el.classList.remove('drag-over'));
-      const target = getDragTarget(clientX, clientY);
-      if(target && target !== sourceCard) target.classList.add('drag-over');
-    }
-
-    function endDrag(clientX, clientY){
-      if(!dragging) return;
-      dragging = false;
-      clearTimeout(longPressTimer);
-
-      // Remove clone and source highlight
-      if(clone){ clone.remove(); clone = null; }
-      document.querySelectorAll('.task-card.drag-source,.task-card.drag-over').forEach(el=>{
-        el.classList.remove('drag-source','drag-over');
-      });
-
-      const target = getDragTarget(clientX, clientY);
-      if(target && target !== sourceCard){
-        const targetId = parseInt(target.dataset.taskId);
-        reorderTask(sourceId, targetId, clientY);
-      }
-    }
-
-    // Mouse events
-    handle.addEventListener('mousedown', e=>{
-      e.preventDefault();
-      longPressTimer = setTimeout(()=> startDrag(e.clientX, e.clientY), 400);
-    });
-    document.addEventListener('mousemove', e=>{
-      if(dragging) moveDrag(e.clientX, e.clientY);
-    });
-    document.addEventListener('mouseup', e=>{
-      clearTimeout(longPressTimer);
-      if(dragging) endDrag(e.clientX, e.clientY);
-    }, {once: false});
-
-    // Touch events
-    handle.addEventListener('touchstart', e=>{
-      const t = e.touches[0];
-      longPressTimer = setTimeout(()=>{
-        e.preventDefault();
-        startDrag(t.clientX, t.clientY);
-      }, 400);
-    }, {passive:true});
-
-    handle.addEventListener('touchmove', e=>{
-      if(dragging){
-        e.preventDefault();
-        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-      } else {
-        clearTimeout(longPressTimer);
-      }
-    }, {passive:false});
-
-    handle.addEventListener('touchend', e=>{
-      clearTimeout(longPressTimer);
-      if(dragging){
-        const t = e.changedTouches[0];
-        endDrag(t.clientX, t.clientY);
-      }
-    });
-    handle.addEventListener('touchcancel', ()=>{
-      clearTimeout(longPressTimer);
-      if(dragging){
-        dragging = false;
-        if(clone){ clone.remove(); clone = null; }
-        document.querySelectorAll('.task-card.drag-source,.task-card.drag-over')
-          .forEach(el=>el.classList.remove('drag-source','drag-over'));
-      }
-    });
+  document.querySelectorAll('.task-drag-handle').forEach(handle => {
+    handle.addEventListener('mousedown',  _tdHandleStart, {passive:false});
+    handle.addEventListener('touchstart', _tdHandleStart, {passive:false});
   });
+
+  // Global move/end — attached once to document
+  if(!_td._globalBound){
+    document.addEventListener('mousemove',   _tdMove,   {passive:false});
+    document.addEventListener('mouseup',     _tdEnd,    {passive:false});
+    document.addEventListener('touchmove',   _tdMove,   {passive:false});
+    document.addEventListener('touchend',    _tdEnd,    {passive:false});
+    document.addEventListener('touchcancel', _tdCancel, {passive:false});
+    _td._globalBound = true;
+  }
 }
 
-// Find the card under the pointer
-function getDragTarget(clientX, clientY){
-  const cards = [...document.querySelectorAll('.task-card:not(.drag-source)')];
-  // Find card whose vertical midpoint is nearest to clientY
-  let best = null, bestDist = Infinity;
-  cards.forEach(card=>{
-    const r = card.getBoundingClientRect();
-    if(clientX < r.left - 20 || clientX > r.right + 20) return; // wrong column
-    const mid = r.top + r.height / 2;
-    const dist = Math.abs(clientY - mid);
-    if(dist < bestDist){ bestDist = dist; best = card; }
-  });
-  return best;
+function _tdHandleStart(e){
+  const touch = e.touches ? e.touches[0] : e;
+  const handle = e.currentTarget;
+  clearTimeout(_td.longTimer);
+  _td.longTimer = setTimeout(()=>{
+    e.preventDefault && e.preventDefault();
+    _tdBegin(handle, touch.clientX, touch.clientY);
+  }, 380);
 }
 
-// Reorder tasks array: move sourceId to position of targetId
-function reorderTask(sourceId, targetId, clientY){
+function _tdBegin(handle, cx, cy){
+  const card = handle.closest('.task-card');
+  if(!card) return;
+
+  _td.active    = true;
+  _td.sourceCard = card;
+  _td.sourceId   = parseInt(card.dataset.taskId);
+  _td.lastY      = cy;
+
+  const rect = card.getBoundingClientRect();
+  _td.offsetX = cx - rect.left;
+  _td.offsetY = cy - rect.top;
+
+  // Build clone sized exactly like source
+  const clone = card.cloneNode(true);
+  clone.className = 'task-drag-clone';
+  clone.style.cssText = `
+    width:${rect.width}px; height:${rect.height}px;
+    left:${rect.left}px; top:${rect.top}px;
+    border-left-color:${card.style.borderLeftColor};
+    padding:7px 8px;
+  `;
+  document.body.appendChild(clone);
+  _td.clone = clone;
+
+  // Gap placeholder same height as card — starts closed, opens at source position
+  const gap = document.createElement('div');
+  gap.className = 'task-drag-gap';
+  gap.style.setProperty('--gap-h', rect.height + 'px');
+  card.after(gap);
+  _td.gap = gap;
+  requestAnimationFrame(()=> gap.classList.add('open'));
+
+  // Hide source
+  card.classList.add('drag-lifting');
+
+  if(navigator.vibrate) navigator.vibrate([10]);
+}
+
+function _tdMove(e){
+  if(!_td.active) return;
+  e.preventDefault();
+  const touch = e.touches ? e.touches[0] : e;
+  const cx = touch.clientX, cy = touch.clientY;
+  _td.lastY = cy;
+
+  // Move clone
+  _td.clone.style.left = (cx - _td.offsetX) + 'px';
+  _td.clone.style.top  = (cy - _td.offsetY) + 'px';
+
+  // Move gap to follow drag position
+  _tdUpdateGap(cy);
+}
+
+function _tdUpdateGap(cy){
+  const cards = _tdGetCards();
+  if(!cards.length || !_td.gap) return;
+
+  // Find insertion point: before the first card whose midpoint is below cy
+  let insertBefore = null;
+  for(const c of cards){
+    const r = c.getBoundingClientRect();
+    if(cy < r.top + r.height / 2){ insertBefore = c; break; }
+  }
+
+  // Move gap to new position if it changed
+  const currentNext = _td.gap.nextElementSibling;
+  const targetNext  = insertBefore;
+  if(currentNext !== targetNext){
+    const gapParent = _td.gap.parentElement;
+    if(gapParent){
+      _td.gap.classList.remove('open');
+      setTimeout(()=>{
+        if(!_td.active) return;
+        if(targetNext && targetNext.parentElement === gapParent){
+          gapParent.insertBefore(_td.gap, targetNext);
+        } else {
+          gapParent.appendChild(_td.gap);
+        }
+        requestAnimationFrame(()=> _td.gap && _td.gap.classList.add('open'));
+      }, 80);
+    }
+  }
+}
+
+function _tdEnd(e){
+  clearTimeout(_td.longTimer);
+  if(!_td.active) return;
+
+  const cy = _td.lastY;
+  const sourceId = _td.sourceId;
+  const gap = _td.gap;
+  const clone = _td.clone;
+  const sourceCard = _td.sourceCard;
+
+  // Settle animation: clone flies to gap position
+  if(gap && clone){
+    const gr = gap.getBoundingClientRect();
+    clone.classList.add('drop-settle');
+    clone.style.left = gr.left + 'px';
+    clone.style.top  = gr.top  + 'px';
+  }
+
+  _td.active = false;
+
+  // Work out where to insert in tasks array
+  const cards = _tdGetCards();
+  let insertBeforeId = null;
+  for(const c of cards){
+    const r = c.getBoundingClientRect();
+    if(cy < r.top + r.height / 2){ insertBeforeId = parseInt(c.dataset.taskId); break; }
+  }
+
+  setTimeout(()=>{
+    _tdCleanup(true);
+    _tdReorder(sourceId, insertBeforeId);
+  }, 200);
+}
+
+function _tdCancel(){
+  clearTimeout(_td.longTimer);
+  _tdCleanup(true);
+}
+
+function _tdCleanup(reshow){
+  clearTimeout(_td.longTimer);
+  _td.active = false;
+  if(_td.clone)      { _td.clone.remove();      _td.clone = null; }
+  if(_td.gap)        { _td.gap.remove();         _td.gap = null; }
+  if(_td.sourceCard && reshow) _td.sourceCard.classList.remove('drag-lifting');
+  _td.sourceCard = null;
+  _td.sourceId   = null;
+}
+
+function _tdGetCards(){
+  // All task cards except the source
+  return [...document.querySelectorAll('.task-card:not(.drag-lifting)')];
+}
+
+function _tdReorder(sourceId, insertBeforeId){
   const srcIdx = tasks.findIndex(t=>t.id===sourceId);
-  const tgtIdx = tasks.findIndex(t=>t.id===targetId);
-  if(srcIdx === -1 || tgtIdx === -1 || srcIdx === tgtIdx) return;
-
-  const targetCard = document.querySelector(`[data-task-id="${targetId}"]`);
-  const rect = targetCard?.getBoundingClientRect();
-  // Drop above or below target based on pointer position relative to midpoint
-  const insertBefore = rect && clientY < rect.top + rect.height / 2;
-
+  if(srcIdx === -1){ render(); return; }
   const [moved] = tasks.splice(srcIdx, 1);
-  const newIdx = tasks.findIndex(t=>t.id===targetId);
-  tasks.splice(insertBefore ? newIdx : newIdx + 1, 0, moved);
-
+  if(insertBeforeId != null){
+    const tgtIdx = tasks.findIndex(t=>t.id===insertBeforeId);
+    if(tgtIdx !== -1){ tasks.splice(tgtIdx, 0, moved); }
+    else tasks.push(moved);
+  } else {
+    // Dropped after all cards in column — find the right section end
+    tasks.push(moved);
+  }
   render();
   ghScheduleSave();
 }
+// ── End task drag ──────────────────────────────────────────────────
 
 function taskNav(dir){
   const d = new Date(taskDate+'T12:00:00');
