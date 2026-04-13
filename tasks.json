@@ -61,6 +61,21 @@
     ]
   },
   {
+    "id": 1776109398250,
+    "title": "Change bronco oil",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775668825266,
     "title": "Sharpen Knives",
     "done": false,
@@ -221,21 +236,6 @@
     ],
     "doneOn": [
       "2026-04-13"
-    ]
-  },
-  {
-    "id": 1776109398250,
-    "title": "Change bronco oil",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
