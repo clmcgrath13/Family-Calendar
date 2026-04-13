@@ -605,8 +605,10 @@
   {
     "id": 1776040466932,
     "title": "Order hot tub cover",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-13"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
