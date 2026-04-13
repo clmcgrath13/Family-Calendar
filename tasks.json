@@ -569,7 +569,7 @@
   },
   {
     "id": 1776002477717,
-    "title": "Fix the hole in the fence so Zorro doesnât escape",
+    "title": "Fix the hole in the fence so Zorro doesnÃ¢ÂÂt escape",
     "done": true,
     "doneOn": [
       "2026-04-12"
@@ -627,6 +627,21 @@
     "stayUntilDone": false,
     "who": [
       "Collin"
+    ]
+  },
+  {
+    "id": 1776087319706,
+    "title": "Put baseball in the calendar",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
     ]
   }
 ]
