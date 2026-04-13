@@ -148,6 +148,21 @@
     ]
   },
   {
+    "id": 1775828441251,
+    "title": "Clean Zorro's Water Bowl",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-12",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775696639278,
     "title": "Put your Clothes Away",
     "done": true,
@@ -366,21 +381,6 @@
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775828441251,
-    "title": "Clean Zorro's Water Bowl",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-04-12",
-    "recur": "weekly",
-    "recurN": 2,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": true,
     "who": [
       "Dad"
     ]
