@@ -655,8 +655,10 @@
   {
     "id": 1776042670985,
     "title": "Organize your sports drawer",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-13"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
