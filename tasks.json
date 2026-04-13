@@ -100,6 +100,19 @@
     ]
   },
   {
+    "id": 1775755993312,
+    "title": "Descale Coffee Maker",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775668858555,
     "title": "Test the generator",
     "done": true,
@@ -324,19 +337,6 @@
     ],
     "doneOn": [
       "2026-04-11"
-    ]
-  },
-  {
-    "id": 1775755993312,
-    "title": "Descale Coffee Maker",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
     ]
   },
   {
