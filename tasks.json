@@ -666,5 +666,20 @@
       "Mom",
       "Dad"
     ]
+  },
+  {
+    "id": 1776104533310,
+    "title": "Fill up the generator with gas",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
   }
 ]
