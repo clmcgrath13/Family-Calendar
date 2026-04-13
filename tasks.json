@@ -15,19 +15,6 @@
     ]
   },
   {
-    "id": 1775755978425,
-    "title": "Clean Dishwasher Drain",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775668846809,
     "title": "Put your clothes away",
     "done": true,
@@ -102,6 +89,19 @@
   {
     "id": 1775755993312,
     "title": "Descale Coffee Maker",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1775755978425,
+    "title": "Clean Dishwasher Drain",
     "done": false,
     "date": "",
     "recur": "",
