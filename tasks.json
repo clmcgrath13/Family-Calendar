@@ -199,6 +199,21 @@
     ]
   },
   {
+    "id": 1776040445132,
+    "title": "Fix deck hot tub camera",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775696639278,
     "title": "Put your Clothes Away",
     "done": true,
@@ -609,21 +624,6 @@
     "stayUntilDone": false,
     "who": [
       "Collin"
-    ]
-  },
-  {
-    "id": 1776040445132,
-    "title": "Fix deck hot tub camera",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
