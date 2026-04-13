@@ -700,5 +700,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1776106453513,
+    "title": "put new seltzer box in the mini fridge",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-13",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
