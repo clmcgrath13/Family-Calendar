@@ -531,6 +531,21 @@
     ]
   },
   {
+    "id": 1776108713307,
+    "title": "Finish the laundry",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1776107853789,
     "title": "Bring a box of seltzer up to the office",
     "done": false,
@@ -753,21 +768,6 @@
     "stayUntilDone": false,
     "who": [
       "Ava"
-    ]
-  },
-  {
-    "id": 1776108713307,
-    "title": "Finish the laundry",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   }
 ]
