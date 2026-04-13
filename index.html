@@ -1251,7 +1251,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.8</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.9</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1885,7 +1885,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.8</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.9</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2556,9 +2556,9 @@ function attachTaskDrag(){
   // Abort any leftover state from previous render
   _tdCleanup(false);
 
-  document.querySelectorAll('.task-drag-handle').forEach(handle => {
-    handle.addEventListener('mousedown',  _tdHandleStart, {passive:false});
-    handle.addEventListener('touchstart', _tdHandleStart, {passive:false});
+  document.querySelectorAll('.task-card').forEach(card => {
+    card.addEventListener('mousedown',  _tdHandleStart, {passive:false});
+    card.addEventListener('touchstart', _tdHandleStart, {passive:false});
   });
 
   // Global move/end — attached once to document
@@ -2573,17 +2573,20 @@ function attachTaskDrag(){
 }
 
 function _tdHandleStart(e){
+  // Don't intercept taps on the checkbox or menu button
+  const skip = e.target.closest('.task-check, .task-menu-btn');
+  if(skip) return;
+
   const touch = e.touches ? e.touches[0] : e;
-  const handle = e.currentTarget;
+  const card  = e.currentTarget;
   clearTimeout(_td.longTimer);
   _td.longTimer = setTimeout(()=>{
     e.preventDefault && e.preventDefault();
-    _tdBegin(handle, touch.clientX, touch.clientY);
+    _tdBegin(card, touch.clientX, touch.clientY);
   }, 380);
 }
 
-function _tdBegin(handle, cx, cy){
-  const card = handle.closest('.task-card');
+function _tdBegin(card, cx, cy){
   if(!card) return;
 
   _td.active    = true;
@@ -2595,19 +2598,24 @@ function _tdBegin(handle, cx, cy){
   _td.offsetX = cx - rect.left;
   _td.offsetY = cy - rect.top;
 
-  // Build clone sized exactly like source
+  // Build clone — set individual properties so .task-drag-clone styles + flex layout both apply
   const clone = card.cloneNode(true);
   clone.className = 'task-drag-clone';
-  clone.style.cssText = `
-    width:${rect.width}px; height:${rect.height}px;
-    left:${rect.left}px; top:${rect.top}px;
-    border-left-color:${card.style.borderLeftColor};
-    padding:7px 8px;
-  `;
+  // Position/size via individual props (cssText would wipe the class's flex styles)
+  clone.style.width           = rect.width  + 'px';
+  clone.style.height          = rect.height + 'px';
+  clone.style.left            = rect.left   + 'px';
+  clone.style.top             = rect.top    + 'px';
+  clone.style.borderLeftColor = card.style.borderLeftColor;
+  clone.style.display         = 'flex';
+  clone.style.alignItems      = 'center';
+  clone.style.gap             = '8px';
+  clone.style.padding         = '7px 8px';
+  clone.style.boxSizing       = 'border-box';
   document.body.appendChild(clone);
   _td.clone = clone;
 
-  // Gap placeholder same height as card — starts closed, opens at source position
+  // Gap placeholder same height as card
   const gap = document.createElement('div');
   gap.className = 'task-drag-gap';
   gap.style.setProperty('--gap-h', rect.height + 'px');
@@ -2615,9 +2623,7 @@ function _tdBegin(handle, cx, cy){
   _td.gap = gap;
   requestAnimationFrame(()=> gap.classList.add('open'));
 
-  // Hide source
   card.classList.add('drag-lifting');
-
   if(navigator.vibrate) navigator.vibrate([10]);
 }
 
