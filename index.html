@@ -268,7 +268,9 @@ body {
   width: 32px; height: 32px;
   display: flex; align-items: center; justify-content: center;
   border-radius: 50%; margin: 3px auto 0;
+  transition: background 0.12s, color 0.12s;
 }
+.wh-date:hover:not(.tod) { background: var(--sidebar-bg); color: var(--today-ring); }
 .wh-date.tod { background: var(--today-ring); color: #fff; font-weight: 600; }
 
 .wbody { flex: 1; overflow-y: auto; display: flex; }
@@ -400,10 +402,28 @@ body {
   border:1px solid var(--border); border-radius:8px;
   margin-bottom:4px; cursor:pointer;
   border-left-width:3px;
-  transition:box-shadow 0.12s;
+  transition:box-shadow 0.12s, opacity 0.12s;
 }
 .task-card:active { box-shadow:var(--shadow); }
 .task-card.done-card { opacity:0.5; }
+.task-card.drag-source { opacity:0.3; box-shadow:none; }
+.task-card.drag-over { border-top:2px solid var(--today-ring); margin-top:-1px; }
+/* Drag handle */
+.task-drag-handle {
+  width:18px; height:26px; flex-shrink:0; cursor:grab;
+  display:flex; align-items:center; justify-content:center;
+  color:var(--border); touch-action:none;
+}
+.task-drag-handle:active { cursor:grabbing; }
+.task-drag-handle svg { pointer-events:none; }
+/* Floating drag clone */
+.task-drag-clone {
+  position:fixed; z-index:2000; pointer-events:none;
+  opacity:0.92; box-shadow:0 8px 24px rgba(0,0,0,0.18);
+  border-radius:8px; background:var(--bg);
+  border:1px solid var(--today-ring); border-left-width:3px;
+  transform:scale(1.03);
+}
 .task-check {
   width:20px; height:20px; border-radius:50%;
   border:2px solid var(--border); flex-shrink:0;
@@ -1215,7 +1235,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.4</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v5.6</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1849,7 +1869,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.4</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v5.6</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2007,6 +2027,7 @@ function render(preserveScroll){
         }
       );
     }
+    attachTaskDrag();
     return;
   }
   if(appV==='lists'){
@@ -2205,7 +2226,8 @@ function rWeek(numDays){
   let hd=`<div class="wh-sp" style="width:46px"></div>`;
   days.forEach(d=>{
     const isT=same(d,T);
-    hd+=`<div class="wh-cell"><div class="wh-dow">${DS[d.getDay()]}</div><div class="wh-date${isT?' tod':''}">${d.getDate()}</div></div>`;
+    const ds=fmt(d);
+    hd+=`<div class="wh-cell"><div class="wh-dow">${DS[d.getDay()]}</div><div class="wh-date${isT?' tod':''}" onclick="cur=new Date('${ds}T12:00:00');calV='day';render()" style="cursor:pointer" title="Go to day view">${d.getDate()}</div></div>`;
   });
 
   // All-day / multi-day proportional pill row
@@ -2418,7 +2440,17 @@ function rTasks(){
   const card = (t, color) => {
     const isDone = isDoneOn(t, d);
     const sub    = recurLabel(t);
-    return `<div class="task-card${isDone?' done-card':''}" style="border-left-color:${color}">
+    return `<div class="task-card${isDone?' done-card':''}" style="border-left-color:${color}" data-task-id="${t.id}">
+      <div class="task-drag-handle" title="Drag to reorder">
+        <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
+          <circle cx="4" cy="3" r="1.5" fill="currentColor"/>
+          <circle cx="4" cy="8" r="1.5" fill="currentColor"/>
+          <circle cx="4" cy="13" r="1.5" fill="currentColor"/>
+          <circle cx="9" cy="3" r="1.5" fill="currentColor"/>
+          <circle cx="9" cy="8" r="1.5" fill="currentColor"/>
+          <circle cx="9" cy="13" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
       <div class="task-check${isDone?' done':''}" style="${isDone?`background:${color}`:''}"
         onclick="toggleT(${t.id})">
         ${isDone?`<svg width="12" height="12" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`:''}
@@ -2495,6 +2527,152 @@ function rTasks(){
       ${cols}
     </div>
   </div>`;
+}
+
+function attachTaskDrag(){
+  const handles = document.querySelectorAll('.task-drag-handle');
+  handles.forEach(handle => {
+    let longPressTimer = null;
+    let dragging = false;
+    let clone = null;
+    let sourceCard = null;
+    let sourceId = null;
+    let offsetX = 0, offsetY = 0;
+
+    function startDrag(clientX, clientY){
+      dragging = true;
+      sourceCard = handle.closest('.task-card');
+      if(!sourceCard) return;
+      sourceId = parseInt(sourceCard.dataset.taskId);
+
+      // Create floating clone
+      const rect = sourceCard.getBoundingClientRect();
+      offsetX = clientX - rect.left;
+      offsetY = clientY - rect.top;
+      clone = sourceCard.cloneNode(true);
+      clone.className = 'task-drag-clone';
+      clone.style.cssText += `
+        width:${rect.width}px; left:${rect.left}px; top:${rect.top}px;
+        border-left-color:${sourceCard.style.borderLeftColor};
+      `;
+      document.body.appendChild(clone);
+      sourceCard.classList.add('drag-source');
+
+      // Light haptic if supported
+      if(navigator.vibrate) navigator.vibrate(30);
+    }
+
+    function moveDrag(clientX, clientY){
+      if(!dragging || !clone) return;
+      clone.style.left = (clientX - offsetX) + 'px';
+      clone.style.top  = (clientY - offsetY) + 'px';
+
+      // Highlight nearest drop target
+      document.querySelectorAll('.task-card.drag-over').forEach(el=>el.classList.remove('drag-over'));
+      const target = getDragTarget(clientX, clientY);
+      if(target && target !== sourceCard) target.classList.add('drag-over');
+    }
+
+    function endDrag(clientX, clientY){
+      if(!dragging) return;
+      dragging = false;
+      clearTimeout(longPressTimer);
+
+      // Remove clone and source highlight
+      if(clone){ clone.remove(); clone = null; }
+      document.querySelectorAll('.task-card.drag-source,.task-card.drag-over').forEach(el=>{
+        el.classList.remove('drag-source','drag-over');
+      });
+
+      const target = getDragTarget(clientX, clientY);
+      if(target && target !== sourceCard){
+        const targetId = parseInt(target.dataset.taskId);
+        reorderTask(sourceId, targetId, clientY);
+      }
+    }
+
+    // Mouse events
+    handle.addEventListener('mousedown', e=>{
+      e.preventDefault();
+      longPressTimer = setTimeout(()=> startDrag(e.clientX, e.clientY), 400);
+    });
+    document.addEventListener('mousemove', e=>{
+      if(dragging) moveDrag(e.clientX, e.clientY);
+    });
+    document.addEventListener('mouseup', e=>{
+      clearTimeout(longPressTimer);
+      if(dragging) endDrag(e.clientX, e.clientY);
+    }, {once: false});
+
+    // Touch events
+    handle.addEventListener('touchstart', e=>{
+      const t = e.touches[0];
+      longPressTimer = setTimeout(()=>{
+        e.preventDefault();
+        startDrag(t.clientX, t.clientY);
+      }, 400);
+    }, {passive:true});
+
+    handle.addEventListener('touchmove', e=>{
+      if(dragging){
+        e.preventDefault();
+        moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+      } else {
+        clearTimeout(longPressTimer);
+      }
+    }, {passive:false});
+
+    handle.addEventListener('touchend', e=>{
+      clearTimeout(longPressTimer);
+      if(dragging){
+        const t = e.changedTouches[0];
+        endDrag(t.clientX, t.clientY);
+      }
+    });
+    handle.addEventListener('touchcancel', ()=>{
+      clearTimeout(longPressTimer);
+      if(dragging){
+        dragging = false;
+        if(clone){ clone.remove(); clone = null; }
+        document.querySelectorAll('.task-card.drag-source,.task-card.drag-over')
+          .forEach(el=>el.classList.remove('drag-source','drag-over'));
+      }
+    });
+  });
+}
+
+// Find the card under the pointer
+function getDragTarget(clientX, clientY){
+  const cards = [...document.querySelectorAll('.task-card:not(.drag-source)')];
+  // Find card whose vertical midpoint is nearest to clientY
+  let best = null, bestDist = Infinity;
+  cards.forEach(card=>{
+    const r = card.getBoundingClientRect();
+    if(clientX < r.left - 20 || clientX > r.right + 20) return; // wrong column
+    const mid = r.top + r.height / 2;
+    const dist = Math.abs(clientY - mid);
+    if(dist < bestDist){ bestDist = dist; best = card; }
+  });
+  return best;
+}
+
+// Reorder tasks array: move sourceId to position of targetId
+function reorderTask(sourceId, targetId, clientY){
+  const srcIdx = tasks.findIndex(t=>t.id===sourceId);
+  const tgtIdx = tasks.findIndex(t=>t.id===targetId);
+  if(srcIdx === -1 || tgtIdx === -1 || srcIdx === tgtIdx) return;
+
+  const targetCard = document.querySelector(`[data-task-id="${targetId}"]`);
+  const rect = targetCard?.getBoundingClientRect();
+  // Drop above or below target based on pointer position relative to midpoint
+  const insertBefore = rect && clientY < rect.top + rect.height / 2;
+
+  const [moved] = tasks.splice(srcIdx, 1);
+  const newIdx = tasks.findIndex(t=>t.id===targetId);
+  tasks.splice(insertBefore ? newIdx : newIdx + 1, 0, moved);
+
+  render();
+  ghScheduleSave();
 }
 
 function taskNav(dir){
@@ -4723,7 +4901,52 @@ function rWeatherDay(dateStr){
         <div class="wx-stat-sub">high / low</div>
       </div>
     </div>
+    <div style="padding:0 16px 16px">
+      <button onclick="showRadarMap()" style="
+        width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);
+        background:var(--sidebar-bg);cursor:pointer;font-family:var(--font);
+        font-size:14px;font-weight:600;color:var(--text);
+        display:flex;align-items:center;justify-content:center;gap:8px">
+        🛰️ View Precipitation Radar
+      </button>
+    </div>
   </div>`;
+}
+
+function showRadarMap(){
+  // Remove any existing radar modal
+  document.querySelectorAll('.radar-overlay').forEach(el=>el.remove());
+
+  const overlay = document.createElement('div');
+  overlay.className = 'radar-overlay';
+  overlay.style.cssText = `
+    position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.88);
+    display:flex;flex-direction:column;
+  `;
+
+  overlay.innerHTML = `
+    <div style="display:flex;align-items:center;justify-content:space-between;
+      padding:14px 18px;background:#111;flex-shrink:0">
+      <div style="color:#fff;font-size:16px;font-weight:700">🛰️ Precipitation Radar</div>
+      <div style="display:flex;gap:10px;align-items:center">
+        <a href="https://radar.weather.gov/station/KDIX/standard" target="_blank"
+          style="color:#93c5fd;font-size:13px;text-decoration:none">Open full site ↗</a>
+        <button onclick="this.closest('.radar-overlay').remove()"
+          style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px">✕</button>
+      </div>
+    </div>
+    <iframe
+      src="https://radar.weather.gov/station/KDIX/standard"
+      style="flex:1;border:none;width:100%"
+      title="NWS Precipitation Radar">
+    </iframe>
+    <div style="padding:8px 16px;background:#111;color:#6b7280;font-size:11px;text-align:center;flex-shrink:0">
+      KDIX — Philadelphia/Mt Holly NWS Radar · Tap outside or ✕ to close
+    </div>`;
+
+  // Tap backdrop to close
+  overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
+  document.body.appendChild(overlay);
 }
 
 function toggleWeather(){
