@@ -28,23 +28,6 @@
     ]
   },
   {
-    "id": 1776105655707,
-    "title": "Change Island Lightbulb",
-    "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775668846809,
     "title": "Put your clothes away",
     "done": true,
@@ -208,6 +191,23 @@
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1776105655707,
+    "title": "Change Island Lightbulb",
+    "done": true,
+    "doneOn": [
+      "2026-04-13"
+    ],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
     "who": [
       "Dad"
     ]
