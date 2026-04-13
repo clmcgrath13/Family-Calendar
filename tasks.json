@@ -61,7 +61,7 @@
   {
     "id": 1775668867871,
     "title": "Order Firewood",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -69,6 +69,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-13"
     ]
   },
   {
