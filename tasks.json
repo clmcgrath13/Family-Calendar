@@ -531,6 +531,21 @@
     ]
   },
   {
+    "id": 1776107853789,
+    "title": "Bring a box of seltzer up to the office",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
+  },
+  {
     "id": 1775919246479,
     "title": "Clean your workbench area in the garage",
     "done": false,
@@ -723,21 +738,6 @@
     "stayUntilDone": false,
     "who": [
       "Dad"
-    ]
-  },
-  {
-    "id": 1776107853789,
-    "title": "Bring a box of seltzer up to the office",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
     ]
   }
 ]
