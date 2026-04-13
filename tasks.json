@@ -224,6 +224,21 @@
     ]
   },
   {
+    "id": 1776109398250,
+    "title": "Change bronco oil",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1776105655707,
     "title": "Change Island Lightbulb",
     "done": true,
@@ -785,21 +800,6 @@
     "stayUntilDone": false,
     "who": [
       "Ava"
-    ]
-  },
-  {
-    "id": 1776109398250,
-    "title": "Change bronco oil",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   }
 ]
