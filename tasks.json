@@ -32,19 +32,6 @@
     ]
   },
   {
-    "id": 1775668825266,
-    "title": "Sharpen Knives",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775668846809,
     "title": "Put your clothes away",
     "done": true,
@@ -573,6 +560,19 @@
     "recurDays": [],
     "timeOfDay": "",
     "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1775668825266,
+    "title": "Sharpen Knives",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
     "who": [
       "Dad"
     ]
