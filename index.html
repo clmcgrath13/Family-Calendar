@@ -1251,7 +1251,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.1</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.2</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1885,7 +1885,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.1</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.2</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2243,7 +2243,7 @@ function rWeek(numDays){
   days.forEach(d=>{
     const isT=same(d,T);
     const ds=fmt(d);
-    hd+=`<div class="wh-cell"><div class="wh-dow">${DS[d.getDay()]}</div><div class="wh-date${isT?' tod':''}" onclick="cur=new Date('${ds}T12:00:00');calV='day';render()" style="cursor:pointer" title="Go to day view">${d.getDate()}</div></div>`;
+    hd+=`<div class="wh-cell"><div class="wh-dow">${DS[d.getDay()]}</div><div class="wh-date${isT?' tod':''}" onclick="cur=new Date('${ds}T12:00:00');pickView('day')" style="cursor:pointer" title="Go to day view">${d.getDate()}</div></div>`;
   });
 
   // All-day / multi-day proportional pill row
@@ -4971,49 +4971,56 @@ function rWeatherDay(dateStr){
       </div>
     </div>
     <div style="padding:0 16px 16px">
-      <button onclick="showRadarMap()" style="
+      ${dateStr === fmt(T) ? `<button onclick="showRadarMap()" style="
         width:100%;padding:12px;border-radius:10px;border:1px solid var(--border);
         background:var(--sidebar-bg);cursor:pointer;font-family:var(--font);
         font-size:14px;font-weight:600;color:var(--text);
         display:flex;align-items:center;justify-content:center;gap:8px">
         🛰️ View Precipitation Radar
-      </button>
+      </button>` : ''}
     </div>
   </div>`;
 }
 
 function showRadarMap(){
-  // Remove any existing radar modal
   document.querySelectorAll('.radar-overlay').forEach(el=>el.remove());
+
+  // NWS ridge2 radar viewer — zoom level 8 centered on NJ (40.97, -74.17)
+  const radarUrl = 'https://radar.weather.gov/station/KDIX/standard';
+  // Use the interactive map viewer centered on the location for zoom support
+  const mapUrl = `https://www.weather.gov/map/?zoom=8&lat=${WX_LAT}&lon=${WX_LON}&layers=BROD`;
 
   const overlay = document.createElement('div');
   overlay.className = 'radar-overlay';
-  overlay.style.cssText = `
-    position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.88);
-    display:flex;flex-direction:column;
-  `;
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:1200;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;';
 
   overlay.innerHTML = `
     <div style="display:flex;align-items:center;justify-content:space-between;
       padding:14px 18px;background:#111;flex-shrink:0">
       <div style="color:#fff;font-size:16px;font-weight:700">🛰️ Precipitation Radar</div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <a href="https://radar.weather.gov/station/KDIX/standard" target="_blank"
-          style="color:#93c5fd;font-size:13px;text-decoration:none">Open full site ↗</a>
+      <div style="display:flex;gap:12px;align-items:center">
+        <button onclick="this.closest('.radar-overlay').querySelector('iframe').src='${radarUrl}'"
+          style="background:none;border:1px solid #444;color:#93c5fd;font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer">
+          Loop View
+        </button>
+        <button onclick="this.closest('.radar-overlay').querySelector('iframe').src='${mapUrl}'"
+          style="background:none;border:1px solid #444;color:#93c5fd;font-size:12px;padding:4px 10px;border-radius:6px;cursor:pointer">
+          Map View
+        </button>
+        <a href="${radarUrl}" target="_blank"
+          style="color:#6b7280;font-size:12px;text-decoration:none">↗ Open</a>
         <button onclick="this.closest('.radar-overlay').remove()"
           style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;line-height:1;padding:0 4px">✕</button>
       </div>
     </div>
-    <iframe
-      src="https://radar.weather.gov/station/KDIX/standard"
+    <iframe src="${radarUrl}"
       style="flex:1;border:none;width:100%"
       title="NWS Precipitation Radar">
     </iframe>
-    <div style="padding:8px 16px;background:#111;color:#6b7280;font-size:11px;text-align:center;flex-shrink:0">
-      KDIX — Philadelphia/Mt Holly NWS Radar · Tap outside or ✕ to close
+    <div style="padding:6px 16px;background:#111;color:#6b7280;font-size:11px;text-align:center;flex-shrink:0">
+      KDIX — Mt Holly NWS · Loop View shows animated radar · Map View allows pinch/zoom
     </div>`;
 
-  // Tap backdrop to close
   overlay.addEventListener('click', e=>{ if(e.target===overlay) overlay.remove(); });
   document.body.appendChild(overlay);
 }
@@ -5589,7 +5596,9 @@ function calScheduleSave(){
 async function calSaveNow(){
   if(!ghToken()||!ghOwner()||!ghRepo()) return;
   try {
-    const body = { message:'Update calendar.json', content: btoa(unescape(encodeURIComponent(JSON.stringify(calOverrides, null, 2)))) };
+    const json = JSON.stringify(calOverrides, null, 2);
+    const encoded = btoa(unescape(encodeURIComponent(json)));
+    const body = { message:'Update calendar.json', content: encoded };
     if(_calSha) body.sha = _calSha;
     const r = await fetch(calApi(), {
       method:'PUT',
@@ -5610,10 +5619,11 @@ async function calLoad(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     const d = await r.json();
     _calSha = d.sha;
-    const loaded = JSON.parse(decodeURIComponent(escape(atob(d.content.replace(/\n/g,'')))));
+    const raw = atob(d.content.replace(/\n/g,''));
+    const json = decodeURIComponent(escape(raw));
+    const loaded = JSON.parse(json);
     if(loaded && typeof loaded==='object') calOverrides = loaded;
     _calLoaded = true;
-    // Apply overrides to any already-loaded GCal events
     applyCalOverrides();
   } catch(e){ console.error('calendar.json load failed:', e); _calLoaded=true; }
 }
@@ -5624,18 +5634,19 @@ function applyCalOverrides(){
     if(!ev.fromGcal) return;
     const ov = calOverrides[ev.id];
     if(!ov) return;
-    if(ov.who  !== undefined) ev.who  = ov.who;
-    if(ov.title!== undefined) ev.title= ov.title;
-    if(ov.loc  !== undefined) ev.loc  = ov.loc;
-    if(ov.desc !== undefined) ev.desc = ov.desc;
+    if(ov.who   !== undefined) ev.who   = ov.who;
+    if(ov.title !== undefined) ev.title = ov.title;
+    if(ov.loc   !== undefined) ev.loc   = ov.loc;
+    if(ov.desc  !== undefined) ev.desc  = ov.desc;
   });
 }
 
-// Save an override for a GCal event and persist
+// Save an override for a GCal event — saves immediately (no debounce) to ensure it persists
 function saveCalOverride(id, fields){
   if(!calOverrides[id]) calOverrides[id] = {};
   Object.assign(calOverrides[id], fields);
-  calScheduleSave();
+  // Save immediately (not debounced) so page refreshes don't lose the change
+  calSaveNow();
 }
 
 window.addEventListener('beforeunload', ()=>{
