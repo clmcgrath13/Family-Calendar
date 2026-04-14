@@ -2,8 +2,10 @@
   {
     "id": 1776108713307,
     "title": "Finish the laundry",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-14"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -713,8 +715,8 @@
   },
   {
     "id": 1776002477717,
-"title": "fix fence for zorro",
-"done": true,
+    "title": "fix fence for zorro",
+    "done": true,
     "doneOn": [
       "2026-04-12"
     ],
