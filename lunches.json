@@ -39,7 +39,7 @@
       "type": "school"
     },
     "2026-04-14": {
-      "name": "Pasta with Mariners sauce",
+      "name": "Bagel",
       "type": "custom"
     },
     "2026-04-15": {
@@ -84,8 +84,8 @@
     }
   },
   "_avaCustoms": [
-    "Pasta with Mariners sauce",
     "Bagel",
+    "Pasta with Mariners sauce",
     "Chili"
   ]
 }
