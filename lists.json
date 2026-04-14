@@ -15,9 +15,14 @@
       {
         "t": "Bread",
         "d": false
+      },
+      {
+        "t": "cream cheese",
+        "d": false
       }
     ],
     "_history": [
+      "cream cheese",
       "Bread",
       "Seltzer",
       "Milk",
