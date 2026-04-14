@@ -1251,7 +1251,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.2</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1885,7 +1885,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.2</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -5351,6 +5351,46 @@ function ghOwner() { return window.GITHUB_OWNER || ''; }
 function ghRepo()  { return window.GITHUB_REPO  || ''; }
 function ghApi()   { return `https://api.github.com/repos/${ghOwner()}/${ghRepo()}/contents/tasks.json`; }
 
+// Show a full-screen repair banner when a JSON file is corrupted
+function _showRepairBanner(filename, type, onRepair){
+  // Remove any existing banner
+  document.getElementById('repair-banner')?.remove();
+  const banner = document.createElement('div');
+  banner.id = 'repair-banner';
+  banner.style.cssText = `
+    position:fixed;inset:0;z-index:3000;background:rgba(220,38,38,0.96);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:16px;padding:32px;text-align:center;
+  `;
+  banner.innerHTML = `
+    <div style="font-size:48px">⚠️</div>
+    <div style="color:#fff;font-size:22px;font-weight:700">${filename} is corrupted</div>
+    <div style="color:#fecaca;font-size:15px;max-width:400px;line-height:1.5">
+      The file was saved incomplete, likely because the app was closed during a save.
+      You can reset it to empty (your ${type} will be lost) or fix it manually on GitHub.
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+      <button onclick="document.getElementById('repair-banner')?.remove()"
+        style="padding:12px 24px;border-radius:10px;border:2px solid #fca5a5;background:transparent;
+               color:#fff;font-size:15px;font-weight:600;cursor:pointer">
+        Dismiss
+      </button>
+      <button id="repair-btn"
+        style="padding:12px 24px;border-radius:10px;border:none;background:#fff;
+               color:#dc2626;font-size:15px;font-weight:700;cursor:pointer">
+        Reset ${filename} to Empty
+      </button>
+    </div>
+    <div style="color:#fca5a5;font-size:12px;margin-top:4px">
+      To fix manually: open GitHub → ${filename} → edit → replace contents with ${type==='tasks'||type==='lists'?'[]':'{}'} → commit
+    </div>`;
+  banner.querySelector('#repair-btn').onclick = ()=>{
+    banner.remove();
+    onRepair();
+  };
+  document.body.appendChild(banner);
+}
+
 let _ghSha       = null;  // current file SHA — required for updates
 let _ghSaveTimer = null;  // debounce timer
 let _tasksLoaded = false; // true once tasks have been loaded from GitHub
@@ -5435,13 +5475,38 @@ async function ghLoadTasks(){
     });
     if(r.status === 404){
       ghStatusSet('', 'Creating tasks.json…');
+      _tasksLoaded = true;
       await ghSaveNow();
       return;
     }
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data = await r.json();
     _ghSha = data.sha;
-    const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
+
+    let jsonText;
+    if(data.content && data.encoding === 'base64'){
+      // Normal path — file fits in API response
+      jsonText = atob(data.content.replace(/\n/g,''));
+    } else if(data.download_url){
+      // Large file (>1MB) — GitHub omits content, use download_url instead
+      ghStatusSet('saving', 'Loading large tasks file…');
+      const dr = await fetch(data.download_url + '?t=' + Date.now());
+      if(!dr.ok) throw new Error('Download failed: HTTP '+dr.status);
+      jsonText = await dr.text();
+    } else {
+      throw new Error('No content available');
+    }
+
+    let loaded;
+    try {
+      loaded = JSON.parse(jsonText);
+    } catch(parseErr){
+      console.error('tasks.json corrupt:', parseErr);
+      ghStatusSet('error', 'tasks.json corrupt — tap to repair');
+      _tasksLoaded = true;
+      _showRepairBanner('tasks.json', 'tasks', ()=>{ tasks=[]; ghSaveNow(); render(); });
+      return;
+    }
     if(Array.isArray(loaded)){
       tasks = loaded;
       _tasksLoaded = true;
@@ -5460,7 +5525,13 @@ async function ghSaveNow(){
   if(!ghToken() || !ghOwner() || !ghRepo()) return;
   ghStatusSet('saving', 'Saving…');
   try {
-    const content = btoa(unescape(encodeURIComponent(JSON.stringify(tasks, null, 2))));
+    // Trim doneOn history to last 60 days to prevent file bloat
+    const cutoff = fmt(new Date(Date.now() - 60 * 86400000));
+    const saveable = tasks.map(t => {
+      if(!t.doneOn?.length) return t;
+      return { ...t, doneOn: t.doneOn.filter(d => typeof d === 'string' && d >= cutoff) };
+    });
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(saveable, null, 2))));
     const body = {
       message: 'Update tasks',
       content,
@@ -5563,10 +5634,17 @@ async function listsLoadData(){
     if(!r.ok) throw new Error('HTTP '+r.status);
     const data = await r.json();
     _listsSha = data.sha;
-    const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
+    let loaded;
+    try { loaded = JSON.parse(atob(data.content.replace(/\n/g,''))); }
+    catch(parseErr){
+      console.error('lists.json corrupt:', parseErr);
+      _listsLoaded = true;
+      _showRepairBanner('lists.json', 'lists', ()=>{ lists=[]; listsSaveNow(); render(); });
+      return;
+    }
     if(Array.isArray(loaded)){ lists = loaded; }
     _listsLoaded = true;
-    backfillHistory();  // populate _history for lists that predate history system
+    backfillHistory();
     purgeCheckedItems();
     if(appV==='lists') render();
   } catch(e){ console.error('Lists load failed:', e); _listsLoaded=true; }
