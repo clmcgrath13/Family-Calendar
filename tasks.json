@@ -121,6 +121,21 @@
     ]
   },
   {
+    "id": 1776210385833,
+    "title": "Call bug and lawn guys about May 9th party",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775755993312,
     "title": "Descale Coffee Maker",
     "done": false,
@@ -936,21 +951,6 @@
     "stayUntilDone": false,
     "who": [
       "Ava"
-    ]
-  },
-  {
-    "id": 1776210385833,
-    "title": "Call bug and lawn guys about May 9th party",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   }
 ]
