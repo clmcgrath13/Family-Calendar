@@ -50,6 +50,21 @@
     ]
   },
   {
+    "id": 1776210385833,
+    "title": "Call bug and lawn guys about May 9th party",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1776109390346,
     "title": "Get oil changed",
     "done": false,
@@ -116,21 +131,6 @@
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1776210385833,
-    "title": "Call bug and lawn guys about May 9th party",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
     "who": [
       "Dad"
     ]
