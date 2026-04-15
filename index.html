@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Family Calendar</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://script.google.com/macros/s/AKfycbxI2nDM9s-S9-1U_jz_YfkCCUywxDgKrzjtCX0ZvXgbHUfq52W28e05_hfcn8FDDyKEFg/exec"></script>
 
 <style>
@@ -642,6 +643,47 @@ body {
 }
 .ladd-bar .typeahead-item { padding: 13px 16px; font-size: 15px; }
 
+/* PACKAGES */
+.pkgwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
+.pkg-hdr { padding:16px 20px 12px; border-bottom:1px solid var(--border); background:var(--header-bg); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; }
+.pkg-hdr-title { font-size:20px; font-weight:700; color:var(--text); }
+.pkg-body { flex:1; overflow-y:auto; padding:12px 16px; }
+.pkg-card {
+  background:var(--bg); border:1px solid var(--border); border-radius:12px;
+  padding:14px 16px; margin-bottom:10px; display:flex; align-items:flex-start; gap:12px;
+  border-left:4px solid var(--border);
+}
+.pkg-card.status-ordered    { border-left-color:#f59e0b; }
+.pkg-card.status-shipped    { border-left-color:#3b82f6; }
+.pkg-card.status-out        { border-left-color:#8b5cf6; }
+.pkg-card.status-delivered  { border-left-color:#22a06b; opacity:0.7; }
+.pkg-icon { font-size:28px; flex-shrink:0; margin-top:2px; }
+.pkg-info { flex:1; min-width:0; }
+.pkg-label { font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.pkg-meta { font-size:12px; color:var(--muted); margin-bottom:4px; }
+.pkg-status { display:inline-flex; align-items:center; gap:5px; font-size:12px; font-weight:700; padding:3px 10px; border-radius:20px; }
+.pkg-status.status-ordered   { background:#fef3c7; color:#b45309; }
+.pkg-status.status-shipped   { background:#dbeafe; color:#1d4ed8; }
+.pkg-status.status-out       { background:#ede9fe; color:#6d28d9; }
+.pkg-status.status-delivered { background:#d1fae5; color:#065f46; }
+.pkg-actions { display:flex; flex-direction:column; gap:6px; flex-shrink:0; }
+.pkg-action-btn {
+  width:30px; height:30px; border-radius:8px; border:1px solid var(--border);
+  background:var(--bg); cursor:pointer; display:flex; align-items:center; justify-content:center;
+  font-size:14px; transition:background 0.1s;
+}
+.pkg-action-btn:hover { background:var(--sidebar-bg); }
+.pkg-empty { text-align:center; padding:60px 20px; color:var(--muted); font-size:14px; }
+.pkg-add-bar { padding:12px 16px; border-top:1px solid var(--border); background:var(--header-bg); flex-shrink:0; }
+.pkg-carrier-pick { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
+.pkg-carrier-opt {
+  padding:5px 12px; border-radius:20px; border:1.5px solid var(--border);
+  background:var(--bg); cursor:pointer; font-size:12px; font-weight:600; color:var(--muted);
+  transition:all 0.12s;
+}
+.pkg-carrier-opt.sel { border-color:var(--today-ring); background:#dceeff; color:var(--today-ring); }
+.pkg-form-row { display:flex; gap:8px; align-items:center; }
+
 /* LUNCH TRACKER */
 .lunchwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
 .lunch-grid { flex:1; display:flex; flex-direction:column; overflow-y:auto; padding:10px; gap:12px; }
@@ -1246,12 +1288,16 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M6 3v5a3 3 0 006 0V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 8v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 3v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     <span class="nav-lbl">Meals</span>
   </button>
+  <button class="nav-btn" data-v="packages" onclick="sv('packages')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M3 7l7-4 7 4v6l-7 4-7-4V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 3v14M3 7l7 4 7-4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    <span class="nav-lbl">Packages</span>
+  </button>
   <div class="member-legend" id="member-legend-wrap"></div>
   <button class="nav-btn" data-v="settings" onclick="_draft=members.map(m=>({...m}));window._draftNewColor=PALETTE[0];sv('settings')" style="margin-top:4px;flex-shrink:0">
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.5</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.7</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1271,6 +1317,10 @@ body {
   <button class="mob-nav-btn" data-v="meals" onclick="sv('meals')">
     <svg viewBox="0 0 20 20" fill="none"><path d="M6 3v5a3 3 0 006 0V3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M9 8v9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M14 3v14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     Meals
+  </button>
+  <button class="mob-nav-btn" data-v="packages" onclick="sv('packages')">
+    <svg viewBox="0 0 20 20" fill="none"><path d="M3 7l7-4 7 4v6l-7 4-7-4V7z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 3v14M3 7l7 4 7-4" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+    Packages
   </button>
   <button class="mob-nav-btn" data-v="settings" onclick="_draft=members.map(m=>({...m}));window._draftNewColor=PALETTE[0];sv('settings')">
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
@@ -1408,6 +1458,7 @@ let taskMobileCol = 0; // index into taskMembers for mobile single-column view
 
 let tasks=[];
 let lists=[];
+let packages=[]; // [{id, label, carrier, tracking, status, addedAt, updatedAt, deliveredAt}]
 const MDAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 // Predefined list icons (SVG strings, render consistently on all devices)
@@ -1790,7 +1841,7 @@ function sv(v){
   const calTabs=document.getElementById('cal-tabs');
   if(calTabs) calTabs.style.display=v==='calendar'?'flex':'none';
   const fab=document.getElementById('fab');
-  if(fab) fab.style.display=(v==='settings'||v==='lists')?'none':'flex';
+  if(fab) fab.style.display=(v==='settings'||v==='lists'||v==='packages')?'none':'flex';
   // On mobile, calendar defaults to day view
   if(v==='calendar' && window.innerWidth<=600 && calV!=='day'){
     calV='day'; cur=new Date(T);
@@ -1885,7 +1936,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.5</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.7</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2006,6 +2057,7 @@ setInterval(() => {
     cur = new Date(T);
     taskDate = fmt(T);
     purgeCheckedItems(); // remove items checked yesterday
+    pkgPurgeOld();       // remove packages delivered 48h+ ago
     render();
   }
   if(appV !== 'lists' && appV !== 'settings') updateNowBar();
@@ -2060,6 +2112,7 @@ function render(preserveScroll){
     );
     return;
   }
+  if(appV==='packages'){ c.innerHTML=rPackages(); setTimeout(attachPkgForm,30); return; }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
   // Weather mode intercepts time-grid views
   if(weatherMode && isTimeView){
@@ -3379,6 +3432,442 @@ function _listSettingsRows(){
         onclick="removeList(${i})">✕</button>
     </div>`).join('');
 }
+
+// ── PACKAGES ─────────────────────────────────────────────────────
+const PKG_CARRIERS = ['Amazon','UPS','FedEx','USPS','DHL','OnTrac'];
+const PKG_STATUSES = {
+  ordered:   { label:'Ordered',        emoji:'📦', dot:'🟡' },
+  shipped:   { label:'Shipped',        emoji:'🚚', dot:'🔵' },
+  out:       { label:'Out for Delivery',emoji:'🛵', dot:'🟣' },
+  delivered: { label:'Delivered',      emoji:'✅', dot:'🟢' },
+};
+let _pkgCarrier = 'Amazon';
+
+function rPackages(){
+  const now = Date.now();
+  const h48 = 48 * 3600000;
+  // Show all non-delivered + delivered within 48 hours
+  const visible = packages.filter(p =>
+    p.status !== 'delivered' || (now - (p.deliveredAt||0)) < h48
+  ).sort((a,b) => {
+    // Order: out → shipped → ordered → delivered
+    const order = {out:0, shipped:1, ordered:2, delivered:3};
+    return (order[a.status]??9) - (order[b.status]??9);
+  });
+
+  const cards = visible.map(p => {
+    const st = PKG_STATUSES[p.status] || PKG_STATUSES.ordered;
+    const trackingUrl = pkgTrackingUrl(p.carrier, p.tracking);
+    const age = p.updatedAt ? _pkgRelTime(p.updatedAt) : '';
+    return `<div class="pkg-card status-${p.status}">
+      <div class="pkg-icon">${st.emoji}</div>
+      <div class="pkg-info">
+        <div class="pkg-label">${p.label||'Package'}</div>
+        <div class="pkg-meta">${p.carrier}${p.tracking?' · '+p.tracking:''}</div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px">
+          <span class="pkg-status status-${p.status}">${st.dot} ${st.label}</span>
+          ${age?`<span style="font-size:11px;color:var(--muted)">${age}</span>`:''}
+        </div>
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          ${p.status!=='delivered'?`<button class="pkg-action-btn" style="width:auto;padding:0 10px;font-size:11px;font-weight:600;color:var(--today-ring)" onclick="pkgAdvance(${p.id})">Advance Status</button>`:''}
+          ${trackingUrl?`<button class="pkg-action-btn" style="width:auto;padding:0 10px;font-size:11px" onclick="window.open('${trackingUrl}','_blank')">Track ↗</button>`:''}
+          <button class="pkg-action-btn" style="width:auto;padding:0 10px;font-size:11px;color:#c44" onclick="pkgDelete(${p.id})">Remove</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const empty = visible.length===0
+    ? `<div class="pkg-empty">📭<br><br>${gmailIsConnected()
+        ? 'No active packages found in your Gmail.<br><span style="font-size:12px">Tap ↻ Sync Gmail to check for new emails.</span>'
+        : 'Connect Gmail to automatically import packages,<br>or add one manually below.'
+      }</div>`
+    : '';
+
+  const carrierPicker = PKG_CARRIERS.map(c =>
+    `<div class="pkg-carrier-opt${c===_pkgCarrier?' sel':''}" onclick="pkgSetCarrier(this,'${c}')">${c}</div>`
+  ).join('');
+
+  return `<div class="pkgwrap">
+    <div class="pkg-hdr">
+      <div class="pkg-hdr-title">📦 Packages</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        ${gmailIsConnected()
+          ? `<button onclick="gmailSync()" style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--today-ring);font-weight:600">${_gmailSyncing?'Syncing…':'↻ Sync Gmail'}</button>
+             <button onclick="gmailSignOut()" style="font-size:11px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--muted)">Disconnect</button>`
+          : `<button onclick="gmailSignIn()" style="font-size:12px;padding:6px 12px;border-radius:8px;border:none;background:#4285f4;color:#fff;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px">
+               <svg width="14" height="14" viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+               Connect Gmail
+             </button>`
+        }
+        <div style="font-size:12px;color:var(--muted)">${visible.length} active</div>
+      </div>
+    </div>
+    <div class="pkg-body">${cards}${empty}</div>
+    <div class="pkg-add-bar">
+      <div class="pkg-carrier-pick">${carrierPicker}</div>
+      <div class="pkg-form-row">
+        <input class="fin" id="pkg-label-inp" type="text" placeholder="What is it? (e.g. Collin's cleats)"
+          style="flex:2;font-size:13px;padding:8px 10px" autocomplete="off">
+        <input class="fin" id="pkg-track-inp" type="text" placeholder="Tracking # (optional)"
+          style="flex:2;font-size:13px;padding:8px 10px" autocomplete="off">
+        <select class="fin" id="pkg-status-sel" style="flex:1;font-size:13px;padding:8px 6px">
+          <option value="ordered">Ordered</option>
+          <option value="shipped">Shipped</option>
+          <option value="out">Out for Delivery</option>
+        </select>
+        <button class="ladd-btn" onclick="pkgAdd()" title="Add Package" style="flex-shrink:0">+</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function attachPkgForm(){
+  const li = document.getElementById('pkg-label-inp');
+  const ti = document.getElementById('pkg-track-inp');
+  if(li) li.addEventListener('keydown', e=>{ if(e.key==='Enter') pkgAdd(); });
+  if(ti) ti.addEventListener('keydown', e=>{ if(e.key==='Enter') pkgAdd(); });
+}
+
+function pkgSetCarrier(el, carrier){
+  _pkgCarrier = carrier;
+  document.querySelectorAll('.pkg-carrier-opt').forEach(b=>b.classList.toggle('sel', b.textContent===carrier));
+}
+
+function pkgAdd(){
+  const label = document.getElementById('pkg-label-inp')?.value.trim();
+  const tracking = document.getElementById('pkg-track-inp')?.value.trim();
+  const status = document.getElementById('pkg-status-sel')?.value || 'ordered';
+  if(!label) return;
+  packages.push({
+    id: Date.now(),
+    label, carrier: _pkgCarrier, tracking, status,
+    addedAt: Date.now(), updatedAt: Date.now(), deliveredAt: null
+  });
+  pkgScheduleSave();
+  render();
+}
+
+function pkgAdvance(id){
+  const p = packages.find(p=>p.id===id);
+  if(!p) return;
+  const next = {ordered:'shipped', shipped:'out', out:'delivered'};
+  if(next[p.status]){
+    p.status = next[p.status];
+    p.updatedAt = Date.now();
+    if(p.status==='delivered') p.deliveredAt = Date.now();
+    pkgScheduleSave();
+    render();
+  }
+}
+
+function pkgDelete(id){
+  packages = packages.filter(p=>p.id!==id);
+  pkgScheduleSave();
+  render();
+}
+
+function pkgTrackingUrl(carrier, tracking){
+  if(!tracking) return '';
+  const t = encodeURIComponent(tracking);
+  const urls = {
+    'UPS':    `https://www.ups.com/track?tracknum=${t}`,
+    'FedEx':  `https://www.fedex.com/fedextrack/?trknbr=${t}`,
+    'USPS':   `https://tools.usps.com/go/TrackConfirmAction?tLabels=${t}`,
+    'Amazon': `https://www.amazon.com/progress-tracker/package/?ref=ppx_yo_dt_b_track_package`,
+    'DHL':    `https://www.dhl.com/en/express/tracking.html?AWB=${t}`,
+    'OnTrac': `https://www.ontrac.com/tracking/?number=${t}`,
+  };
+  return urls[carrier] || '';
+}
+
+function _pkgRelTime(ts){
+  const mins = Math.floor((Date.now()-ts)/60000);
+  if(mins < 1)   return 'just now';
+  if(mins < 60)  return `${mins}m ago`;
+  const hrs = Math.floor(mins/60);
+  if(hrs < 24)   return `${hrs}h ago`;
+  return `${Math.floor(hrs/24)}d ago`;
+}
+
+// Auto-purge delivered packages older than 48h
+function pkgPurgeOld(){
+  const h48 = 48*3600000;
+  const before = packages.length;
+  packages = packages.filter(p => p.status!=='delivered' || (Date.now()-(p.deliveredAt||0)) < h48);
+  if(packages.length !== before) pkgScheduleSave();
+}
+
+// ── PACKAGES GITHUB STORAGE ───────────────────────────────────────
+const PKG_FILE = 'packages.json';
+function pkgApi(){ return `https://api.github.com/repos/${ghOwner()}/${ghRepo()}/contents/${PKG_FILE}`; }
+let _pkgSha = null, _pkgSaveTimer = null, _pkgLoaded = false;
+
+function pkgScheduleSave(){
+  if(!_pkgLoaded) return;
+  clearTimeout(_pkgSaveTimer);
+  _pkgSaveTimer = setTimeout(pkgSaveNow, 800);
+}
+
+async function pkgSaveNow(){
+  if(!ghToken()||!ghOwner()||!ghRepo()) return;
+  try {
+    const body = { message:'Update packages.json', content: ghEncode(packages) };
+    if(_pkgSha) body.sha = _pkgSha;
+    const r = await fetch(pkgApi(), {
+      method:'PUT',
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json', 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+    if(r.ok){ const d=await r.json(); _pkgSha=d.content?.sha||_pkgSha; }
+  } catch(e){ console.error('packages.json save failed:',e); }
+}
+
+async function pkgLoad(){
+  if(!ghToken()||!ghOwner()||!ghRepo()){ _pkgLoaded=true; return; }
+  try {
+    const r = await fetch(pkgApi()+'?t='+Date.now(), {
+      headers:{ Authorization:'token '+ghToken(), Accept:'application/vnd.github+json' }
+    });
+    if(r.status===404){ _pkgLoaded=true; return; }
+    if(!r.ok) throw new Error('HTTP '+r.status);
+    const d = await r.json();
+    _pkgSha = d.sha;
+    let loaded;
+    try { loaded = JSON.parse(atob(d.content.replace(/\n/g,''))); }
+    catch(e){ _pkgLoaded=true; return; }
+    if(Array.isArray(loaded)) packages = loaded;
+    _pkgLoaded = true;
+    pkgPurgeOld();
+  } catch(e){ console.error('packages.json load failed:',e); _pkgLoaded=true; }
+}
+// ── GMAIL INTEGRATION ────────────────────────────────────────────
+const GMAIL_CLIENT_ID = '697995087846-jb5286il5gl9c0osnvgbtjheu3u844ne.apps.googleusercontent.com';
+const GMAIL_SCOPES    = 'https://www.googleapis.com/auth/gmail.readonly';
+const GMAIL_API       = 'https://www.googleapis.com/gmail/v1';
+let _gmailToken       = null;  // current OAuth access token
+let _gmailSyncing     = false;
+
+// Carrier tracking number patterns for auto-detection
+const CARRIER_PATTERNS = [
+  { carrier:'UPS',   re:/\b(1Z[A-Z0-9]{16})\b/g },
+  { carrier:'FedEx', re:/\b(\d{12}|\d{15}|\d{20}|96\d{20})\b/g },
+  { carrier:'USPS',  re:/\b(9[2345]\d{18,20}|420\d{22}|[A-Z]{2}\d{9}US)\b/g },
+  { carrier:'DHL',   re:/\b(\d{10,11}|[A-Z]{3}\d{10})\b/g },
+  { carrier:'Amazon',re:/\b(TBA\d{12,16})\b/g },
+  { carrier:'OnTrac',re:/\b(C\d{14})\b/g },
+];
+
+// Shipping email subjects to search for
+const GMAIL_QUERY = 'subject:(shipped OR "out for delivery" OR "delivery" OR "tracking" OR "order" OR "package") newer_than:30d';
+
+function gmailSignIn(){
+  if(!window.google?.accounts?.oauth2){
+    alert('Google Identity Services not loaded yet. Please wait a moment and try again.');
+    return;
+  }
+  const client = google.accounts.oauth2.initTokenClient({
+    client_id: GMAIL_CLIENT_ID,
+    scope: GMAIL_SCOPES,
+    callback: (resp) => {
+      if(resp.error){ console.error('Gmail OAuth error:', resp); return; }
+      _gmailToken = resp.access_token;
+      // Store token expiry
+      _gmailTokenExpiry = Date.now() + (resp.expires_in - 60) * 1000;
+      window.GMAIL_ACCESS_TOKEN = _gmailToken;
+      gmailSync();
+      render(); // update settings button state
+    }
+  });
+  client.requestAccessToken();
+}
+
+let _gmailTokenExpiry = 0;
+
+function gmailSignOut(){
+  if(_gmailToken) google.accounts.oauth2.revoke(_gmailToken);
+  _gmailToken = null;
+  window.GMAIL_ACCESS_TOKEN = null;
+  render();
+}
+
+function gmailIsConnected(){ return !!_gmailToken && Date.now() < _gmailTokenExpiry; }
+
+async function gmailSync(){
+  if(!gmailIsConnected() || _gmailSyncing) return;
+  _gmailSyncing = true;
+  try {
+    // Search Gmail for shipping-related emails
+    const searchResp = await fetch(
+      `${GMAIL_API}/users/me/messages?maxResults=50&q=${encodeURIComponent(GMAIL_QUERY)}`,
+      { headers:{ Authorization:`Bearer ${_gmailToken}` }}
+    );
+    if(!searchResp.ok) throw new Error('Gmail search failed: '+searchResp.status);
+    const searchData = await searchResp.json();
+    const messages = searchData.messages || [];
+
+    const newPackages = [];
+    for(const msg of messages){
+      const detail = await fetch(
+        `${GMAIL_API}/users/me/messages/${msg.id}?format=full`,
+        { headers:{ Authorization:`Bearer ${_gmailToken}` }}
+      );
+      if(!detail.ok) continue;
+      const data = await detail.json();
+      const parsed = _parseShippingEmail(data);
+      if(parsed) newPackages.push(...parsed);
+    }
+
+    // Merge with existing packages — don't duplicate by tracking number
+    let changed = false;
+    for(const np of newPackages){
+      const exists = packages.some(p =>
+        p.tracking && p.tracking === np.tracking
+      );
+      if(!exists){
+        packages.push(np);
+        changed = true;
+      } else {
+        // Update status if email has newer info
+        const existing = packages.find(p => p.tracking === np.tracking);
+        if(existing && _statusRank(np.status) > _statusRank(existing.status)){
+          existing.status = np.status;
+          existing.updatedAt = Date.now();
+          if(np.status==='delivered') existing.deliveredAt = Date.now();
+          changed = true;
+        }
+      }
+    }
+
+    if(changed){
+      pkgPurgeOld();
+      pkgScheduleSave();
+      if(appV==='packages') render();
+    }
+
+    // Update last sync time
+    _gmailLastSync = Date.now();
+    if(appV==='packages') render();
+  } catch(e){
+    console.error('Gmail sync failed:', e);
+    if(e.message.includes('401')) _gmailToken = null; // token expired
+  } finally {
+    _gmailSyncing = false;
+  }
+}
+
+let _gmailLastSync = 0;
+
+function _statusRank(s){ return {ordered:0,shipped:1,out:2,delivered:3}[s]??0; }
+
+function _parseShippingEmail(msgData){
+  // Extract subject and body text
+  const headers = msgData.payload?.headers || [];
+  const subject = headers.find(h=>h.name==='Subject')?.value || '';
+  const from    = headers.find(h=>h.name==='From')?.value || '';
+  const date    = headers.find(h=>h.name==='Date')?.value || '';
+  const body    = _extractEmailBody(msgData.payload);
+  const text    = subject + ' ' + body;
+  const msgDate = date ? new Date(date).getTime() : Date.now();
+
+  // Determine status from subject/body keywords
+  let status = 'shipped';
+  const tl = text.toLowerCase();
+  if(tl.includes('out for delivery') || tl.includes('arriving today')) status = 'out';
+  else if(tl.includes('delivered') || tl.includes('was delivered')) status = 'delivered';
+  else if(tl.includes('order confirmed') || tl.includes('order received') || tl.includes('thank you for your order')) status = 'ordered';
+  else if(tl.includes('shipped') || tl.includes('on its way') || tl.includes('in transit')) status = 'shipped';
+
+  // Extract tracking numbers
+  const found = [];
+  for(const {carrier, re} of CARRIER_PATTERNS){
+    re.lastIndex = 0;
+    let m;
+    while((m = re.exec(text)) !== null){
+      found.push({ tracking: m[1], carrier });
+    }
+  }
+
+  // Extract item description from subject
+  const label = _extractLabel(subject, from);
+
+  if(found.length === 0 && status === 'ordered'){
+    // Order confirmation with no tracking yet — add as ordered
+    if(tl.includes('order') && label){
+      return [{
+        id: Date.now() + Math.random(),
+        label, carrier: _detectCarrierFromSender(from),
+        tracking: '', status: 'ordered',
+        addedAt: msgDate, updatedAt: msgDate, deliveredAt: null,
+        fromEmail: true, msgId: msgData.id
+      }];
+    }
+    return null;
+  }
+
+  return found.map(({tracking, carrier}) => ({
+    id: Date.now() + Math.random(),
+    label: label || 'Package',
+    carrier, tracking, status,
+    addedAt: msgDate, updatedAt: msgDate,
+    deliveredAt: status==='delivered' ? msgDate : null,
+    fromEmail: true, msgId: msgData.id
+  }));
+}
+
+function _extractEmailBody(payload){
+  if(!payload) return '';
+  if(payload.body?.data) return atob(payload.body.data.replace(/-/g,'+').replace(/_/g,'/'));
+  if(payload.parts){
+    for(const part of payload.parts){
+      if(part.mimeType==='text/plain' && part.body?.data)
+        return atob(part.body.data.replace(/-/g,'+').replace(/_/g,'/'));
+    }
+    for(const part of payload.parts){
+      const sub = _extractEmailBody(part);
+      if(sub) return sub;
+    }
+  }
+  return '';
+}
+
+function _extractLabel(subject, from){
+  // Clean up common email subject patterns
+  let label = subject
+    .replace(/re:\s*/i,'')
+    .replace(/your .*(order|shipment|package|delivery).*/i, match => match)
+    .replace(/^\s*(your|a|an)\s+/i,'')
+    .replace(/has shipped.*$/i,'')
+    .replace(/is on its way.*$/i,'')
+    .replace(/order #?\w+:?\s*/i,'')
+    .replace(/shipment notification:?\s*/i,'')
+    .trim();
+
+  // If label is just generic, use sender name
+  if(!label || label.length < 3 || /^(your|package|shipment|order)$/i.test(label)){
+    const senderMatch = from.match(/^([^<@]+)/);
+    label = senderMatch ? senderMatch[1].trim() : 'Package';
+  }
+
+  return label.slice(0,60); // cap length
+}
+
+function _detectCarrierFromSender(from){
+  const f = from.toLowerCase();
+  if(f.includes('amazon')) return 'Amazon';
+  if(f.includes('ups')) return 'UPS';
+  if(f.includes('fedex')) return 'FedEx';
+  if(f.includes('usps')) return 'USPS';
+  if(f.includes('dhl')) return 'DHL';
+  if(f.includes('ontrac')) return 'OnTrac';
+  return 'Other';
+}
+
+// Auto-sync Gmail every 30 minutes if connected
+setInterval(()=>{ if(gmailIsConnected()) gmailSync(); }, 30*60*1000);
+// ── END GMAIL ─────────────────────────────────────────────────────
+
+// ── END PACKAGES ──────────────────────────────────────────────────
 
 function rMeals(){
   const weekDates = getLunchWeekDates();
@@ -4714,6 +5203,7 @@ setTimeout(()=>{
     lunchLoadData();
     listsLoadData();
     calLoad();
+    pkgLoad();
     // Start background sync poll after initial load settles
     setTimeout(pollForRemoteChanges, 65000);
   } else {
