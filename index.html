@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.6</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.8</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.6</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.8</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3479,16 +3479,17 @@ function rPackages(){
     return (order[a.status]??9) - (order[b.status]??9);
   });
 
+  const syncAge = _gmailLastSync ? _pkgRelTime(_gmailLastSync) : 'never';
   const gmailBtn = gmailIsConnected()
-    ? `<div style="display:flex;gap:8px;align-items:center">
-        <button onclick="gmailSync()" style="
+    ? `<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+        <button onclick="gmailIncrementalSync()" style="
           font-size:12px;padding:5px 12px;border-radius:8px;cursor:pointer;font-weight:600;
           border:1.5px solid ${_gmailSyncing?'#ca8a04':_gmailError?'#dc2626':'#16a34a'};
           background:${_gmailSyncing?'#fef9c3':_gmailError?'#fef2f2':'#f0fdf4'};
           color:${_gmailSyncing?'#854d0e':_gmailError?'#dc2626':'#16a34a'}">
-          ${_gmailSyncing?'⏳ Syncing…':_gmailError?'❌ Sync failed':'✓ Gmail synced'}
+          ${_gmailSyncing?'⏳ Syncing…':_gmailError?'❌ Error — retry':'✓ Synced '+syncAge}
         </button>
-        <button onclick="gmailSync()" style="font-size:11px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--muted)">↻</button>
+        <button onclick="gmailFullSyncManual()" style="font-size:11px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--muted)" title="Full 30-day re-sync">Full sync</button>
         <button onclick="gmailSignOut()" style="font-size:11px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--muted)">Disconnect</button>
        </div>`
     : `<button onclick="gmailSignIn()" style="font-size:12px;padding:7px 14px;border-radius:8px;border:none;background:#4285f4;color:#fff;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px">
@@ -3713,11 +3714,16 @@ async function pkgLoad(){
 const GMAIL_CLIENT_ID = '697995087846-jb5286il5gl9c0osnvgbtjheu3u844ne.apps.googleusercontent.com';
 const GMAIL_SCOPES    = 'https://www.googleapis.com/auth/gmail.readonly';
 const GMAIL_API       = 'https://www.googleapis.com/gmail/v1';
-let _gmailToken       = null;  // current OAuth access token
+
+let _gmailToken       = null;
+let _gmailTokenExpiry = 0;
 let _gmailSyncing     = false;
 let _gmailError       = false;
+let _gmailLastSync    = 0;
+let _gmailLastFull    = 0; // timestamp of last full 30-day sync
+let _gmailProgress    = { step:'', current:0, total:0 }; // progress state
 
-// Carrier tracking number patterns for auto-detection
+// Carrier tracking number patterns
 const CARRIER_PATTERNS = [
   { carrier:'UPS',   re:/\b(1Z[A-Z0-9]{16})\b/g },
   { carrier:'FedEx', re:/\b(\d{12}|\d{15}|\d{20}|96\d{20})\b/g },
@@ -3727,132 +3733,257 @@ const CARRIER_PATTERNS = [
   { carrier:'OnTrac',re:/\b(C\d{14})\b/g },
 ];
 
-// Only search emails from known shipping/retail senders — much more precise than keyword search
-// Tight sender list — only exact known shipping notification addresses/domains
-const GMAIL_QUERY = [
-  'from:(@amazon.com OR @ups.com OR @fedex.com OR @usps.com OR @dhl.com OR @ontrac.com',
-  'OR @bestbuy.com OR @walmart.com OR @target.com OR @costco.com OR @ebay.com OR @etsy.com',
-  'OR @nike.com OR @adidas.com OR @chewy.com OR @wayfair.com OR @macys.com OR @nordstrom.com)',
-  'subject:(shipped OR "out for delivery" OR delivered OR "order confirmed" OR "tracking number")',
-  'newer_than:30d'
-].join(' ');
-
-// Known shipping sender domains for secondary filtering
 const SHIPPING_SENDERS = [
-  'amazon.com','amazon.co','ups.com','fedex.com','usps.com','dhl.com','ontrac.com',
-  'shipstation.com','shipbob.com','narvar.com','aftership.com','shop.app',
-  'bestbuy.com','walmart.com','target.com','costco.com','ebay.com','etsy.com',
-  'macys.com','nordstrom.com','gap.com','nike.com','adidas.com','chewy.com',
+  'auto-confirm@amazon.com',
+  'shipment-tracking@amazon.com',
 ];
+
+// Build Gmail query using exact from: addresses
+function _gmailQuery(scope){
+  const senders = 'from:(auto-confirm@amazon.com OR shipment-tracking@amazon.com)';
+  const age = scope === 'full' ? 'newer_than:30d' : 'newer_than:2d';
+  return `${senders} ${age}`;
+}
 
 function gmailSignIn(){
   if(!window.google?.accounts?.oauth2){
-    alert('Google Identity Services not loaded yet. Please wait a moment and try again.');
+    alert('Google Identity Services not loaded. Please wait a moment and try again.');
     return;
   }
   const client = google.accounts.oauth2.initTokenClient({
     client_id: GMAIL_CLIENT_ID,
     scope: GMAIL_SCOPES,
-    callback: (resp) => {
+    callback: async (resp) => {
       if(resp.error){ console.error('Gmail OAuth error:', resp); return; }
       _gmailToken = resp.access_token;
-      // Store token expiry
       _gmailTokenExpiry = Date.now() + (resp.expires_in - 60) * 1000;
-      window.GMAIL_ACCESS_TOKEN = _gmailToken;
-      gmailSync();
-      render(); // update settings button state
+      // First time: run full 30-day sync. Subsequent: incremental only.
+      if(!_gmailLastFull){
+        await gmailFullSync();
+      } else {
+        await gmailIncrementalSync();
+      }
+      render();
     }
   });
   client.requestAccessToken();
 }
 
-let _gmailTokenExpiry = 0;
-
 function gmailSignOut(){
   if(_gmailToken) google.accounts.oauth2.revoke(_gmailToken);
   _gmailToken = null;
-  window.GMAIL_ACCESS_TOKEN = null;
+  _gmailError = false;
   render();
 }
 
 function gmailIsConnected(){ return !!_gmailToken && Date.now() < _gmailTokenExpiry; }
 
-async function gmailSync(){
+// ── FULL SYNC (30 days) — runs once, shows detailed progress ──────
+async function gmailFullSync(){
   if(!gmailIsConnected() || _gmailSyncing) return;
   _gmailSyncing = true;
-  _gmailError = false;
-  if(appV==='packages') render();
+  _gmailError   = false;
+  _gmailProgress = { step:'Searching your Gmail…', current:0, total:0 };
+  _showSyncOverlay();
 
   try {
-    const searchResp = await fetch(
-      `${GMAIL_API}/users/me/messages?maxResults=30&q=${encodeURIComponent(GMAIL_QUERY)}`,
-      { headers:{ Authorization:`Bearer ${_gmailToken}` }}
-    );
-    if(!searchResp.ok) throw new Error('Gmail search failed: '+searchResp.status);
-    const searchData = await searchResp.json();
-    const messages = searchData.messages || [];
+    // Step 1: search
+    _gmailProgress.step = 'Searching Gmail for shipping emails…';
+    _updateSyncOverlay();
 
-    // Fetch all message details in parallel (much faster than sequential)
-    const details = await Promise.all(
-      messages.map(msg =>
-        fetch(`${GMAIL_API}/users/me/messages/${msg.id}?format=full`,
-          { headers:{ Authorization:`Bearer ${_gmailToken}` }})
-        .then(r => r.ok ? r.json() : null)
-        .catch(() => null)
-      )
+    const q = _gmailQuery('full');
+    const searchResp = await _gmailFetch(
+      `${GMAIL_API}/users/me/messages?maxResults=50&q=${encodeURIComponent(q)}`
     );
-
-    const newPackages = [];
-    for(const data of details){
-      if(!data) continue;
-      const parsed = _parseShippingEmail(data);
-      if(!parsed) continue;
-      // Images are already resolved to proxy URLs by _extractImages — no extra fetches needed
-      newPackages.push(...parsed);
+    const messages = searchResp.messages || [];
+    if(!messages.length){
+      _gmailProgress.step = 'No shipping emails found.';
+      _updateSyncOverlay();
+      await _sleep(1000);
+      _gmailLastFull = Date.now();
+      return;
     }
 
-    // Merge with existing packages
-    let changed = false;
-    for(const np of newPackages){
-      const existing = packages.find(p =>
-        (p.tracking && np.tracking && p.tracking === np.tracking) ||
-        (p.msgId && p.msgId === np.msgId)
+    // Step 2: fetch details in small batches of 5 to stay within rate limits
+    _gmailProgress.total   = messages.length;
+    _gmailProgress.current = 0;
+    const BATCH = 5;
+    const newPackages = [];
+
+    for(let i = 0; i < messages.length; i += BATCH){
+      const batch = messages.slice(i, i + BATCH);
+      _gmailProgress.step = `Reading email ${i+1}–${Math.min(i+BATCH, messages.length)} of ${messages.length}…`;
+      _gmailProgress.current = i;
+      _updateSyncOverlay();
+
+      const details = await Promise.all(
+        batch.map(msg =>
+          _gmailFetch(`${GMAIL_API}/users/me/messages/${msg.id}?format=full`)
+            .catch(() => null)
+        )
       );
-      if(!existing){
-        packages.push(np);
-        changed = true;
-      } else {
-        if(_statusRank(np.status) > _statusRank(existing.status)){
-          existing.status = np.status;
-          existing.updatedAt = Date.now();
-          if(np.status==='delivered') existing.deliveredAt = Date.now();
-          changed = true;
-        }
-        if(np.images?.length && !existing.images?.length){
-          existing.images = np.images;
-          changed = true;
-        }
-        if(!existing.eta && np.eta){ existing.eta = np.eta; changed = true; }
-        if(!existing.recipient && np.recipient){ existing.recipient = np.recipient; changed = true; }
+      for(const data of details){
+        if(!data) continue;
+        const parsed = _parseShippingEmail(data);
+        if(parsed) newPackages.push(...parsed);
       }
     }
 
-    if(changed){ pkgPurgeOld(); pkgScheduleSave(); }
+    // Step 3: merge
+    _gmailProgress.step = `Found ${newPackages.length} package update(s). Saving…`;
+    _gmailProgress.current = messages.length;
+    _updateSyncOverlay();
+
+    _mergePackages(newPackages);
+    _gmailLastFull = Date.now();
+    _gmailLastSync = Date.now();
+    _gmailProgress.step = `✓ Done — ${packages.filter(p=>p.status!=='delivered').length} active packages`;
+    _updateSyncOverlay();
+    await _sleep(1200);
+
+  } catch(e){
+    console.error('Full sync failed:', e);
+    _gmailError = true;
+    _gmailProgress.step = '❌ Sync failed: ' + (e.message||'unknown error');
+    _updateSyncOverlay();
+    await _sleep(2000);
+  } finally {
+    _gmailSyncing = false;
+    _hideSyncOverlay();
+    if(appV==='packages') render();
+  }
+}
+
+// ── INCREMENTAL SYNC (last 2 days) — fast, runs automatically ─────
+async function gmailIncrementalSync(){
+  if(!gmailIsConnected() || _gmailSyncing) return;
+  _gmailSyncing = true;
+  _gmailError   = false;
+  if(appV==='packages') render(); // show yellow button
+
+  try {
+    const q = _gmailQuery('incremental');
+    const searchResp = await _gmailFetch(
+      `${GMAIL_API}/users/me/messages?maxResults=20&q=${encodeURIComponent(q)}`
+    );
+    const messages = searchResp.messages || [];
+
+    if(messages.length){
+      const details = await Promise.all(
+        messages.map(msg =>
+          _gmailFetch(`${GMAIL_API}/users/me/messages/${msg.id}?format=full`)
+            .catch(() => null)
+        )
+      );
+      const newPackages = [];
+      for(const data of details){
+        if(!data) continue;
+        const parsed = _parseShippingEmail(data);
+        if(parsed) newPackages.push(...parsed);
+      }
+      _mergePackages(newPackages);
+    }
+
     _gmailLastSync = Date.now();
     _gmailError = false;
 
   } catch(e){
-    console.error('Gmail sync failed:', e);
+    console.error('Incremental sync failed:', e);
     _gmailError = true;
-    if(e.message?.includes('401')) _gmailToken = null;
   } finally {
     _gmailSyncing = false;
     if(appV==='packages') render();
   }
 }
 
-let _gmailLastSync = 0;
+// Public sync button — runs full if never done, incremental otherwise
+function gmailSync(){
+  if(_gmailLastFull){ gmailIncrementalSync(); }
+  else { gmailFullSync(); }
+}
 
+// Run full sync manually
+function gmailFullSyncManual(){ gmailFullSync(); }
+
+// ── HELPERS ───────────────────────────────────────────────────────
+async function _gmailFetch(url){
+  const r = await fetch(url, { headers:{ Authorization:`Bearer ${_gmailToken}` }});
+  if(!r.ok) throw new Error(`Gmail API ${r.status}: ${url.slice(0,60)}`);
+  return r.json();
+}
+
+function _sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
+
+function _mergePackages(newPackages){
+  let changed = false;
+  for(const np of newPackages){
+    const existing = packages.find(p =>
+      (p.tracking && np.tracking && p.tracking === np.tracking) ||
+      (p.msgId && p.msgId === np.msgId)
+    );
+    if(!existing){
+      packages.push(np);
+      changed = true;
+    } else {
+      if(_statusRank(np.status) > _statusRank(existing.status)){
+        existing.status    = np.status;
+        existing.updatedAt = Date.now();
+        if(np.status==='delivered') existing.deliveredAt = Date.now();
+        changed = true;
+      }
+      if(np.images?.length && !existing.images?.length){ existing.images = np.images; changed = true; }
+      if(!existing.eta       && np.eta)       { existing.eta       = np.eta;       changed = true; }
+      if(!existing.recipient && np.recipient) { existing.recipient = np.recipient; changed = true; }
+      if(!existing.city      && np.city)      { existing.city      = np.city;      changed = true; }
+    }
+  }
+  if(changed){ pkgPurgeOld(); pkgScheduleSave(); }
+}
+
+// ── SYNC PROGRESS OVERLAY ─────────────────────────────────────────
+function _showSyncOverlay(){
+  document.getElementById('pkg-sync-overlay')?.remove();
+  const el = document.createElement('div');
+  el.id = 'pkg-sync-overlay';
+  el.style.cssText = `
+    position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,0.55);
+    display:flex;align-items:center;justify-content:center;
+  `;
+  el.innerHTML = `
+    <div id="pkg-sync-box" style="
+      background:var(--bg);border-radius:16px;padding:28px 32px;
+      width:360px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.3);
+      display:flex;flex-direction:column;gap:14px;
+    ">
+      <div style="font-size:16px;font-weight:700;color:var(--text)">📬 Syncing Gmail</div>
+      <div id="pkg-sync-step" style="font-size:13px;color:var(--muted);line-height:1.4"></div>
+      <div style="background:var(--border);border-radius:4px;height:6px;overflow:hidden">
+        <div id="pkg-sync-bar" style="height:100%;background:#008577;border-radius:4px;transition:width 0.3s;width:0%"></div>
+      </div>
+      <div id="pkg-sync-pct" style="font-size:12px;color:var(--muted);text-align:right">0%</div>
+    </div>`;
+  document.body.appendChild(el);
+  _updateSyncOverlay();
+}
+
+function _updateSyncOverlay(){
+  const step = document.getElementById('pkg-sync-step');
+  const bar  = document.getElementById('pkg-sync-bar');
+  const pct  = document.getElementById('pkg-sync-pct');
+  if(!step) return;
+  step.textContent = _gmailProgress.step;
+  const p = _gmailProgress.total > 0
+    ? Math.round((_gmailProgress.current / _gmailProgress.total) * 100)
+    : 0;
+  if(bar) bar.style.width = p + '%';
+  if(pct) pct.textContent = p + '%';
+}
+
+function _hideSyncOverlay(){
+  document.getElementById('pkg-sync-overlay')?.remove();
+}
+
+// ── STATUS & EMAIL PARSING ─────────────────────────────────────────
 function _statusRank(s){ return {ordered:0,shipped:1,out:2,delivered:3}[s]??0; }
 
 function _parseShippingEmail(msgData){
@@ -3866,73 +3997,46 @@ function _parseShippingEmail(msgData){
   const tl      = text.toLowerCase();
   const fromLow = from.toLowerCase();
 
-  // GATE 1: sender must be from a known shipping/retail domain
+  // Gate 1: known sender
   const knownSender = SHIPPING_SENDERS.some(d => fromLow.includes(d));
   if(!knownSender) return null;
 
-  // GATE 2: must contain actual shipping action keywords (not just promotional)
-  const hasShippingKeyword = [
+  // Gate 2: shipping keywords
+  const hasKeyword = [
     'has shipped','your order','shipped your','out for delivery','arriving today',
     'was delivered','package delivered','tracking number','track your package',
     'order confirmed','thank you for your order','shipment notification',
-    'on its way','in transit','estimated delivery'
+    'on its way','in transit','estimated delivery','arriving tomorrow',
   ].some(kw => tl.includes(kw));
-  if(!hasShippingKeyword) return null;
+  if(!hasKeyword) return null;
 
-  // Determine status — check delivered FIRST since body may contain "shipped" too
+  // Status — check delivered first (body often contains "shipped" too)
   let status = 'shipped';
-  if(tl.includes('delivered') || tl.includes('was delivered') ||
-     tl.includes('package delivered') || tl.includes('has been delivered') ||
-     subject.toLowerCase().includes('delivered')){
+  const subLow = subject.toLowerCase();
+  if(subLow.includes('delivered') || tl.includes('was delivered') ||
+     tl.includes('has been delivered') || tl.includes('package delivered')){
     status = 'delivered';
   } else if(tl.includes('out for delivery') || tl.includes('arriving today') ||
-            tl.includes('arriving tomorrow') || tl.includes('on its way today')){
+            tl.includes('on its way today')){
     status = 'out';
   } else if(tl.includes('order confirmed') || tl.includes('order received') ||
             tl.includes('thank you for your order') || tl.includes('thanks for your order')){
     status = 'ordered';
   } else if(tl.includes('shipped') || tl.includes('on its way') || tl.includes('in transit') ||
-            tl.includes('has shipped') || tl.includes('shipment notification')){
+            tl.includes('has shipped')){
     status = 'shipped';
   }
 
-  // Extract tracking numbers
   const found = [];
   for(const {carrier, re} of CARRIER_PATTERNS){
     re.lastIndex = 0;
     let m;
-    while((m = re.exec(text)) !== null){
-      found.push({ tracking: m[1], carrier });
-    }
+    while((m = re.exec(text)) !== null) found.push({ tracking:m[1], carrier });
   }
 
   const label = _extractLabel(subject, from);
 
-  if(found.length === 0 && status === 'ordered'){
-    if(label){
-      return [{
-        id: Date.now() + Math.random(),
-        label, carrier: _detectCarrierFromSender(from),
-        tracking: '', status: 'ordered',
-        eta: _extractETA(text),
-        recipient: _extractRecipient(text),
-        city: _extractCity(text),
-        orderNum: _extractOrderNum(text),
-        images: _extractImages(msgData),
-        total: _extractTotal(text),
-        addedAt: msgDate, updatedAt: msgDate, deliveredAt: null,
-        fromEmail: true, msgId: msgData.id
-      }];
-    }
-    return null;
-  }
-
-  if(found.length === 0) return null; // no tracking number and not an order confirm = skip
-
-  return found.map(({tracking, carrier}) => ({
-    id: Date.now() + Math.random(),
-    label: label || 'Package',
-    carrier, tracking, status,
+  const base = {
     eta:       _extractETA(text),
     recipient: _extractRecipient(text),
     city:      _extractCity(text),
@@ -3941,96 +4045,81 @@ function _parseShippingEmail(msgData){
     total:     _extractTotal(text),
     addedAt: msgDate, updatedAt: msgDate,
     deliveredAt: status==='delivered' ? msgDate : null,
-    fromEmail: true, msgId: msgData.id
+    fromEmail: true, msgId: msgData.id,
+  };
+
+  if(found.length === 0 && status === 'ordered' && label){
+    return [{ id:Date.now()+Math.random(), label, carrier:_detectCarrierFromSender(from), tracking:'', status, ...base }];
+  }
+  if(found.length === 0) return null;
+
+  return found.map(({tracking,carrier}) => ({
+    id: Date.now()+Math.random(),
+    label: label||'Package',
+    carrier, tracking, status, ...base
   }));
 }
 
 function _extractETA(text){
-  // Match patterns like "Wednesday, April 15, 5 p.m. – 10 p.m." or "by Thursday, April 16"
-  const m = text.match(/(?:arrive|delivery|estimated|arriving|by)\s+(?:by\s+)?([A-Z][a-z]+day,\s+[A-Z][a-z]+\s+\d{1,2}(?:,\s+[\d:\s\.pm\-–]+)?)/i)
-    || text.match(/([A-Z][a-z]+day,\s+[A-Z][a-z]+\s+\d{1,2}(?:,\s+[\d:\sp\.m\-–]+)?)/);
-  return m ? m[1].trim().replace(/\s+/g,' ') : '';
+  const m = text.match(/(?:arrive|arriving|delivery|estimated|by)\s+(?:by\s+)?([A-Z][a-z]+day,\s+[A-Z][a-z]+\s+\d{1,2}(?:[^<\n]{0,30})?)/i);
+  return m ? m[1].trim().replace(/\s+/g,' ').slice(0,60) : '';
 }
 
 function _extractRecipient(text){
-  const m = text.match(/(?:ship\s+to|shipping\s+to|deliver\s+to)[:\s]+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
+  const m = text.match(/(?:ship\s+to|shipping\s+to|deliver(?:ing)?\s+to)[:\s]+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/i);
   return m ? m[1].trim() : '';
 }
 
 function _extractCity(text){
-  const m = text.match(/([A-Z][A-Z\s]+,\s+[A-Z]{2,}(?:\s+[A-Z]+)?)\b/);
-  // Filter out common false positives
+  const m = text.match(/\b([A-Z][A-Z\s]{2,},\s+[A-Z]{2,}(?:\s+[A-Z]+)?)\b/);
   if(!m) return '';
   const city = m[1].trim();
-  const ignore = ['AMAZON','FEDEX','USPS','ORDER','TRACK'];
-  if(ignore.some(w => city.includes(w))) return '';
+  if(['AMAZON','FEDEX','USPS','ORDER','TRACK','UNITED','STATES'].some(w=>city.includes(w))) return '';
   return city;
 }
 
 function _extractOrderNum(text){
-  const m = text.match(/order\s*#?\s*:?\s*([A-Z0-9\-]{8,})/i)
-    || text.match(/\b(\d{3}-\d{7}-\d{7})\b/); // Amazon format
+  const m = text.match(/\b(\d{3}-\d{7}-\d{7})\b/) // Amazon
+    || text.match(/order\s*(?:#|number|num|no\.?)\s*:?\s*([A-Z0-9][A-Z0-9\-]{5,})/i);
   return m ? m[1].trim() : '';
 }
 
 function _extractTotal(text){
-  const m = text.match(/(?:shipment|order|total)[:\s]+\$?([\d,]+\.\d{2})/i)
-    || text.match(/\$\s*([\d,]+\.\d{2})/);
+  const m = text.match(/(?:grand\s+total|shipment\s+total|order\s+total)[:\s\$]*([\d,]+\.\d{2})/i)
+    || text.match(/total[:\s]+\$\s*([\d,]+\.\d{2})/i);
   return m ? m[1] : '';
 }
 
 function _extractImages(msgData){
   const images = [];
-
-  // Walk HTML parts looking for product images
-  function walkHtml(part){
-    if(!part || images.length >= 2) return;
+  function walk(part){
+    if(!part || images.length >= 1) return;
     if(part.mimeType === 'text/html' && part.body?.data){
       try {
         const html = atob(part.body.data.replace(/-/g,'+').replace(/_/g,'/'));
-        // Match img tags and extract src
         const re = /<img[^>]+>/gi;
         let m;
-        while((m = re.exec(html)) !== null && images.length < 2){
+        while((m = re.exec(html)) !== null && images.length < 1){
           const tag = m[0];
           const srcM = tag.match(/src=["']([^"']+)["']/i);
           if(!srcM) continue;
           const src = srcM[1];
           if(!src.startsWith('http')) continue;
           const lower = src.toLowerCase();
-          // Skip tracking pixels, spacers, logos, headers
-          if(lower.includes('spacer') || lower.includes('pixel') || lower.includes('logo') ||
-             lower.includes('banner') || lower.includes('header') || lower.includes('footer') ||
-             lower.includes('transparent') || lower.includes('blank')) continue;
-          // Prefer images >= 40px wide
+          if(lower.includes('spacer')||lower.includes('pixel')||lower.includes('logo')||
+             lower.includes('banner')||lower.includes('header')||lower.includes('footer')||
+             lower.includes('transparent')||lower.includes('blank')||lower.includes('icon')) continue;
           const wM = tag.match(/width=["']?(\d+)/i);
-          const w = wM ? parseInt(wM[1]) : 100;
-          if(w < 20) continue;
-          // Use wsrv.nl proxy to bypass CORS
+          const w  = wM ? parseInt(wM[1]) : 100;
+          if(w < 30) continue;
           images.push(`https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`);
         }
       } catch(e){}
     }
-    (part.parts||[]).forEach(walkHtml);
+    (part.parts||[]).forEach(walk);
   }
-  walkHtml(msgData.payload);
+  walk(msgData.payload);
   return images;
-}
-
-// Fetch an inline attachment and return a base64 data URI
-async function _fetchAttachmentImage(msgId, attachmentId, token){
-  try {
-    const r = await fetch(
-      `${GMAIL_API}/users/me/messages/${msgId}/attachments/${attachmentId}`,
-      { headers:{ Authorization:`Bearer ${token}` }}
-    );
-    if(!r.ok) return null;
-    const d = await r.json();
-    if(!d.data) return null;
-    // Gmail uses URL-safe base64, convert to data URI
-    const b64 = d.data.replace(/-/g,'+').replace(/_/g,'/');
-    return `data:image/jpeg;base64,${b64}`;
-  } catch(e){ return null; }
 }
 
 function _extractEmailBody(payload){
@@ -4051,38 +4140,35 @@ function _extractEmailBody(payload){
 
 function _extractLabel(subject, from){
   let label = subject
-    .replace(/re:\s*/i, '')
-    .replace(/^your\s+(order|shipment|package|delivery)\s*(has\s+shipped|confirmed|is\s+on\s+its\s+way|notification)?:?\s*/i, '')
-    .replace(/\s*(has\s+shipped|is\s+on\s+its\s+way|has\s+been\s+delivered|was\s+delivered|is\s+out\s+for\s+delivery).*$/i, '')
-    .replace(/\s*shipment\s+notification:?\s*/i, '')
-    .replace(/\s*shipping\s+confirmation:?\s*/i, '')
-    .replace(/\s*order\s+(confirmation|confirmed|#?\s*[\w-]+):?\s*/i, '')
-    .replace(/^(thanks\s+for\s+your\s+order[!,.]?\s*)/i, '')
-    .replace(/^(your\s+amazon\.com\s+order\s+of\s+)/i, '')
+    .replace(/re:\s*/i,'')
+    .replace(/^your\s+(order|shipment|package|delivery)\s*(has\s+shipped|confirmed|is\s+on\s+its\s+way|notification)?:?\s*/i,'')
+    .replace(/\s*(has\s+shipped|is\s+on\s+its\s+way|has\s+been\s+delivered|was\s+delivered|is\s+out\s+for\s+delivery).*$/i,'')
+    .replace(/\s*shipment\s+notification:?\s*/i,'')
+    .replace(/\s*shipping\s+confirmation:?\s*/i,'')
+    .replace(/\s*order\s+(confirmation|confirmed|#?\s*[\w-]+):?\s*/i,'')
+    .replace(/^(thanks\s+for\s+your\s+order[!,.]?\s*)/i,'')
+    .replace(/^(your\s+amazon\.com\s+order\s+of\s+)/i,'')
     .trim();
-
-  // If still generic or too short, fall back to sender name
   if(!label || label.length < 4 || /^(your|package|shipment|order|delivery)$/i.test(label)){
-    const senderMatch = from.match(/^([^<@\n]+)/);
-    label = senderMatch ? senderMatch[1].trim().replace(/"/g,'') : 'Package';
+    const m = from.match(/^([^<@\n]+)/);
+    label = m ? m[1].trim().replace(/"/g,'') : 'Package';
   }
-
-  return label; // no length cap — show full description
+  return label;
 }
 
 function _detectCarrierFromSender(from){
   const f = from.toLowerCase();
   if(f.includes('amazon')) return 'Amazon';
-  if(f.includes('ups')) return 'UPS';
-  if(f.includes('fedex')) return 'FedEx';
-  if(f.includes('usps')) return 'USPS';
-  if(f.includes('dhl')) return 'DHL';
+  if(f.includes('ups'))    return 'UPS';
+  if(f.includes('fedex'))  return 'FedEx';
+  if(f.includes('usps'))   return 'USPS';
+  if(f.includes('dhl'))    return 'DHL';
   if(f.includes('ontrac')) return 'OnTrac';
   return 'Other';
 }
 
-// Auto-sync Gmail every 30 minutes if connected
-setInterval(()=>{ if(gmailIsConnected()) gmailSync(); }, 30*60*1000);
+// Auto incremental sync every 30 min
+setInterval(()=>{ if(gmailIsConnected() && _gmailLastFull) gmailIncrementalSync(); }, 30*60*1000);
 // ── END GMAIL ─────────────────────────────────────────────────────
 
 // ── END PACKAGES ──────────────────────────────────────────────────
