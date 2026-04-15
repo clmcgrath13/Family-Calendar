@@ -27,6 +27,10 @@
       {
         "t": "Oranges",
         "d": false
+      },
+      {
+        "t": "Yogurt",
+        "d": false
       }
     ],
     "_history": [
