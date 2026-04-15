@@ -35,9 +35,14 @@
       {
         "t": "Water bottles",
         "d": false
+      },
+      {
+        "t": "Hand soap",
+        "d": false
       }
     ],
     "_history": [
+      "Hand soap",
       "Water bottles",
       "Ketchup",
       "cream cheese",
