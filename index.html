@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.9</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v9.0</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.9</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v9.0</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4068,7 +4068,6 @@ function _statusFromSubject(subject){
 }
 
 // ── MAIN PARSER ───────────────────────────────────────────────────
-// Returns array of package objects (one email can contain multiple shipments)
 function _parseShippingEmail(msgData){
   const headers = msgData.payload?.headers || [];
   const subject = headers.find(h=>h.name==='Subject')?.value || '';
@@ -4077,7 +4076,6 @@ function _parseShippingEmail(msgData){
   const msgDate = date ? new Date(date).getTime() : Date.now();
   const fromLow = from.toLowerCase();
 
-  // Gate: only known Amazon shipping senders
   if(!SHIPPING_SENDERS.some(d => fromLow.includes(d))) return null;
 
   const html = _decodePayloadHtml(msgData.payload);
@@ -4086,39 +4084,34 @@ function _parseShippingEmail(msgData){
   const doc    = _toDoc(html);
   const status = _statusFromSubject(subject);
 
-  // ── SHIPMENT BLOCK DETECTION ──────────────────────────────────
-  // Amazon emails are structured as one or more "shipment blocks".
-  // Each block contains: order number, arrival text, recipient, items, total.
-  // We find blocks by locating order number elements and walking outward.
+  // Find all distinct order numbers in the email
+  const orderNums = _findAllOrderNums(doc);
 
-  const packages = [];
-
-  // Find all Amazon order numbers in the document
-  const orderNums = _findOrderNums(doc);
-
-  if(orderNums.length === 0){
-    // No order numbers found — try to parse as single block
-    const pkg = _parseBlock(doc.body, doc, status, msgDate, subject, from, msgData.id);
-    if(pkg) packages.push(pkg);
-  } else {
-    // Parse one package per order number
-    const seen = new Set();
-    for(const {num, el} of orderNums){
-      if(seen.has(num)) continue;
-      seen.add(num);
-      // Find the enclosing table/div that contains this order's full block
-      const block = _findBlockAncestor(el, doc);
-      const pkg = _parseBlock(block, doc, status, msgDate, subject, from, msgData.id, num);
-      if(pkg) packages.push(pkg);
-    }
+  if(orderNums.length <= 1){
+    // Single shipment email — parse whole body as one block
+    const pkg = _parseBlock(doc.body, doc, status, msgDate, subject, from, msgData.id, orderNums[0]||'');
+    return pkg ? [pkg] : null;
   }
 
-  return packages.length ? packages : null;
+  // Multi-shipment order confirmation — split by finding each order number's section.
+  // Strategy: find the order number elements, then extract a slice of the DOM between them.
+  const results = [];
+  const seen = new Set();
+
+  for(const num of orderNums){
+    if(seen.has(num)) continue;
+    seen.add(num);
+    // Find a block for this order number by locating a container that has ONLY this order number
+    const block = _findSingleOrderBlock(num, doc);
+    const pkg = _parseBlock(block, doc, status, msgDate, subject, from, msgData.id, num);
+    if(pkg) results.push(pkg);
+  }
+
+  return results.length ? results : null;
 }
 
-// Find all Amazon order number occurrences in doc, return [{num, el}]
-function _findOrderNums(doc){
-  const results = [];
+// Return array of distinct order numbers found in doc
+function _findAllOrderNums(doc){
   const seen = new Set();
   const re = /\b(\d{3}-\d{7}-\d{7})\b/g;
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
@@ -4126,53 +4119,40 @@ function _findOrderNums(doc){
   while((node = walker.nextNode())){
     re.lastIndex = 0;
     let m;
-    while((m = re.exec(node.textContent)) !== null){
-      if(!seen.has(m[1])){
-        seen.add(m[1]);
-        results.push({ num: m[1], el: node.parentElement });
-      }
-    }
+    while((m = re.exec(node.textContent)) !== null) seen.add(m[1]);
   }
-  return results;
+  return [...seen];
 }
 
-// Find the tightest enclosing block for an order number element.
-// Strategy: walk UP looking for the smallest <table> or <td> that contains
-// the order number but does NOT contain a different order number.
-// This isolates each shipment block in multi-shipment emails.
-function _findBlockAncestor(el, doc){
-  const orderRe = /\b\d{3}-\d{7}-\d{7}\b/g;
-  const myNum   = _text(el).match(/\b(\d{3}-\d{7}-\d{7})\b/)?.[1] || '';
-
-  let best = el;
-  let cur  = el.parentElement;
-
-  for(let i=0; i<15; i++){
-    if(!cur || cur === doc.body || cur === doc.documentElement) break;
-
-    const tag = cur.tagName?.toLowerCase();
-    const txt = _text(cur);
-
-    // Count how many DISTINCT order numbers this element contains
-    const nums = new Set();
-    orderRe.lastIndex = 0;
-    let m;
-    while((m = orderRe.exec(txt)) !== null) nums.add(m[1]);
-
-    if(nums.size > 1){
-      // This element contains multiple orders — stop here, best is the previous level
-      break;
+// For multi-shipment emails: find the tightest element that contains ONLY one order number
+function _findSingleOrderBlock(orderNum, doc){
+  // Find the text node containing this order number
+  const re = new RegExp(`\\b${orderNum.replace(/-/g,'\\-')}\\b`);
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let node;
+  while((node = walker.nextNode())){
+    if(re.test(node.textContent)){
+      // Walk up to find tightest ancestor containing only this order number
+      let cur = node.parentElement;
+      let best = cur;
+      for(let i=0; i<20; i++){
+        if(!cur || cur === doc.body) break;
+        const allNums = new Set();
+        const w2 = doc.createTreeWalker(cur, NodeFilter.SHOW_TEXT);
+        let n2;
+        while((n2 = w2.nextNode())){
+          const r2 = /\b(\d{3}-\d{7}-\d{7})\b/g;
+          let m;
+          while((m = r2.exec(n2.textContent)) !== null) allNums.add(m[1]);
+        }
+        if(allNums.size > 1) break; // contains other orders — stop
+        if(allNums.has(orderNum)) best = cur;
+        cur = cur.parentElement;
+      }
+      return best;
     }
-
-    // A table or td that contains only our order number is a good block candidate
-    if((tag === 'table' || tag === 'td' || tag === 'div') && nums.has(myNum)){
-      best = cur;
-    }
-
-    cur = cur.parentElement;
   }
-
-  return best;
+  return doc.body;
 }
 
 // Parse a single shipment block element into a package object
@@ -4184,19 +4164,15 @@ function _parseBlock(block, doc, status, msgDate, subject, from, msgId, knownOrd
   const orderNum  = knownOrderNum || (blockText.match(/\b(\d{3}-\d{7}-\d{7})\b/)||[])[1] || '';
 
   // ── ARRIVAL / ETA ─────────────────────────────────────────────
-  // Amazon puts arrival text in a <b> or <strong> on its own line.
-  // We want ONLY the arrival phrase, not the recipient that follows.
-  // Look for elements whose text matches arrival patterns exactly.
   let eta = '';
+  const ownerDoc = block.ownerDocument || doc;
 
   // Walk all text nodes in the block looking for arrival text
-  const textWalker = doc.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  const textWalker = ownerDoc.createTreeWalker(block, NodeFilter.SHOW_TEXT);
   let tnode;
   while((tnode = textWalker.nextNode()) && !eta){
     const t = tnode.textContent.trim();
     if(!t) continue;
-    // Match arrival/delivery phrases — but STOP at newline/separator
-    // These are standalone text nodes in Amazon's emails
     if(/^(arriving|arrived|expected|delivering|delivered|now expected)\b/i.test(t) && t.length < 80){
       eta = t.replace(/\s+/g,' ').trim();
     }
@@ -4206,7 +4182,7 @@ function _parseBlock(block, doc, status, msgDate, subject, from, msgId, knownOrd
   if(!eta){
     for(const b of block.querySelectorAll('b,strong')){
       const t = _text(b);
-      if(/^(arriving|expected|delivering|delivered|now expected)\b/i.test(t) && t.length < 80){
+      if(/^(arriving|expected|delivering|delivered today|now expected)\b/i.test(t) && t.length < 80){
         eta = t; break;
       }
     }
@@ -4223,13 +4199,16 @@ function _parseBlock(block, doc, status, msgDate, subject, from, msgId, knownOrd
 
   // ── ITEMS ─────────────────────────────────────────────────────
   const items = [];
+  const skipNames = /^(view|track|shop|visit|manage|sign\s*in|help|buy again|return|your orders|your account|add delivery|continue|learn more|unsubscribe|privacy)/i;
   for(const a of block.querySelectorAll('a[href]')){
     const href = a.getAttribute('href') || '';
     const name = _text(a).replace(/\s+/g,' ').trim();
-    if(!href.includes('amazon.com')) continue;
-    if(name.length < 10) continue;
-    if(/^(view|track|shop|visit|manage|sign\s*in|help|buy again|return|your orders|your account|add delivery|continue)/i.test(name)) continue;
-    if(/^\d{3}-\d{7}-\d{7}$/.test(name)) continue; // skip order numbers as text
+    // Accept links to amazon.com (any path — redirect URLs are common in emails)
+    if(!href.includes('amazon.com') && !href.includes('amazon.co')) continue;
+    if(name.length < 8) continue;
+    if(skipNames.test(name)) continue;
+    if(/^\d{3}-\d{7}-\d{7}$/.test(name)) continue;
+    if(/^\$[\d,]+\.\d{2}$/.test(name)) continue; // skip price-only links
     if(items.includes(name)) continue;
     items.push(name);
     if(items.length >= 10) break;
