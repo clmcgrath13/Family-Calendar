@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.8</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.9</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.8</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.9</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4119,37 +4119,60 @@ function _parseShippingEmail(msgData){
 // Find all Amazon order number occurrences in doc, return [{num, el}]
 function _findOrderNums(doc){
   const results = [];
+  const seen = new Set();
   const re = /\b(\d{3}-\d{7}-\d{7})\b/g;
-  // Walk all text nodes
   const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
   let node;
   while((node = walker.nextNode())){
-    const text = node.textContent;
-    let m;
     re.lastIndex = 0;
-    while((m = re.exec(text)) !== null){
-      results.push({ num: m[1], el: node.parentElement });
+    let m;
+    while((m = re.exec(node.textContent)) !== null){
+      if(!seen.has(m[1])){
+        seen.add(m[1]);
+        results.push({ num: m[1], el: node.parentElement });
+      }
     }
   }
   return results;
 }
 
-// Walk up from an order number element to find its containing shipment block
+// Find the tightest enclosing block for an order number element.
+// Strategy: walk UP looking for the smallest <table> or <td> that contains
+// the order number but does NOT contain a different order number.
+// This isolates each shipment block in multi-shipment emails.
 function _findBlockAncestor(el, doc){
-  // Walk up max 8 levels looking for a table row or div that contains
-  // both an order number AND item links — that's our block
-  let cur = el;
-  for(let i=0; i<8; i++){
-    if(!cur || cur === doc.body) break;
-    const text = _text(cur);
-    // A good block contains an order number AND either an item link or arrival text
-    if(text.match(/\d{3}-\d{7}-\d{7}/) &&
-       (cur.querySelector('a[href*="amazon.com"]') || text.match(/arriving|arrived|delivered|shipped|out for/i))){
-      return cur;
+  const orderRe = /\b\d{3}-\d{7}-\d{7}\b/g;
+  const myNum   = _text(el).match(/\b(\d{3}-\d{7}-\d{7})\b/)?.[1] || '';
+
+  let best = el;
+  let cur  = el.parentElement;
+
+  for(let i=0; i<15; i++){
+    if(!cur || cur === doc.body || cur === doc.documentElement) break;
+
+    const tag = cur.tagName?.toLowerCase();
+    const txt = _text(cur);
+
+    // Count how many DISTINCT order numbers this element contains
+    const nums = new Set();
+    orderRe.lastIndex = 0;
+    let m;
+    while((m = orderRe.exec(txt)) !== null) nums.add(m[1]);
+
+    if(nums.size > 1){
+      // This element contains multiple orders — stop here, best is the previous level
+      break;
     }
+
+    // A table or td that contains only our order number is a good block candidate
+    if((tag === 'table' || tag === 'td' || tag === 'div') && nums.has(myNum)){
+      best = cur;
+    }
+
     cur = cur.parentElement;
   }
-  return el.parentElement || doc.body;
+
+  return best;
 }
 
 // Parse a single shipment block element into a package object
@@ -4157,117 +4180,97 @@ function _parseBlock(block, doc, status, msgDate, subject, from, msgId, knownOrd
   if(!block) return null;
 
   // ── ORDER NUMBER ──────────────────────────────────────────────
-  const orderNum = knownOrderNum || ((_text(block).match(/\b(\d{3}-\d{7}-\d{7})\b/) || [])[1] || '');
+  const blockText = _text(block);
+  const orderNum  = knownOrderNum || (blockText.match(/\b(\d{3}-\d{7}-\d{7})\b/)||[])[1] || '';
 
   // ── ARRIVAL / ETA ─────────────────────────────────────────────
-  // Look for the most prominent text near the top of the block
-  // Amazon uses bold/large text for arrival: "Arriving today 10 AM – 3 PM", "Delivered today", etc.
+  // Amazon puts arrival text in a <b> or <strong> on its own line.
+  // We want ONLY the arrival phrase, not the recipient that follows.
+  // Look for elements whose text matches arrival patterns exactly.
   let eta = '';
-  const allText = _text(block);
 
-  // Try to find arrival date from bold/strong elements first (most reliable)
-  const bolds = [...block.querySelectorAll('b, strong, h1, h2, h3')];
-  for(const b of bolds){
-    const t = _text(b);
-    if(/arriving|arrived|delivered|expected|estimated/i.test(t) && t.length < 80){
-      eta = t; break;
+  // Walk all text nodes in the block looking for arrival text
+  const textWalker = doc.createTreeWalker(block, NodeFilter.SHOW_TEXT);
+  let tnode;
+  while((tnode = textWalker.nextNode()) && !eta){
+    const t = tnode.textContent.trim();
+    if(!t) continue;
+    // Match arrival/delivery phrases — but STOP at newline/separator
+    // These are standalone text nodes in Amazon's emails
+    if(/^(arriving|arrived|expected|delivering|delivered|now expected)\b/i.test(t) && t.length < 80){
+      eta = t.replace(/\s+/g,' ').trim();
     }
   }
-  // Fallback: regex on full block text
+
+  // Fallback: bold elements with arrival text
   if(!eta){
-    const m = allText.match(/(?:arriving|arriving today|expected today|delivered today|now expected)[^\n.]{0,60}/i);
-    if(m) eta = m[0].trim().replace(/\s+/g,' ');
-  }
-  // For ordered emails: "Arriving Mon, Apr 14 – Fri, Apr 18" style
-  if(!eta){
-    const m = allText.match(/arriving\s+([A-Z][a-z]+[^\n]{0,50})/i);
-    if(m) eta = 'Arriving ' + m[1].trim().slice(0,60);
+    for(const b of block.querySelectorAll('b,strong')){
+      const t = _text(b);
+      if(/^(arriving|expected|delivering|delivered|now expected)\b/i.test(t) && t.length < 80){
+        eta = t; break;
+      }
+    }
   }
 
   // ── RECIPIENT & CITY ──────────────────────────────────────────
-  // Amazon format: "Christopher - KINNELON, NEW JERSEY" on one line
+  // "Christopher - KINNELON, NEW JERSEY"  (name - CITY, STATE)
   let recipient = '', city = '';
-  const recipientMatch = allText.match(/([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*[-–]\s*([A-Z][A-Z\s]+,\s+[A-Z\s]+)/);
-  if(recipientMatch){
-    recipient = recipientMatch[1].trim();
-    city      = recipientMatch[2].trim().replace(/\s+/g,' ');
+  const recipMatch = blockText.match(/\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)\s*[-–]\s*([A-Z][A-Z][A-Z\s]+,\s+[A-Z\s]{2,})\b/);
+  if(recipMatch){
+    recipient = recipMatch[1].trim();
+    city      = recipMatch[2].trim().replace(/\s+/g,' ').replace(/O$/, ''); // trim stray chars
   }
 
   // ── ITEMS ─────────────────────────────────────────────────────
-  // Amazon item links: <a href="...amazon.com/dp/..."> or <a href="...amazon.com/gp/...">
-  // These are the authoritative item names — full product title
   const items = [];
-  const itemLinks = block.querySelectorAll('a[href]');
-  for(const a of itemLinks){
+  for(const a of block.querySelectorAll('a[href]')){
     const href = a.getAttribute('href') || '';
-    const name = _text(a);
-    // Must link to amazon.com product page and have a meaningful name
-    if(!/amazon\.com\/(dp|gp\/product|s\?)/i.test(href)) continue;
+    const name = _text(a).replace(/\s+/g,' ').trim();
+    if(!href.includes('amazon.com')) continue;
     if(name.length < 10) continue;
-    if(/^(view|track|shop|visit|manage|sign|help|buy again|return|your orders)/i.test(name)) continue;
-    if(name === orderNum) continue;
-    if(!items.includes(name)) items.push(name);
+    if(/^(view|track|shop|visit|manage|sign\s*in|help|buy again|return|your orders|your account|add delivery|continue)/i.test(name)) continue;
+    if(/^\d{3}-\d{7}-\d{7}$/.test(name)) continue; // skip order numbers as text
+    if(items.includes(name)) continue;
+    items.push(name);
+    if(items.length >= 10) break;
   }
 
-  // Fallback: any amazon.com link with long text
-  if(!items.length){
-    for(const a of itemLinks){
-      const href = a.getAttribute('href') || '';
-      const name = _text(a);
-      if(!href.includes('amazon.com')) continue;
-      if(name.length < 20) continue;
-      if(/^(view|track|shop|visit|manage|sign|help)/i.test(name)) continue;
-      if(name === orderNum) continue;
-      if(!items.includes(name)) items.push(name);
-    }
-  }
-
-  // ── LABEL (fallback if no items found) ────────────────────────
-  const label = items.length
-    ? items[0].slice(0,80)   // use first item as label
-    : _cleanSubjectLabel(subject, from);
+  // ── LABEL ─────────────────────────────────────────────────────
+  const label = items.length ? items[0].slice(0, 100) : _cleanSubjectLabel(subject, from);
 
   // ── TOTAL ─────────────────────────────────────────────────────
-  const totalMatch = allText.match(/(?:grand\s+total|total)[:\s]*\$?\s*([\d,]+\.\d{2})/i);
+  const totalMatch = blockText.match(/(?:grand\s+total|total)[:\s]*\$?\s*([\d,]+\.\d{2})/i);
   const total = totalMatch ? totalMatch[1] : '';
 
   // ── IMAGE ─────────────────────────────────────────────────────
-  // Find the first product image — Amazon product images are on specific CDNs
-  // Skip delivery photos (large), logos (small), spacers
   let image = '';
-  const imgs = block.querySelectorAll('img[src]');
-  for(const img of imgs){
-    const src = img.getAttribute('src') || '';
-    if(!src.startsWith('http')) continue;
+  for(const img of block.querySelectorAll('img[src]')){
+    const src   = img.getAttribute('src') || '';
     const lower = src.toLowerCase();
+    if(!src.startsWith('http')) continue;
     if(lower.includes('spacer')||lower.includes('pixel')||lower.includes('logo')||
        lower.includes('banner')||lower.includes('transparent')||lower.includes('icon')) continue;
     if(lower.includes('delivery-photo')||lower.includes('package-photo')) continue;
-    const w = parseInt(img.getAttribute('width')||'0');
+    const w = parseInt(img.getAttribute('width') ||'0');
     const h = parseInt(img.getAttribute('height')||'0');
-    if((w>0 && w>300) || (h>0 && h>300)) continue; // skip large delivery photos
-    if((w>0 && w<30) || (h>0 && h<30)) continue;   // skip tiny pixels
-    // Prefer known Amazon product image CDNs
-    if(lower.includes('images-na.ssl-images-amazon')||lower.includes('m.media-amazon')||
-       lower.includes('images-amazon')||lower.includes('ssl-images-amazon')){
-      image = `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`;
-      break;
-    }
-    if(!image && w >= 40){
-      image = `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`;
-    }
+    if((w > 0 && w > 300)||(h > 0 && h > 300)) continue;
+    if((w > 0 && w <  30)||(h > 0 && h <  30)) continue;
+    const isProductCDN = lower.includes('images-na.ssl-images-amazon') ||
+                         lower.includes('m.media-amazon') ||
+                         lower.includes('ssl-images-amazon');
+    if(isProductCDN){ image = `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`; break; }
+    if(!image && w >= 40) image = `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`;
   }
 
-  // Need at least an order number or items to be worth keeping
   if(!orderNum && !items.length && !label) return null;
 
   return {
-    id:          Date.now() + Math.random(),
+    id: Date.now() + Math.random(),
     label,
     carrier:     'Amazon',
     tracking:    '',
     status,
-    eta:         status === 'delivered' ? '' : eta,  // never show stale ETA on delivered packages
+    eta:         status === 'delivered' ? '' : eta,
     recipient,
     city,
     orderNum,
@@ -4276,7 +4279,7 @@ function _parseBlock(block, doc, status, msgDate, subject, from, msgId, knownOrd
     total,
     addedAt:     msgDate,
     updatedAt:   msgDate,
-    deliveredAt: status==='delivered' ? msgDate : null,
+    deliveredAt: status === 'delivered' ? msgDate : null,
     fromEmail:   true,
     msgId,
   };
