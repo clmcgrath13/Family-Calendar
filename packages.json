@@ -37,7 +37,8 @@
     "images": [
       "https://m.media-amazon.com/images/I/61SEiT4WbWL._SS90_.jpg",
       "https://m.media-amazon.com/images/I/71IZFWpZHwS._SS90_.jpg"
-    ]
+    ],
+    "city": "KINNELON, NEW JERSEY"
   },
   {
     "id": 1776262613495.5098,
@@ -90,7 +91,11 @@
     "updatedAt": 1775777320000,
     "deliveredAt": null,
     "fromEmail": true,
-    "msgId": "19d74938f418aa02"
+    "msgId": "19d74938f418aa02",
+    "images": [
+      "https://wsrv.nl/?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F711SgPJMokL._SS90_.jpg&w=200&h=200&fit=contain&output=webp"
+    ],
+    "city": "KINNELON, NEW JERSEY"
   },
   {
     "id": 1776262615057.8792,
@@ -102,7 +107,11 @@
     "updatedAt": 1775777045000,
     "deliveredAt": null,
     "fromEmail": true,
-    "msgId": "19d748f5e8979004"
+    "msgId": "19d748f5e8979004",
+    "images": [
+      "https://wsrv.nl/?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F510V0-lanJL._SS90_.jpg&w=200&h=200&fit=contain&output=webp"
+    ],
+    "city": "KINNELON, NEW JERSEY"
   },
   {
     "id": 1776262615426.7495,
@@ -114,7 +123,11 @@
     "updatedAt": 1775713257000,
     "deliveredAt": null,
     "fromEmail": true,
-    "msgId": "19d70c20ad6e1955"
+    "msgId": "19d70c20ad6e1955",
+    "images": [
+      "https://wsrv.nl/?url=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F91QuwGeNTkL._SS90_.jpg&w=200&h=200&fit=contain&output=webp"
+    ],
+    "city": "KINNELON, NEW JERSEY"
   },
   {
     "id": 1776262616321.2756,
@@ -166,7 +179,7 @@
   },
   {
     "id": 1776262618776.2473,
-    "label": "Ã°ÂÂÂ Minimum Days Pizza Lunch Fundraiser Ã¢ÂÂApril 2nd - 3pm Toda",
+    "label": "ÃÂ°ÃÂÃÂÃÂ Minimum Days Pizza Lunch Fundraiser ÃÂ¢ÃÂÃÂApril 2nd - 3pm Toda",
     "carrier": "DHL",
     "tracking": "2047196034",
     "status": "shipped",
