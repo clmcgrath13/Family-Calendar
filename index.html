@@ -716,6 +716,11 @@ body {
 }
 
 
+/* Filter pills */
+.pkg-filter-pill { padding:6px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg); cursor:pointer; font-size:12px; font-weight:600; color:var(--muted); transition:all 0.12s; white-space:nowrap; }
+.pkg-filter-pill.sel { border-color:var(--today-ring); background:#dceeff; color:var(--today-ring); }
+.pkg-filter-pill:hover:not(.sel) { border-color:var(--muted); color:var(--text); }
+
 /* LUNCH TRACKER */
 .lunchwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
 .lunch-grid { flex:1; display:flex; flex-direction:column; overflow-y:auto; padding:10px; gap:12px; }
@@ -1329,7 +1334,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.8</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.9</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1968,7 +1973,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.8</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.9</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2144,7 +2149,7 @@ function render(preserveScroll){
     );
     return;
   }
-  if(appV==='packages'){ c.innerHTML=rPackages(); return; }
+  if(appV==='packages'){ c.innerHTML=rPackages(); setTimeout(attachPkgForm,30); return; }
   if(calV==='month'){ c.innerHTML=rMonth(); return; }
   // Weather mode intercepts time-grid views
   if(weatherMode && isTimeView){
@@ -3474,15 +3479,24 @@ const PKG_STATUSES = {
   delayed:   { label:'Delayed',         emoji:'⏳', dot:'🔴' },
   delivered: { label:'Delivered',       emoji:'✅', dot:'🟢' },
 };
-let _pkgFilter = 'all'; // status filter for packages view
+let _pkgFilter = 'all';
+let _pkgCarrier = 'Amazon';
+let _pkgSearch  = '';
 
 function rPackages(){
   const now = Date.now();
   const h48 = 48 * 3600000;
+  const q = (_pkgSearch||'').toLowerCase().trim();
 
-  const visible = packages.filter(p =>
-    p.status !== 'delivered' || (now - (p.deliveredAt||0)) < h48
-  ).sort((a,b) => {
+  const visible = packages.filter(p => {
+    if(p.status === 'delivered' && (now - (p.deliveredAt||0)) >= h48) return false;
+    if(_pkgFilter !== 'all' && p.status !== _pkgFilter) return false;
+    if(q && !((p.label||'').toLowerCase().includes(q) ||
+              (p.tracking||'').toLowerCase().includes(q) ||
+              (p.orderNum||'').toLowerCase().includes(q) ||
+              (p.carrier||'').toLowerCase().includes(q))) return false;
+    return true;
+  }).sort((a,b) => {
     const order = {out:0, shipped:1, ordered:2, delivered:3};
     return (order[a.status]??9) - (order[b.status]??9);
   });
@@ -3572,31 +3586,73 @@ function rPackages(){
     `<div class="pkg-carrier-opt${c===_pkgCarrier?' sel':''}" onclick="pkgSetCarrier(this,'${c}')">${c}</div>`
   ).join('');
 
+  // Status filter pills — only show statuses that have packages (plus All)
+  const counts = {};
+  packages.forEach(p => { counts[p.status] = (counts[p.status]||0)+1; });
+  const filterPills = [
+    {key:'all', label:'All', count: visible.length},
+    {key:'ordered',   label:'Ordered'},
+    {key:'shipped',   label:'Shipped'},
+    {key:'out',       label:'Out for Delivery'},
+    {key:'delivered', label:'Delivered'},
+  ].filter(f => f.key==='all' || counts[f.key])
+   .map(f => `<div class="pkg-filter-pill${_pkgFilter===f.key?' sel':''}" onclick="pkgSetFilter('${f.key}')">${f.label}</div>`)
+   .join('');
+
   return `<div class="pkgwrap">
     <div class="pkg-hdr">
-      <div class="pkg-hdr-title">📦 Packages</div>
-      ${gmailBtn}
-    </div>
-    <div class="pkg-scroll">${cards}${empty}</div>
-    <div class="pkg-add-bar">
-      <div class="pkg-carrier-pick">${carrierPicker}</div>
-      <div class="pkg-form-row">
-        <input class="fin" id="pkg-label-inp" type="text" placeholder="What is it? (e.g. Collin's cleats)"
-          style="flex:2;min-width:120px;font-size:13px;padding:8px 10px" autocomplete="off">
-        <input class="fin" id="pkg-track-inp" type="text" placeholder="Tracking # (optional)"
-          style="flex:2;min-width:100px;font-size:13px;padding:8px 10px" autocomplete="off">
-        <select class="fin" id="pkg-status-sel" style="flex:1;min-width:80px;font-size:13px;padding:8px 6px">
-          <option value="ordered">Ordered</option>
-          <option value="shipped">Shipped</option>
-          <option value="out">Out for Delivery</option>
-        </select>
-        <button class="ladd-btn" onclick="pkgAdd()" title="Add Package" style="flex-shrink:0">+</button>
+      <div style="display:flex;align-items:center;gap:12px;width:100%">
+        <div class="pkg-hdr-title">📦 Packages</div>
+        <input class="fin" id="pkg-search" type="text" placeholder="Search packages…"
+          style="flex:1;font-size:13px;padding:8px 12px;max-width:320px"
+          oninput="pkgSetSearch(this.value)" autocomplete="off"
+          value="${_pkgSearch||''}">
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">${gmailBtn}</div>
       </div>
+    </div>
+    <div style="display:flex;align-items:center;flex:1;min-height:0;gap:0">
+      <button onclick="pkgNav(-1)" style="
+        flex-shrink:0;width:44px;height:100%;border:none;background:transparent;
+        cursor:pointer;color:var(--muted);font-size:24px;display:flex;align-items:center;
+        justify-content:center;transition:color 0.12s;padding:0"
+        onmouseover="this.style.color='var(--today-ring)'" onmouseout="this.style.color='var(--muted)'">
+        ‹
+      </button>
+      <div class="pkg-scroll" id="pkg-scroll">${cards}${empty}</div>
+      <button onclick="pkgNav(1)" style="
+        flex-shrink:0;width:44px;height:100%;border:none;background:transparent;
+        cursor:pointer;color:var(--muted);font-size:24px;display:flex;align-items:center;
+        justify-content:center;transition:color 0.12s;padding:0"
+        onmouseover="this.style.color='var(--today-ring)'" onmouseout="this.style.color='var(--muted)'">
+        ›
+      </button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--border);background:var(--header-bg);flex-shrink:0">
+      ${filterPills}
     </div>
   </div>`;
 }
 
 function pkgSetFilter(f){ _pkgFilter=f; render(); }
+
+function pkgSetSearch(q){
+  _pkgSearch = q;
+  // Re-render cards without full render to keep search input focused
+  const scroll = document.getElementById('pkg-scroll');
+  if(!scroll) return;
+  // Just re-render the whole packages view
+  const c = document.getElementById('content');
+  if(c){ c.innerHTML = rPackages(); setTimeout(attachPkgForm,30); }
+  // Restore focus to search input
+  setTimeout(()=>{ document.getElementById('pkg-search')?.focus(); }, 10);
+}
+
+function pkgNav(dir){
+  const scroll = document.getElementById('pkg-scroll');
+  if(!scroll) return;
+  const cardW = scroll.querySelector('.pkg-card')?.offsetWidth || 316;
+  scroll.scrollBy({ left: dir * (cardW + 16), behavior:'smooth' });
+}
 
 function pkgDelete(id){
   packages = packages.filter(p=>p.id!==id);
