@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.1</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.2</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.1</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.2</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3515,7 +3515,8 @@ function rPackages(){
 
     const firstImg = (p.images||[])[0];
     const imageHtml = firstImg
-      ? `<img src="${firstImg}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none'">`
+      ? `<img src="${firstImg}" style="width:100%;height:100%;object-fit:contain"
+           onerror="this.parentElement.innerHTML='<div style=\'font-size:48px\'>📦</div>'">`
       : `<div style="font-size:48px">📦</div>`;
 
     const arrivalHtml = p.eta
@@ -3527,7 +3528,8 @@ function rPackages(){
     const infoLines = [
       p.recipient && p.city ? `<div class="pkg-info-row"><strong>${p.recipient} – ${p.city}</strong></div>` : '',
       p.orderNum            ? `<div class="pkg-info-row">Order # ${p.orderNum}</div>` : '',
-      p.label && p.label!=='Package' ? `<div class="pkg-info-row" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.label}</div>` : '',
+      p.label && p.label!=='Package'
+        ? `<div class="pkg-info-row" style="line-height:1.4;white-space:normal;word-break:break-word">${p.label}</div>` : '',
       p.total               ? `<div class="pkg-info-row">Total: <strong>$${p.total}</strong></div>` : '',
     ].filter(Boolean).join('');
 
@@ -3721,8 +3723,16 @@ const CARRIER_PATTERNS = [
   { carrier:'OnTrac',re:/\b(C\d{14})\b/g },
 ];
 
-// Shipping email subjects to search for
-const GMAIL_QUERY = 'subject:(shipped OR "out for delivery" OR "delivery" OR "tracking" OR "order" OR "package") newer_than:30d';
+// Only search emails from known shipping/retail senders — much more precise than keyword search
+const GMAIL_QUERY = 'from:(amazon.com OR ups.com OR fedex.com OR usps.com OR dhl.com OR ontrac.com OR shipment-tracking OR shipping-notification OR auto-confirm OR ship-confirm) newer_than:30d';
+
+// Known shipping sender domains for secondary filtering
+const SHIPPING_SENDERS = [
+  'amazon.com','amazon.co','ups.com','fedex.com','usps.com','dhl.com','ontrac.com',
+  'shipstation.com','shipbob.com','narvar.com','aftership.com','shop.app',
+  'bestbuy.com','walmart.com','target.com','costco.com','ebay.com','etsy.com',
+  'macys.com','nordstrom.com','gap.com','nike.com','adidas.com','chewy.com',
+];
 
 function gmailSignIn(){
   if(!window.google?.accounts?.oauth2){
@@ -3824,7 +3834,6 @@ let _gmailLastSync = 0;
 function _statusRank(s){ return {ordered:0,shipped:1,out:2,delivered:3}[s]??0; }
 
 function _parseShippingEmail(msgData){
-  // Extract subject and body text
   const headers = msgData.payload?.headers || [];
   const subject = headers.find(h=>h.name==='Subject')?.value || '';
   const from    = headers.find(h=>h.name==='From')?.value || '';
@@ -3832,12 +3841,26 @@ function _parseShippingEmail(msgData){
   const body    = _extractEmailBody(msgData.payload);
   const text    = subject + ' ' + body;
   const msgDate = date ? new Date(date).getTime() : Date.now();
+  const tl      = text.toLowerCase();
+  const fromLow = from.toLowerCase();
 
-  // Determine status from subject/body keywords
+  // GATE 1: sender must be from a known shipping/retail domain
+  const knownSender = SHIPPING_SENDERS.some(d => fromLow.includes(d));
+  if(!knownSender) return null;
+
+  // GATE 2: must contain actual shipping action keywords (not just promotional)
+  const hasShippingKeyword = [
+    'has shipped','your order','shipped your','out for delivery','arriving today',
+    'was delivered','package delivered','tracking number','track your package',
+    'order confirmed','thank you for your order','shipment notification',
+    'on its way','in transit','estimated delivery'
+  ].some(kw => tl.includes(kw));
+  if(!hasShippingKeyword) return null;
+
+  // Determine status
   let status = 'shipped';
-  const tl = text.toLowerCase();
   if(tl.includes('out for delivery') || tl.includes('arriving today')) status = 'out';
-  else if(tl.includes('delivered') || tl.includes('was delivered')) status = 'delivered';
+  else if(tl.includes('delivered') || tl.includes('was delivered') || tl.includes('package delivered')) status = 'delivered';
   else if(tl.includes('order confirmed') || tl.includes('order received') || tl.includes('thank you for your order')) status = 'ordered';
   else if(tl.includes('shipped') || tl.includes('on its way') || tl.includes('in transit')) status = 'shipped';
 
@@ -3851,22 +3874,28 @@ function _parseShippingEmail(msgData){
     }
   }
 
-  // Extract item description from subject
   const label = _extractLabel(subject, from);
 
   if(found.length === 0 && status === 'ordered'){
-    // Order confirmation with no tracking yet — add as ordered
-    if(tl.includes('order') && label){
+    if(label){
       return [{
         id: Date.now() + Math.random(),
         label, carrier: _detectCarrierFromSender(from),
         tracking: '', status: 'ordered',
+        eta: _extractETA(text),
+        recipient: _extractRecipient(text),
+        city: _extractCity(text),
+        orderNum: _extractOrderNum(text),
+        images: _extractImages(msgData),
+        total: _extractTotal(text),
         addedAt: msgDate, updatedAt: msgDate, deliveredAt: null,
         fromEmail: true, msgId: msgData.id
       }];
     }
     return null;
   }
+
+  if(found.length === 0) return null; // no tracking number and not an order confirm = skip
 
   return found.map(({tracking, carrier}) => ({
     id: Date.now() + Math.random(),
