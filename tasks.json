@@ -952,5 +952,20 @@
     "who": [
       "Ava"
     ]
+  },
+  {
+    "id": 1776215179023,
+    "title": "Empty ash from solo stove",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
   }
 ]
