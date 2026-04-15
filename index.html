@@ -645,81 +645,59 @@ body {
 
 /* PACKAGES */
 .pkgwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
-.pkg-hdr { padding:16px 20px 12px; border-bottom:1px solid var(--border); background:var(--header-bg); flex-shrink:0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; }
-.pkg-hdr-title { font-size:20px; font-weight:700; color:var(--text); }
-/* Horizontal scroll row */
+.pkg-hdr { padding:16px 20px 12px; border-bottom:1px solid var(--border); background:var(--header-bg); flex-shrink:0; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.pkg-hdr-title { font-size:20px; font-weight:700; color:var(--text); flex-shrink:0; }
 .pkg-scroll {
   flex:1; overflow-x:auto; overflow-y:hidden;
-  display:flex; align-items:stretch; gap:16px; padding:20px;
+  display:flex; align-items:stretch; gap:20px; padding:20px;
   scroll-snap-type:x mandatory; -webkit-overflow-scrolling:touch;
 }
 .pkg-scroll::-webkit-scrollbar { height:4px; }
 .pkg-scroll::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
-/* Card — mimics Amazon shipping email */
+/* Card */
 .pkg-card {
-  scroll-snap-align:start; flex-shrink:0; width:300px;
+  scroll-snap-align:start; flex-shrink:0; width:450px;
   background:var(--bg); border:1px solid var(--border); border-radius:16px;
   display:flex; flex-direction:column; overflow:hidden;
-  box-shadow:0 2px 8px rgba(0,0,0,0.06); transition:box-shadow 0.15s;
 }
-.pkg-card:hover { box-shadow:0 6px 20px rgba(0,0,0,0.1); }
-.pkg-card-banner {
-  padding:10px 16px; font-size:13px; font-weight:700;
-  display:flex; align-items:center; gap:7px; flex-shrink:0;
-}
-.pkg-card-banner.status-ordered   { background:#fef3c7; color:#92400e; }
-.pkg-card-banner.status-shipped   { background:#dbeafe; color:#1e40af; }
-.pkg-card-banner.status-out       { background:#ede9fe; color:#5b21b6; }
-.pkg-card-banner.status-delivered { background:#d1fae5; color:#065f46; }
-.pkg-card-body { padding:16px; flex:1; display:flex; flex-direction:column; gap:11px; }
-.pkg-greeting { font-size:15px; font-weight:700; color:var(--text); }
-.pkg-subhead  { font-size:13px; color:var(--muted); }
-.pkg-arrival  { font-size:13px; color:var(--muted); line-height:1.4; }
-.pkg-arrival strong { font-size:15px; font-weight:700; color:var(--text); display:block; margin-top:2px; }
-.pkg-shipto   { font-size:12px; color:var(--muted); line-height:1.5; }
-.pkg-shipto strong { color:var(--text); font-weight:700; display:block; font-size:13px; text-transform:uppercase; }
-.pkg-ordernum { font-size:12px; color:var(--muted); }
-.pkg-ordernum span { color:var(--today-ring); font-weight:600; }
-.pkg-images   { display:flex; gap:8px; flex-wrap:wrap; }
-.pkg-img-thumb {
-  width:60px; height:60px; border-radius:8px;
-  object-fit:contain; border:1px solid var(--border); background:#f9f9f7;
-}
-.pkg-img-placeholder {
-  width:60px; height:60px; border-radius:8px;
+/* Progress bar area */
+.pkg-progress { padding:20px 24px 16px; border-bottom:1px solid var(--border); flex-shrink:0; }
+.pkg-steps { display:flex; align-items:flex-start; position:relative; }
+.pkg-line-track { position:absolute; top:10px; left:10px; right:10px; height:2px; background:var(--border); }
+.pkg-line-fill  { position:absolute; top:10px; left:10px; height:2px; background:#008577; }
+.pkg-step { flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; position:relative; z-index:1; }
+.pkg-dot { width:20px; height:20px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.pkg-dot.done   { background:#008577; border:2px solid #008577; }
+.pkg-dot.active { background:var(--bg); border:2px solid #008577; }
+.pkg-dot.idle   { background:var(--sidebar-bg); border:2px solid var(--border); }
+.pkg-dot-inner  { width:8px; height:8px; border-radius:50%; background:#008577; }
+.pkg-step-lbl   { font-size:11px; color:var(--muted); text-align:center; white-space:nowrap; }
+.pkg-step-lbl.active { color:var(--text); font-weight:700; }
+/* Card body */
+.pkg-card-body { padding:24px; flex:1; display:flex; flex-direction:column; align-items:center; gap:16px; }
+.pkg-img-box {
+  width:165px; height:165px; border-radius:10px;
   border:1px solid var(--border); background:var(--sidebar-bg);
-  display:flex; align-items:center; justify-content:center; font-size:26px;
+  display:flex; align-items:center; justify-content:center; overflow:hidden; flex-shrink:0;
 }
-.pkg-total { font-size:12px; color:var(--muted); border-top:1px solid var(--border); padding-top:10px; margin-top:auto; display:flex; justify-content:space-between; align-items:center; }
-.pkg-total strong { color:var(--text); font-size:15px; }
-.pkg-card-footer { padding:12px 16px; border-top:1px solid var(--border); display:flex; gap:8px; background:var(--sidebar-bg); flex-shrink:0; }
-.pkg-btn {
-  flex:1; padding:9px 10px; border-radius:20px; border:1.5px solid var(--border);
-  background:var(--bg); cursor:pointer; font-size:12px; font-weight:600;
-  color:var(--text); text-align:center; transition:all 0.12s; font-family:var(--font);
-}
-.pkg-btn:hover { border-color:var(--today-ring); color:var(--today-ring); }
-.pkg-btn.primary { background:#f5c518; border-color:#e6b800; color:#111; }
-.pkg-btn.primary:hover { background:#e6b800; }
-.pkg-btn.danger { color:#dc2626; border-color:#fca5a5; }
-/* Empty state */
+.pkg-img-box img { width:100%; height:100%; object-fit:contain; }
+.pkg-arrival { font-size:18px; font-weight:700; color:var(--text); text-align:center; }
+.pkg-info { width:100%; display:flex; flex-direction:column; gap:5px; }
+.pkg-info-row { font-size:13px; color:var(--muted); }
+.pkg-info-row strong { color:var(--text); font-weight:700; }
+/* Empty */
 .pkg-empty { display:flex; flex-direction:column; align-items:center; justify-content:center; flex:1; padding:40px 20px; color:var(--muted); font-size:14px; text-align:center; gap:14px; }
-/* Add bar */
-.pkg-add-bar { padding:12px 16px; border-top:1px solid var(--border); background:var(--header-bg); flex-shrink:0; }
-.pkg-carrier-pick { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px; }
-.pkg-carrier-opt { padding:5px 12px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg); cursor:pointer; font-size:12px; font-weight:600; color:var(--muted); transition:all 0.12s; }
-.pkg-carrier-opt.sel { border-color:var(--today-ring); background:#dceeff; color:var(--today-ring); }
-.pkg-form-row { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-@media(max-width:600px){
-  .pkg-card { width:calc(100vw - 48px); }
-  .pkg-scroll { padding:14px; }
-}
-
-
 /* Filter pills */
-.pkg-filter-pill { padding:6px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg); cursor:pointer; font-size:12px; font-weight:600; color:var(--muted); transition:all 0.12s; white-space:nowrap; }
+.pkg-filter-pill { padding:6px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--bg); cursor:pointer; font-size:12px; font-weight:600; color:var(--muted); transition:all 0.12s; white-space:nowrap; font-family:var(--font); }
 .pkg-filter-pill.sel { border-color:var(--today-ring); background:#dceeff; color:var(--today-ring); }
 .pkg-filter-pill:hover:not(.sel) { border-color:var(--muted); color:var(--text); }
+@media(max-width:600px){
+  .pkg-card { width:calc(100vw - 60px); }
+  .pkg-scroll { padding:14px; }
+  .pkg-img-box { width:130px; height:130px; }
+  .pkg-arrival { font-size:16px; }
+}
+
 
 /* LUNCH TRACKER */
 .lunchwrap { height:100%; display:flex; flex-direction:column; overflow:hidden; background:var(--sidebar-bg); }
@@ -1334,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.0</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.1</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1973,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.0</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.1</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3512,63 +3490,53 @@ function rPackages(){
        </button>`;
 
   const cards = visible.map(p => {
-    const trackingUrl = pkgTrackingUrl(p.carrier, p.tracking);
-
-    // Status progress bar — 4 steps, teal active dot + line
     const steps = ['ordered','shipped','out','delivered'];
     const stepLabels = ['Ordered','Shipped','Out for delivery','Delivered'];
-    const activeIdx = steps.indexOf(p.status);
+    const activeIdx = Math.max(0, steps.indexOf(p.status));
+    const fillPct = activeIdx===0?'0':activeIdx===1?'33%':activeIdx===2?'66%':'100%';
+
     const progressBar = `
-      <div style="padding:18px 20px 12px;border-bottom:1px solid var(--border)">
-        <div style="position:relative;display:flex;align-items:center;justify-content:space-between">
-          <!-- connecting line behind dots -->
-          <div style="position:absolute;top:10px;left:10px;right:10px;height:2px;background:var(--border);z-index:0"></div>
-          <!-- active line -->
-          <div style="position:absolute;top:10px;left:10px;height:2px;background:#008577;z-index:1;width:${activeIdx===0?'0':activeIdx===1?'33%':activeIdx===2?'66%':'100%'}"></div>
-          ${steps.map((s,i) => `
-            <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
-              <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${i<=activeIdx?'#008577':'var(--border)'};
-                background:${i<activeIdx?'#008577':i===activeIdx?'#fff':'var(--sidebar-bg)'};
-                display:flex;align-items:center;justify-content:center">
-                ${i<activeIdx?'<svg width="10" height="10" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>':
-                  i===activeIdx?'<div style="width:8px;height:8px;border-radius:50%;background:#008577"></div>':''}
-              </div>
-              <div style="font-size:10px;font-weight:${i===activeIdx?'700':'400'};color:${i===activeIdx?'var(--text)':'var(--muted)'};white-space:nowrap">${stepLabels[i]}</div>
-            </div>`).join('')}
+      <div class="pkg-progress">
+        <div class="pkg-steps">
+          <div class="pkg-line-track"></div>
+          <div class="pkg-line-fill" style="width:${fillPct}"></div>
+          ${steps.map((s,i) => {
+            const cls = i < activeIdx ? 'done' : i === activeIdx ? 'active' : 'idle';
+            const inner = i < activeIdx
+              ? `<svg width="10" height="10" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`
+              : i === activeIdx ? `<div class="pkg-dot-inner"></div>` : '';
+            return `<div class="pkg-step">
+              <div class="pkg-dot ${cls}">${inner}</div>
+              <div class="pkg-step-lbl${i===activeIdx?' active':''}">${stepLabels[i]}</div>
+            </div>`;
+          }).join('')}
         </div>
       </div>`;
 
-    // Item image — centered
     const firstImg = (p.images||[])[0];
     const imageHtml = firstImg
-      ? `<img src="${firstImg}" style="width:110px;height:110px;object-fit:contain;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none'">`
-      : `<div style="width:110px;height:110px;border-radius:8px;border:1px solid var(--border);background:var(--sidebar-bg);display:flex;align-items:center;justify-content:center;font-size:40px">📦</div>`;
+      ? `<img src="${firstImg}" style="width:100%;height:100%;object-fit:contain" onerror="this.style.display='none'">`
+      : `<div style="font-size:48px">📦</div>`;
 
-    // Arrival
     const arrivalHtml = p.eta
-      ? `<div style="font-size:17px;font-weight:700;color:var(--text)">${p.eta}</div>`
+      ? `<div class="pkg-arrival">${p.eta}</div>`
       : p.status==='delivered' && p.deliveredAt
-        ? `<div style="font-size:17px;font-weight:700;color:var(--text)">Delivered ${new Date(p.deliveredAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`
+        ? `<div class="pkg-arrival">Delivered ${new Date(p.deliveredAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`
         : '';
 
-    // Ship to + order
     const infoLines = [
-      p.recipient && p.city ? `<div style="font-size:13px;font-weight:700;color:var(--text)">${p.recipient} – ${p.city}</div>` : '',
-      p.orderNum ? `<div style="font-size:12px;color:var(--muted)">Order # ${p.orderNum}</div>` : '',
-      p.label && p.label!=='Package' ? `<div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px">${p.label}</div>` : '',
-      p.total ? `<div style="font-size:12px;color:var(--muted)">Total: <strong style="color:var(--text)">$${p.total}</strong></div>` : '',
+      p.recipient && p.city ? `<div class="pkg-info-row"><strong>${p.recipient} – ${p.city}</strong></div>` : '',
+      p.orderNum            ? `<div class="pkg-info-row">Order # ${p.orderNum}</div>` : '',
+      p.label && p.label!=='Package' ? `<div class="pkg-info-row" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.label}</div>` : '',
+      p.total               ? `<div class="pkg-info-row">Total: <strong>$${p.total}</strong></div>` : '',
     ].filter(Boolean).join('');
 
     return `<div class="pkg-card">
       ${progressBar}
-      <div class="pkg-card-body" style="align-items:center;text-align:center;gap:12px">
-        ${imageHtml}
+      <div class="pkg-card-body">
+        <div class="pkg-img-box">${imageHtml}</div>
         ${arrivalHtml}
-        <div style="text-align:left;width:100%">${infoLines}</div>
-      </div>
-      <div class="pkg-card-footer">
-        ${trackingUrl ? `<button class="pkg-btn primary" onclick="window.open('${trackingUrl}','_blank')">Track package</button>` : ''}
-        ${p.orderNum ? `<button class="pkg-btn" onclick="window.open('https://www.amazon.com/gp/your-account/order-details?orderID=${p.orderNum}','_blank')">View order</button>` : ''}
+        <div class="pkg-info">${infoLines}</div>
       </div>
     </div>`;
   }).join('');
