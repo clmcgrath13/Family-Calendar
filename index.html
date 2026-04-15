@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.2</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.3</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.2</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.3</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3514,9 +3514,10 @@ function rPackages(){
       </div>`;
 
     const firstImg = (p.images||[])[0];
-    const imageHtml = firstImg
-      ? `<img src="${firstImg}" style="width:100%;height:100%;object-fit:contain"
-           onerror="this.parentElement.innerHTML='<div style=\'font-size:48px\'>📦</div>'">`
+    const imgSrc = typeof firstImg === 'string' ? firstImg : null;
+    const imageHtml = imgSrc
+      ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain"
+           onerror="this.parentElement.innerHTML='<div style=\\'font-size:48px\\'>📦</div>'">`
       : `<div style="font-size:48px">📦</div>`;
 
     const arrivalHtml = p.eta
@@ -3529,7 +3530,7 @@ function rPackages(){
       p.recipient && p.city ? `<div class="pkg-info-row"><strong>${p.recipient} – ${p.city}</strong></div>` : '',
       p.orderNum            ? `<div class="pkg-info-row">Order # ${p.orderNum}</div>` : '',
       p.label && p.label!=='Package'
-        ? `<div class="pkg-info-row" style="line-height:1.4;white-space:normal;word-break:break-word">${p.label}</div>` : '',
+        ? `<div class="pkg-info-row" style="line-height:1.5;white-space:normal;word-break:break-word;font-size:13px;color:var(--muted)">${p.label}</div>` : '',
       p.total               ? `<div class="pkg-info-row">Total: <strong>$${p.total}</strong></div>` : '',
     ].filter(Boolean).join('');
 
@@ -3788,27 +3789,48 @@ async function gmailSync(){
       if(!detail.ok) continue;
       const data = await detail.json();
       const parsed = _parseShippingEmail(data);
-      if(parsed) newPackages.push(...parsed);
+      if(!parsed) continue;
+
+      // Resolve any attachment images to base64 data URIs
+      for(const pkg of parsed){
+        if(pkg.images && pkg.images.length && pkg.images[0]?.type === 'attachment'){
+          const resolved = [];
+          for(const img of pkg.images.slice(0,2)){
+            const uri = await _fetchAttachmentImage(img.msgId, img.attachmentId, _gmailToken);
+            if(uri) resolved.push(uri);
+          }
+          pkg.images = resolved;
+        }
+      }
+      newPackages.push(...parsed);
     }
 
     // Merge with existing packages — don't duplicate by tracking number
     let changed = false;
     for(const np of newPackages){
-      const exists = packages.some(p =>
-        p.tracking && p.tracking === np.tracking
+      const existing = packages.find(p =>
+        (p.tracking && p.tracking === np.tracking) ||
+        (p.msgId && p.msgId === np.msgId)
       );
-      if(!exists){
+      if(!existing){
         packages.push(np);
         changed = true;
       } else {
-        // Update status if email has newer info
-        const existing = packages.find(p => p.tracking === np.tracking);
-        if(existing && _statusRank(np.status) > _statusRank(existing.status)){
+        // Always update to highest status rank
+        if(_statusRank(np.status) > _statusRank(existing.status)){
           existing.status = np.status;
           existing.updatedAt = Date.now();
           if(np.status==='delivered') existing.deliveredAt = Date.now();
           changed = true;
         }
+        // Update image if we now have one and didn't before
+        if(np.images?.length && !existing.images?.length){
+          existing.images = np.images;
+          changed = true;
+        }
+        // Update eta/recipient/city if missing
+        if(!existing.eta && np.eta){ existing.eta = np.eta; changed = true; }
+        if(!existing.recipient && np.recipient){ existing.recipient = np.recipient; changed = true; }
       }
     }
 
@@ -3948,27 +3970,58 @@ function _extractTotal(text){
 }
 
 function _extractImages(msgData){
-  // Extract image URLs from email HTML parts
+  // First try: find inline image attachments (multipart/related pattern used by Amazon)
+  const attachmentImages = [];
+  function findAttachments(part){
+    if(!part) return;
+    if(part.mimeType && part.mimeType.startsWith('image/') && part.body?.attachmentId){
+      attachmentImages.push({ attachmentId: part.body.attachmentId, msgId: msgData.id });
+    }
+    (part.parts||[]).forEach(findAttachments);
+  }
+  findAttachments(msgData.payload);
+  // Return attachment descriptors — will be fetched async and converted to base64 data URIs
+  if(attachmentImages.length) return attachmentImages.map(a => ({ type:'attachment', ...a }));
+
+  // Fallback: extract http image URLs from HTML body
   const images = [];
-  function walk(part){
+  function walkHtml(part){
     if(!part) return;
     if(part.mimeType==='text/html' && part.body?.data){
       const html = atob(part.body.data.replace(/-/g,'+').replace(/_/g,'/'));
-      const re = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+      const re = /<img[^>]+src=["']([^"']+)["'][^>]*/gi;
       let m;
       while((m=re.exec(html))!==null){
         const src = m[1];
-        // Only product images (skip logos, spacers, tiny tracking pixels)
-        if(src.startsWith('http') && !src.includes('spacer') && !src.includes('pixel') && !src.includes('logo')){
-          images.push(src);
-          if(images.length >= 4) return;
+        if(src.startsWith('http') && !src.includes('spacer') && !src.includes('pixel') &&
+           !src.includes('logo') && !src.includes('banner') && !src.includes('header')){
+          // Prefer images with product-like dimensions (check width/height attrs)
+          const wMatch = m[0].match(/width=["']?(\d+)/i);
+          const w = wMatch ? parseInt(wMatch[1]) : 999;
+          if(w >= 40) { images.push(src); if(images.length >= 2) break; }
         }
       }
     }
-    (part.parts||[]).forEach(walk);
+    (part.parts||[]).forEach(walkHtml);
   }
-  walk(msgData.payload);
+  walkHtml(msgData.payload);
   return images;
+}
+
+// Fetch an inline attachment and return a base64 data URI
+async function _fetchAttachmentImage(msgId, attachmentId, token){
+  try {
+    const r = await fetch(
+      `${GMAIL_API}/users/me/messages/${msgId}/attachments/${attachmentId}`,
+      { headers:{ Authorization:`Bearer ${token}` }}
+    );
+    if(!r.ok) return null;
+    const d = await r.json();
+    if(!d.data) return null;
+    // Gmail uses URL-safe base64, convert to data URI
+    const b64 = d.data.replace(/-/g,'+').replace(/_/g,'/');
+    return `data:image/jpeg;base64,${b64}`;
+  } catch(e){ return null; }
 }
 
 function _extractEmailBody(payload){
@@ -3988,24 +4041,24 @@ function _extractEmailBody(payload){
 }
 
 function _extractLabel(subject, from){
-  // Clean up common email subject patterns
   let label = subject
-    .replace(/re:\s*/i,'')
-    .replace(/your .*(order|shipment|package|delivery).*/i, match => match)
-    .replace(/^\s*(your|a|an)\s+/i,'')
-    .replace(/has shipped.*$/i,'')
-    .replace(/is on its way.*$/i,'')
-    .replace(/order #?\w+:?\s*/i,'')
-    .replace(/shipment notification:?\s*/i,'')
+    .replace(/re:\s*/i, '')
+    .replace(/^your\s+(order|shipment|package|delivery)\s*(has\s+shipped|confirmed|is\s+on\s+its\s+way|notification)?:?\s*/i, '')
+    .replace(/\s*(has\s+shipped|is\s+on\s+its\s+way|has\s+been\s+delivered|was\s+delivered|is\s+out\s+for\s+delivery).*$/i, '')
+    .replace(/\s*shipment\s+notification:?\s*/i, '')
+    .replace(/\s*shipping\s+confirmation:?\s*/i, '')
+    .replace(/\s*order\s+(confirmation|confirmed|#?\s*[\w-]+):?\s*/i, '')
+    .replace(/^(thanks\s+for\s+your\s+order[!,.]?\s*)/i, '')
+    .replace(/^(your\s+amazon\.com\s+order\s+of\s+)/i, '')
     .trim();
 
-  // If label is just generic, use sender name
-  if(!label || label.length < 3 || /^(your|package|shipment|order)$/i.test(label)){
-    const senderMatch = from.match(/^([^<@]+)/);
-    label = senderMatch ? senderMatch[1].trim() : 'Package';
+  // If still generic or too short, fall back to sender name
+  if(!label || label.length < 4 || /^(your|package|shipment|order|delivery)$/i.test(label)){
+    const senderMatch = from.match(/^([^<@\n]+)/);
+    label = senderMatch ? senderMatch[1].trim().replace(/"/g,'') : 'Package';
   }
 
-  return label.slice(0,60); // cap length
+  return label; // no length cap — show full description
 }
 
 function _detectCarrierFromSender(from){
