@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.4</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.5</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.4</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.5</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3481,7 +3481,14 @@ function rPackages(){
 
   const gmailBtn = gmailIsConnected()
     ? `<div style="display:flex;gap:8px;align-items:center">
-        <button onclick="gmailSync()" style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--today-ring);font-weight:600">${_gmailSyncing?'Syncing…':'↻ Sync Gmail'}</button>
+        <button onclick="gmailSync()" style="
+          font-size:12px;padding:5px 12px;border-radius:8px;cursor:pointer;font-weight:600;
+          border:1.5px solid ${_gmailSyncing?'#ca8a04':_gmailError?'#dc2626':'#16a34a'};
+          background:${_gmailSyncing?'#fef9c3':_gmailError?'#fef2f2':'#f0fdf4'};
+          color:${_gmailSyncing?'#854d0e':_gmailError?'#dc2626':'#16a34a'}">
+          ${_gmailSyncing?'⏳ Syncing…':_gmailError?'❌ Sync failed':'✓ Gmail synced'}
+        </button>
+        <button onclick="gmailSync()" style="font-size:11px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--muted)">↻</button>
         <button onclick="gmailSignOut()" style="font-size:11px;padding:5px 8px;border-radius:8px;border:1px solid var(--border);background:var(--bg);cursor:pointer;color:var(--muted)">Disconnect</button>
        </div>`
     : `<button onclick="gmailSignIn()" style="font-size:12px;padding:7px 14px;border-radius:8px;border:none;background:#4285f4;color:#fff;cursor:pointer;font-weight:600;display:flex;align-items:center;gap:6px">
@@ -3709,6 +3716,7 @@ const GMAIL_SCOPES    = 'https://www.googleapis.com/auth/gmail.readonly';
 const GMAIL_API       = 'https://www.googleapis.com/gmail/v1';
 let _gmailToken       = null;  // current OAuth access token
 let _gmailSyncing     = false;
+let _gmailError       = false;
 
 // Carrier tracking number patterns for auto-detection
 const CARRIER_PATTERNS = [
@@ -3766,6 +3774,8 @@ function gmailIsConnected(){ return !!_gmailToken && Date.now() < _gmailTokenExp
 async function gmailSync(){
   if(!gmailIsConnected() || _gmailSyncing) return;
   _gmailSyncing = true;
+  _gmailError = false;
+  if(appV==='packages') render(); // show yellow syncing state
   try {
     // Search Gmail for shipping-related emails
     const searchResp = await fetch(
@@ -3793,17 +3803,20 @@ async function gmailSync(){
         const resolved = [];
         for(const img of pkg.images.slice(0,2)){
           if(img.type === 'inline'){
-            resolved.push(img.data); // already a data URI
+            resolved.push(img.data);
           } else if(img.type === 'attachment'){
             const uri = await _fetchAttachmentImage(img.msgId, img.attachmentId, _gmailToken);
             if(uri) resolved.push(uri);
           } else if(img.type === 'url'){
-            resolved.push(img.src); // external URL — may or may not load
+            // Use CORS proxy to load Amazon/retailer CDN images cross-origin
+            const proxied = `https://wsrv.nl/?url=${encodeURIComponent(img.src)}&w=200&h=200&fit=contain&output=webp`;
+            resolved.push(proxied);
           } else if(typeof img === 'string'){
-            resolved.push(img); // legacy string format
+            resolved.push(img);
           }
         }
         pkg.images = resolved;
+        console.log(`[pkg] ${pkg.label} → ${resolved.length} image(s)`, resolved[0]?.slice(0,80));
       }
       newPackages.push(...parsed);
     }
@@ -3845,12 +3858,15 @@ async function gmailSync(){
 
     // Update last sync time
     _gmailLastSync = Date.now();
+    _gmailError = false;
     if(appV==='packages') render();
   } catch(e){
     console.error('Gmail sync failed:', e);
+    _gmailError = true;
     if(e.message.includes('401')) _gmailToken = null; // token expired
   } finally {
     _gmailSyncing = false;
+    if(appV==='packages') render(); // show green/red final state
   }
 }
 
@@ -3882,12 +3898,22 @@ function _parseShippingEmail(msgData){
   ].some(kw => tl.includes(kw));
   if(!hasShippingKeyword) return null;
 
-  // Determine status
+  // Determine status — check delivered FIRST since body may contain "shipped" too
   let status = 'shipped';
-  if(tl.includes('out for delivery') || tl.includes('arriving today')) status = 'out';
-  else if(tl.includes('delivered') || tl.includes('was delivered') || tl.includes('package delivered')) status = 'delivered';
-  else if(tl.includes('order confirmed') || tl.includes('order received') || tl.includes('thank you for your order')) status = 'ordered';
-  else if(tl.includes('shipped') || tl.includes('on its way') || tl.includes('in transit')) status = 'shipped';
+  if(tl.includes('delivered') || tl.includes('was delivered') ||
+     tl.includes('package delivered') || tl.includes('has been delivered') ||
+     subject.toLowerCase().includes('delivered')){
+    status = 'delivered';
+  } else if(tl.includes('out for delivery') || tl.includes('arriving today') ||
+            tl.includes('arriving tomorrow') || tl.includes('on its way today')){
+    status = 'out';
+  } else if(tl.includes('order confirmed') || tl.includes('order received') ||
+            tl.includes('thank you for your order') || tl.includes('thanks for your order')){
+    status = 'ordered';
+  } else if(tl.includes('shipped') || tl.includes('on its way') || tl.includes('in transit') ||
+            tl.includes('has shipped') || tl.includes('shipment notification')){
+    status = 'shipped';
+  }
 
   // Extract tracking numbers
   const found = [];
