@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.3</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3558,17 +3558,13 @@ function rPackages(){
     `<div class="pkg-carrier-opt${c===_pkgCarrier?' sel':''}" onclick="pkgSetCarrier(this,'${c}')">${c}</div>`
   ).join('');
 
-  // Status filter pills — only show statuses that have packages (plus All)
-  const counts = {};
-  packages.forEach(p => { counts[p.status] = (counts[p.status]||0)+1; });
   const filterPills = [
-    {key:'all', label:'All', count: visible.length},
+    {key:'all',       label:'All'},
     {key:'ordered',   label:'Ordered'},
     {key:'shipped',   label:'Shipped'},
     {key:'out',       label:'Out for Delivery'},
     {key:'delivered', label:'Delivered'},
-  ].filter(f => f.key==='all' || counts[f.key])
-   .map(f => `<div class="pkg-filter-pill${_pkgFilter===f.key?' sel':''}" onclick="pkgSetFilter('${f.key}')">${f.label}</div>`)
+  ].map(f => `<div class="pkg-filter-pill${_pkgFilter===f.key?' sel':''}" onclick="pkgSetFilter('${f.key}')">${f.label}</div>`)
    .join('');
 
   return `<div class="pkgwrap">
@@ -3791,16 +3787,23 @@ async function gmailSync(){
       const parsed = _parseShippingEmail(data);
       if(!parsed) continue;
 
-      // Resolve any attachment images to base64 data URIs
+      // Resolve images to usable src strings
       for(const pkg of parsed){
-        if(pkg.images && pkg.images.length && pkg.images[0]?.type === 'attachment'){
-          const resolved = [];
-          for(const img of pkg.images.slice(0,2)){
+        if(!pkg.images?.length) continue;
+        const resolved = [];
+        for(const img of pkg.images.slice(0,2)){
+          if(img.type === 'inline'){
+            resolved.push(img.data); // already a data URI
+          } else if(img.type === 'attachment'){
             const uri = await _fetchAttachmentImage(img.msgId, img.attachmentId, _gmailToken);
             if(uri) resolved.push(uri);
+          } else if(img.type === 'url'){
+            resolved.push(img.src); // external URL — may or may not load
+          } else if(typeof img === 'string'){
+            resolved.push(img); // legacy string format
           }
-          pkg.images = resolved;
         }
+        pkg.images = resolved;
       }
       newPackages.push(...parsed);
     }
@@ -3970,41 +3973,52 @@ function _extractTotal(text){
 }
 
 function _extractImages(msgData){
-  // First try: find inline image attachments (multipart/related pattern used by Amazon)
-  const attachmentImages = [];
-  function findAttachments(part){
+  const images = [];
+
+  // Walk all parts looking for image attachments with an attachmentId
+  function findImageParts(part){
     if(!part) return;
     if(part.mimeType && part.mimeType.startsWith('image/') && part.body?.attachmentId){
-      attachmentImages.push({ attachmentId: part.body.attachmentId, msgId: msgData.id });
+      images.push({ type:'attachment', attachmentId: part.body.attachmentId, msgId: msgData.id });
+      if(images.length >= 2) return;
     }
-    (part.parts||[]).forEach(findAttachments);
+    // Also check for small inline images with body.data (base64 inline)
+    if(part.mimeType && part.mimeType.startsWith('image/') && part.body?.data && !part.body.attachmentId){
+      const b64 = part.body.data.replace(/-/g,'+').replace(/_/g,'/');
+      images.push({ type:'inline', data:`data:${part.mimeType};base64,${b64}` });
+      if(images.length >= 2) return;
+    }
+    (part.parts||[]).forEach(p => { if(images.length < 2) findImageParts(p); });
   }
-  findAttachments(msgData.payload);
-  // Return attachment descriptors — will be fetched async and converted to base64 data URIs
-  if(attachmentImages.length) return attachmentImages.map(a => ({ type:'attachment', ...a }));
+  findImageParts(msgData.payload);
 
-  // Fallback: extract http image URLs from HTML body
-  const images = [];
-  function walkHtml(part){
-    if(!part) return;
-    if(part.mimeType==='text/html' && part.body?.data){
-      const html = atob(part.body.data.replace(/-/g,'+').replace(/_/g,'/'));
-      const re = /<img[^>]+src=["']([^"']+)["'][^>]*/gi;
-      let m;
-      while((m=re.exec(html))!==null){
-        const src = m[1];
-        if(src.startsWith('http') && !src.includes('spacer') && !src.includes('pixel') &&
-           !src.includes('logo') && !src.includes('banner') && !src.includes('header')){
-          // Prefer images with product-like dimensions (check width/height attrs)
-          const wMatch = m[0].match(/width=["']?(\d+)/i);
-          const w = wMatch ? parseInt(wMatch[1]) : 999;
-          if(w >= 40) { images.push(src); if(images.length >= 2) break; }
+  // Fallback: scrape http image URLs from HTML body, prefer product-sized images
+  if(!images.length){
+    function walkHtml(part){
+      if(!part) return;
+      if(part.mimeType==='text/html' && part.body?.data){
+        const html = atob(part.body.data.replace(/-/g,'+').replace(/_/g,'/'));
+        const re = /<img[^>]+>/gi;
+        let m;
+        while((m=re.exec(html))!==null && images.length < 2){
+          const srcM = m[0].match(/src=["']([^"']+)["']/i);
+          if(!srcM) continue;
+          const src = srcM[1];
+          if(!src.startsWith('http')) continue;
+          const lower = src.toLowerCase();
+          if(lower.includes('spacer')||lower.includes('pixel')||lower.includes('logo')||
+             lower.includes('banner')||lower.includes('header')||lower.includes('footer')) continue;
+          // Check width attr — product images are usually >= 40px
+          const wM = m[0].match(/width=["']?(\d+)/i);
+          const w = wM ? parseInt(wM[1]) : 999;
+          if(w >= 40) images.push({ type:'url', src });
         }
       }
+      (part.parts||[]).forEach(walkHtml);
     }
-    (part.parts||[]).forEach(walkHtml);
+    walkHtml(msgData.payload);
   }
-  walkHtml(msgData.payload);
+
   return images;
 }
 
