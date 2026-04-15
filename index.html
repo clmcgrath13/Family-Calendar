@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.5</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.3</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.5</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3680,7 +3680,11 @@ function _pkgRelTime(ts){
 function pkgPurgeOld(){
   const h48 = 48*3600000;
   const before = packages.length;
-  packages = packages.filter(p => p.status!=='delivered' || (Date.now()-(p.deliveredAt||0)) < h48);
+  packages = packages.filter(p => {
+    if(p.status !== 'delivered') return true;
+    if(!p.deliveredAt) return true; // deliveredAt not set yet — keep it
+    return (Date.now() - p.deliveredAt) < h48;
+  });
   if(packages.length !== before) pkgScheduleSave();
 }
 
@@ -4028,7 +4032,8 @@ function _parseShippingEmail(msgData){
   const from    = headers.find(h=>h.name==='From')?.value || '';
   const date    = headers.find(h=>h.name==='Date')?.value || '';
   const body    = _extractEmailBody(msgData.payload);
-  const text    = subject + ' ' + body;
+  const htmlBody = _extractHtmlBody(msgData.payload); // HTML has order number more reliably
+  const text    = subject + ' ' + body + ' ' + htmlBody;
   const msgDate = date ? new Date(date).getTime() : Date.now();
   const tl      = text.toLowerCase();
   const fromLow = from.toLowerCase();
@@ -4109,8 +4114,8 @@ function _extractCity(text){
 }
 
 function _extractOrderNum(text){
-  const m = text.match(/\b(\d{3}-\d{7}-\d{7})\b/) // Amazon
-    || text.match(/order\s*(?:#|number|num|no\.?)\s*:?\s*([A-Z0-9][A-Z0-9\-]{5,})/i);
+  // Amazon order number format: 3 groups of digits separated by hyphens
+  const m = text.match(/\b(\d{3}-\d{7}-\d{7})\b/);
   return m ? m[1].trim() : '';
 }
 
@@ -4207,6 +4212,23 @@ function _extractImages(msgData){
   }
   walk(msgData.payload);
   return images;
+}
+
+function _extractHtmlBody(payload){
+  if(!payload) return '';
+  if(payload.mimeType==='text/html' && payload.body?.data)
+    return atob(payload.body.data.replace(/-/g,'+').replace(/_/g,'/'));
+  if(payload.parts){
+    for(const part of payload.parts){
+      if(part.mimeType==='text/html' && part.body?.data)
+        return atob(part.body.data.replace(/-/g,'+').replace(/_/g,'/'));
+    }
+    for(const part of payload.parts){
+      const sub = _extractHtmlBody(part);
+      if(sub) return sub;
+    }
+  }
+  return '';
 }
 
 function _extractEmailBody(payload){
