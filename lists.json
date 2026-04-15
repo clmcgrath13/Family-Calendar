@@ -19,9 +19,14 @@
       {
         "t": "cream cheese",
         "d": false
+      },
+      {
+        "t": "Ketchup",
+        "d": false
       }
     ],
     "_history": [
+      "Ketchup",
       "cream cheese",
       "Bread",
       "Seltzer",
