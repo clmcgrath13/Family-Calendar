@@ -1312,7 +1312,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.1</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v8.3</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1951,7 +1951,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.1</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v8.3</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3498,79 +3498,17 @@ function rPackages(){
         Connect Gmail
        </button>`;
 
-  const cards = visible.map(p => {
-    const steps = ['ordered','shipped','out','delivered'];
-    const stepLabels = ['Ordered','Shipped','Out for delivery','Delivered'];
-    const activeIdx = Math.max(0, steps.indexOf(p.status));
-    const fillPct = activeIdx===0?'0':activeIdx===1?'33%':activeIdx===2?'66%':'100%';
-
-    const progressBar = `
-      <div class="pkg-progress">
-        <div class="pkg-steps">
-          <div class="pkg-line-track"></div>
-          <div class="pkg-line-fill" style="width:${fillPct}"></div>
-          ${steps.map((s,i) => {
-            const cls = i < activeIdx ? 'done' : i === activeIdx ? 'active' : 'idle';
-            const inner = i < activeIdx
-              ? `<svg width="10" height="10" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`
-              : i === activeIdx ? `<div class="pkg-dot-inner"></div>` : '';
-            return `<div class="pkg-step">
-              <div class="pkg-dot ${cls}">${inner}</div>
-              <div class="pkg-step-lbl${i===activeIdx?' active':''}">${stepLabels[i]}</div>
-            </div>`;
-          }).join('')}
-        </div>
-      </div>`;
-
-    const imgSrc = (p.images||[])[0] || null;
-    const imageHtml = imgSrc
-      ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain"
-           onerror="this.parentElement.innerHTML='<div style=\\'font-size:48px\\'>📦</div>'">`
-      : `<div style="font-size:48px">📦</div>`;
-
-    const arrivalHtml = p.eta
-      ? `<div class="pkg-arrival">${p.eta}</div>`
-      : p.status==='delivered' && p.deliveredAt
-        ? `<div class="pkg-arrival">Delivered ${new Date(p.deliveredAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`
-        : '';
-
-    const infoLines = [
-      p.recipient && p.city ? `<div class="pkg-info-row"><strong>${p.recipient} – ${p.city}</strong></div>` : '',
-      p.orderNum ? `<div class="pkg-info-row">Order # ${p.orderNum}</div>` : '',
-      // Show full item list if available, otherwise fall back to label
-      (p.items?.length)
-        ? p.items.map(item =>
-            `<div class="pkg-info-row" style="line-height:1.5;white-space:normal;word-break:break-word;padding-left:10px;border-left:2px solid var(--border);margin:2px 0">• ${item}</div>`
-          ).join('')
-        : (p.label && p.label!=='Package'
-            ? `<div class="pkg-info-row" style="line-height:1.5;white-space:normal;word-break:break-word">${p.label}</div>`
-            : ''),
-      p.total ? `<div class="pkg-info-row" style="margin-top:4px">Total: <strong>$${p.total}</strong></div>` : '',
-    ].filter(Boolean).join('');
-
-    return `<div class="pkg-card">
-      ${progressBar}
-      <div class="pkg-card-body">
-        <div class="pkg-img-box">${imageHtml}</div>
-        ${arrivalHtml}
-        <div class="pkg-info">${infoLines}</div>
-      </div>
-    </div>`;
-  }).join('');
+  const cards = _pkgRenderCards(visible);
 
   const empty = visible.length===0
     ? `<div class="pkg-empty">
         <div style="font-size:48px">📭</div>
         <div>${gmailIsConnected()
-          ? 'No active packages.<br><span style="font-size:12px">Tap ↻ Sync Gmail to check for new emails.</span>'
-          : 'Connect Gmail to automatically import your packages,<br>or add one manually below.'
+          ? 'No active packages.<br><span style="font-size:12px">Tap ↻ to check for new emails.</span>'
+          : 'Connect Gmail to automatically import your packages.'
         }</div>
       </div>`
     : '';
-
-  const carrierPicker = PKG_CARRIERS.map(c =>
-    `<div class="pkg-carrier-opt${c===_pkgCarrier?' sel':''}" onclick="pkgSetCarrier(this,'${c}')">${c}</div>`
-  ).join('');
 
   const filterPills = [
     {key:'all',       label:'All'},
@@ -3578,7 +3516,7 @@ function rPackages(){
     {key:'shipped',   label:'Shipped'},
     {key:'out',       label:'Out for Delivery'},
     {key:'delivered', label:'Delivered'},
-  ].map(f => `<div class="pkg-filter-pill${_pkgFilter===f.key?' sel':''}" onclick="pkgSetFilter('${f.key}')">${f.label}</div>`)
+  ].map(f => `<div class="pkg-filter-pill${_pkgFilter===f.key?' sel':''}" data-filter="${f.key}" onclick="pkgSetFilter('${f.key}')">${f.label}</div>`)
    .join('');
 
   return `<div class="pkgwrap">
@@ -3615,18 +3553,90 @@ function rPackages(){
   </div>`;
 }
 
-function pkgSetFilter(f){ _pkgFilter=f; render(); }
+// Standalone card renderer — used by both rPackages and _pkgUpdateCards
+function _pkgRenderCards(pkgList){
+  return pkgList.map(p => {
+    const steps = ['ordered','shipped','out','delivered'];
+    const stepLabels = ['Ordered','Shipped','Out for delivery','Delivered'];
+    const activeIdx = Math.max(0, steps.indexOf(p.status));
+    const fillPct = ['0','33%','66%','100%'][activeIdx];
+
+    const progressBar = `
+      <div class="pkg-progress">
+        <div class="pkg-steps">
+          <div class="pkg-line-track"></div>
+          <div class="pkg-line-fill" style="width:${fillPct}"></div>
+          ${steps.map((s,i) => {
+            const cls = i < activeIdx ? 'done' : i === activeIdx ? 'active' : 'idle';
+            const inner = i < activeIdx
+              ? `<svg width="10" height="10" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>`
+              : i === activeIdx ? `<div class="pkg-dot-inner"></div>` : '';
+            return `<div class="pkg-step"><div class="pkg-dot ${cls}">${inner}</div><div class="pkg-step-lbl${i===activeIdx?' active':''}">${stepLabels[i]}</div></div>`;
+          }).join('')}
+        </div>
+      </div>`;
+
+    const imgSrc = (p.images||[])[0] || null;
+    const imageHtml = imgSrc
+      ? `<img src="${imgSrc}" style="width:100%;height:100%;object-fit:contain"
+           onerror="this.parentElement.innerHTML='<div style=\\'font-size:48px\\'>📦</div>'">`
+      : `<div style="font-size:48px">📦</div>`;
+
+    const arrivalHtml = p.eta
+      ? `<div class="pkg-arrival">${p.eta}</div>`
+      : p.status==='delivered' && p.deliveredAt
+        ? `<div class="pkg-arrival">Delivered ${new Date(p.deliveredAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`
+        : '';
+
+    const infoLines = [
+      p.recipient && p.city ? `<div class="pkg-info-row"><strong>${p.recipient} – ${p.city}</strong></div>` : '',
+      p.orderNum ? `<div class="pkg-info-row">Order # ${p.orderNum}</div>` : '',
+      (p.items?.length)
+        ? p.items.map(item => `<div class="pkg-info-row" style="line-height:1.5;white-space:normal;word-break:break-word;padding-left:10px;border-left:2px solid var(--border);margin:2px 0">• ${item}</div>`).join('')
+        : (p.label && p.label!=='Package' ? `<div class="pkg-info-row" style="line-height:1.5;white-space:normal;word-break:break-word">${p.label}</div>` : ''),
+      p.total ? `<div class="pkg-info-row" style="margin-top:4px">Total: <strong>$${p.total}</strong></div>` : '',
+    ].filter(Boolean).join('');
+
+    return `<div class="pkg-card">
+      ${progressBar}
+      <div class="pkg-card-body">
+        <div class="pkg-img-box">${imageHtml}</div>
+        ${arrivalHtml}
+        <div class="pkg-info">${infoLines}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function pkgSetFilter(f){ _pkgFilter=f; _pkgUpdateCards(); }
 
 function pkgSetSearch(q){
   _pkgSearch = q;
-  // Re-render cards without full render to keep search input focused
+  _pkgUpdateCards();
+}
+
+// Update just the cards area — never touches the header or search input
+function _pkgUpdateCards(){
   const scroll = document.getElementById('pkg-scroll');
   if(!scroll) return;
-  // Just re-render the whole packages view
-  const c = document.getElementById('content');
-  if(c){ c.innerHTML = rPackages(); setTimeout(attachPkgForm,30); }
-  // Restore focus to search input
-  setTimeout(()=>{ document.getElementById('pkg-search')?.focus(); }, 10);
+  const now = Date.now();
+  const h48 = 48 * 3600000;
+  const q   = (_pkgSearch||'').toLowerCase().trim();
+  const visible = packages.filter(p => {
+    if(p.status === 'delivered' && (now - (p.deliveredAt||0)) >= h48) return false;
+    if(_pkgFilter !== 'all' && p.status !== _pkgFilter) return false;
+    if(q && !((p.label||'').toLowerCase().includes(q) ||
+              (p.tracking||'').toLowerCase().includes(q) ||
+              (p.orderNum||'').toLowerCase().includes(q) ||
+              (p.carrier||'').toLowerCase().includes(q) ||
+              (p.items||[]).some(i=>i.toLowerCase().includes(q)))) return false;
+    return true;
+  }).sort((a,b)=>({out:0,shipped:1,ordered:2,delivered:3}[a.status]??9)-({out:0,shipped:1,ordered:2,delivered:3}[b.status]??9));
+  scroll.innerHTML = _pkgRenderCards(visible) || `<div class="pkg-empty"><div style="font-size:48px">📭</div><div>No packages match.</div></div>`;
+  // Also update filter pills active state without re-rendering
+  document.querySelectorAll('.pkg-filter-pill').forEach(el=>{
+    el.classList.toggle('sel', el.dataset.filter === _pkgFilter);
+  });
 }
 
 function pkgNav(dir){
@@ -3812,7 +3822,7 @@ async function gmailFullSync(){
     const searchResp = await _gmailFetch(
       `${GMAIL_API}/users/me/messages?maxResults=200&q=${encodeURIComponent(q)}`
     );
-    const messages = searchResp.messages || [];
+    const messages = (searchResp.messages || []).reverse(); // oldest-first so status upgrades in order
     if(!messages.length){
       _gmailProgress.step = 'No shipping emails found.';
       _updateSyncOverlay();
@@ -3883,7 +3893,7 @@ async function gmailIncrementalSync(){
     const searchResp = await _gmailFetch(
       `${GMAIL_API}/users/me/messages?maxResults=20&q=${encodeURIComponent(q)}`
     );
-    const messages = searchResp.messages || [];
+    const messages = (searchResp.messages || []).reverse();
 
     if(messages.length){
       const details = await Promise.all(
@@ -3934,7 +3944,10 @@ function _sleep(ms){ return new Promise(res => setTimeout(res, ms)); }
 function _mergePackages(newPackages){
   let changed = false;
   for(const np of newPackages){
+    // Deduplicate by orderNum first (consistent across all 5 Amazon status emails),
+    // then tracking number, then msgId as last resort
     const existing = packages.find(p =>
+      (p.orderNum && np.orderNum && p.orderNum === np.orderNum) ||
       (p.tracking && np.tracking && p.tracking === np.tracking) ||
       (p.msgId && p.msgId === np.msgId)
     );
@@ -3942,16 +3955,22 @@ function _mergePackages(newPackages){
       packages.push(np);
       changed = true;
     } else {
+      // Always upgrade to highest status
       if(_statusRank(np.status) > _statusRank(existing.status)){
         existing.status    = np.status;
         existing.updatedAt = Date.now();
         if(np.status==='delivered') existing.deliveredAt = Date.now();
         changed = true;
       }
-      if(np.images?.length && !existing.images?.length){ existing.images = np.images; changed = true; }
-      if(!existing.eta       && np.eta)       { existing.eta       = np.eta;       changed = true; }
-      if(!existing.recipient && np.recipient) { existing.recipient = np.recipient; changed = true; }
-      if(!existing.city      && np.city)      { existing.city      = np.city;      changed = true; }
+      // Fill in any missing fields from this email
+      if(np.images?.length  && !existing.images?.length)  { existing.images    = np.images;    changed = true; }
+      if(!existing.eta       && np.eta)                    { existing.eta       = np.eta;       changed = true; }
+      if(!existing.recipient && np.recipient)              { existing.recipient = np.recipient; changed = true; }
+      if(!existing.city      && np.city)                   { existing.city      = np.city;      changed = true; }
+      if(!existing.orderNum  && np.orderNum)               { existing.orderNum  = np.orderNum;  changed = true; }
+      if(!existing.tracking  && np.tracking)               { existing.tracking  = np.tracking;  changed = true; }
+      if(!existing.items?.length && np.items?.length)      { existing.items     = np.items;     changed = true; }
+      if(!existing.total     && np.total)                  { existing.total     = np.total;     changed = true; }
     }
   }
   if(changed){ pkgPurgeOld(); pkgScheduleSave(); }
@@ -4014,18 +4033,11 @@ function _parseShippingEmail(msgData){
   const tl      = text.toLowerCase();
   const fromLow = from.toLowerCase();
 
-  // Gate 1: known sender
+  // Gate: sender must be from known shipping address (already filtered by Gmail query, but double-check)
   const knownSender = SHIPPING_SENDERS.some(d => fromLow.includes(d));
   if(!knownSender) return null;
 
-  // Gate 2: shipping keywords
-  const hasKeyword = [
-    'has shipped','your order','shipped your','out for delivery','arriving today',
-    'was delivered','package delivered','tracking number','track your package',
-    'order confirmed','thank you for your order','shipment notification',
-    'on its way','in transit','estimated delivery','arriving tomorrow',
-  ].some(kw => tl.includes(kw));
-  if(!hasKeyword) return null;
+  // No subject keyword gate — every email from these senders IS a shipping email
 
   // Status — check delivered first (body often contains "shipped" too)
   let status = 'shipped';
@@ -4165,13 +4177,29 @@ function _extractImages(msgData){
           const src = srcM[1];
           if(!src.startsWith('http')) continue;
           const lower = src.toLowerCase();
+          // Skip tracking pixels, spacers, logos, banners
           if(lower.includes('spacer')||lower.includes('pixel')||lower.includes('logo')||
              lower.includes('banner')||lower.includes('header')||lower.includes('footer')||
              lower.includes('transparent')||lower.includes('blank')||lower.includes('icon')) continue;
+          // Skip delivery location photos — they're large JPEGs from Amazon's photo service
+          // Product images are on images-na.ssl-images-amazon.com or m.media-amazon.com
+          // Delivery photos are on a different CDN (prod-delivery-photos or similar)
+          if(lower.includes('delivery-photo')||lower.includes('delivery_photo')||
+             lower.includes('prod-delivery')||lower.includes('package-photo')) continue;
           const wM = tag.match(/width=["']?(\d+)/i);
+          const hM = tag.match(/height=["']?(\d+)/i);
           const w  = wM ? parseInt(wM[1]) : 100;
+          const h  = hM ? parseInt(hM[1]) : 100;
+          // Skip very large images (delivery photos) — product thumbnails are ~60-160px
+          if(w > 300 || h > 300) continue;
           if(w < 30) continue;
-          images.push(`https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`);
+          // Prefer images from Amazon's product image CDN
+          const isProductImg = lower.includes('images-na.ssl-images-amazon') ||
+                               lower.includes('m.media-amazon') ||
+                               lower.includes('images-amazon');
+          if(isProductImg || w >= 40){
+            images.push(`https://wsrv.nl/?url=${encodeURIComponent(src)}&w=200&h=200&fit=contain&output=webp`);
+          }
         }
       } catch(e){}
     }
@@ -4200,6 +4228,8 @@ function _extractEmailBody(payload){
 function _extractLabel(subject, from){
   let label = subject
     .replace(/re:\s*/i,'')
+    // Strip Amazon status prefixes like "Delivered: ", "Shipped: ", "Out for delivery: "
+    .replace(/^(delivered|shipped|out\s+for\s+delivery|ordered|delivery\s+update)\s*:\s*/i,'')
     .replace(/^your\s+(order|shipment|package|delivery)\s*(has\s+shipped|confirmed|is\s+on\s+its\s+way|notification)?:?\s*/i,'')
     .replace(/\s*(has\s+shipped|is\s+on\s+its\s+way|has\s+been\s+delivered|was\s+delivered|is\s+out\s+for\s+delivery).*$/i,'')
     .replace(/\s*shipment\s+notification:?\s*/i,'')
@@ -4207,6 +4237,8 @@ function _extractLabel(subject, from){
     .replace(/\s*order\s+(confirmation|confirmed|#?\s*[\w-]+):?\s*/i,'')
     .replace(/^(thanks\s+for\s+your\s+order[!,.]?\s*)/i,'')
     .replace(/^(your\s+amazon\.com\s+order\s+of\s+)/i,'')
+    // Strip leading quantity like "3 " or "3x "
+    .replace(/^\d+x?\s+/,'')
     .trim();
   if(!label || label.length < 4 || /^(your|package|shipment|order|delivery)$/i.test(label)){
     const m = from.match(/^([^<@\n]+)/);
