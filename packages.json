@@ -33,7 +33,11 @@
     "updatedAt": 1775981058000,
     "deliveredAt": null,
     "fromEmail": true,
-    "msgId": "19d80b85852a404b"
+    "msgId": "19d80b85852a404b",
+    "images": [
+      "https://m.media-amazon.com/images/I/61SEiT4WbWL._SS90_.jpg",
+      "https://m.media-amazon.com/images/I/71IZFWpZHwS._SS90_.jpg"
+    ]
   },
   {
     "id": 1776262613495.5098,
@@ -57,7 +61,12 @@
     "updatedAt": 1775856172000,
     "deliveredAt": null,
     "fromEmail": true,
-    "msgId": "19d7946bf6d17132"
+    "msgId": "19d7946bf6d17132",
+    "images": [
+      "https://m.media-amazon.com/images/I/71EbF7O-vEL.jpg",
+      "https://m.media-amazon.com/images/I/810HY93loaL.jpg"
+    ],
+    "eta": "Wednesday, Apr 22"
   },
   {
     "id": 1776262614397.1558,
@@ -157,7 +166,7 @@
   },
   {
     "id": 1776262618776.2473,
-    "label": "ð Minimum Days Pizza Lunch Fundraiser âApril 2nd - 3pm Toda",
+    "label": "Ã°ÂÂÂ Minimum Days Pizza Lunch Fundraiser Ã¢ÂÂApril 2nd - 3pm Toda",
     "carrier": "DHL",
     "tracking": "2047196034",
     "status": "shipped",
