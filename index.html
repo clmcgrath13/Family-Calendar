@@ -1334,7 +1334,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v6.9</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v7.0</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1973,7 +1973,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v6.9</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v7.0</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3512,62 +3512,63 @@ function rPackages(){
        </button>`;
 
   const cards = visible.map(p => {
-    const st = PKG_STATUSES[p.status] || PKG_STATUSES.ordered;
     const trackingUrl = pkgTrackingUrl(p.carrier, p.tracking);
 
-    // Banner text mirrors Amazon email style
-    const bannerText = {
-      ordered:   '📦 Order Confirmed',
-      shipped:   '🚚 Your items have shipped',
-      out:       '🛵 Out for delivery today',
-      delivered: '✅ Your package was delivered',
-    }[p.status] || st.label;
+    // Status progress bar — 4 steps, teal active dot + line
+    const steps = ['ordered','shipped','out','delivered'];
+    const stepLabels = ['Ordered','Shipped','Out for delivery','Delivered'];
+    const activeIdx = steps.indexOf(p.status);
+    const progressBar = `
+      <div style="padding:18px 20px 12px;border-bottom:1px solid var(--border)">
+        <div style="position:relative;display:flex;align-items:center;justify-content:space-between">
+          <!-- connecting line behind dots -->
+          <div style="position:absolute;top:10px;left:10px;right:10px;height:2px;background:var(--border);z-index:0"></div>
+          <!-- active line -->
+          <div style="position:absolute;top:10px;left:10px;height:2px;background:#008577;z-index:1;width:${activeIdx===0?'0':activeIdx===1?'33%':activeIdx===2?'66%':'100%'}"></div>
+          ${steps.map((s,i) => `
+            <div style="position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1">
+              <div style="width:20px;height:20px;border-radius:50%;border:2px solid ${i<=activeIdx?'#008577':'var(--border)'};
+                background:${i<activeIdx?'#008577':i===activeIdx?'#fff':'var(--sidebar-bg)'};
+                display:flex;align-items:center;justify-content:center">
+                ${i<activeIdx?'<svg width="10" height="10" viewBox="0 0 8 8"><path d="M1 4l2 2 4-4" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>':
+                  i===activeIdx?'<div style="width:8px;height:8px;border-radius:50%;background:#008577"></div>':''}
+              </div>
+              <div style="font-size:10px;font-weight:${i===activeIdx?'700':'400'};color:${i===activeIdx?'var(--text)':'var(--muted)'};white-space:nowrap">${stepLabels[i]}</div>
+            </div>`).join('')}
+        </div>
+      </div>`;
 
-    // Arrival line
+    // Item image — centered
+    const firstImg = (p.images||[])[0];
+    const imageHtml = firstImg
+      ? `<img src="${firstImg}" style="width:110px;height:110px;object-fit:contain;border-radius:8px;border:1px solid var(--border)" onerror="this.style.display='none'">`
+      : `<div style="width:110px;height:110px;border-radius:8px;border:1px solid var(--border);background:var(--sidebar-bg);display:flex;align-items:center;justify-content:center;font-size:40px">📦</div>`;
+
+    // Arrival
     const arrivalHtml = p.eta
-      ? `<div class="pkg-arrival">Your package will arrive by<strong>${p.eta}</strong></div>`
+      ? `<div style="font-size:17px;font-weight:700;color:var(--text)">${p.eta}</div>`
       : p.status==='delivered' && p.deliveredAt
-        ? `<div class="pkg-arrival">Delivered<strong>${new Date(p.deliveredAt).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</strong></div>`
+        ? `<div style="font-size:17px;font-weight:700;color:var(--text)">Delivered ${new Date(p.deliveredAt).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`
         : '';
 
-    // Ship to
-    const shipToHtml = p.recipient || p.city
-      ? `<div class="pkg-shipto">Ship to<strong>${p.recipient||''}${p.city?'<br>'+p.city:''}</strong></div>`
-      : '';
-
-    // Order number
-    const orderHtml = p.orderNum
-      ? `<div class="pkg-ordernum">Order # <span>${p.orderNum}</span></div>`
-      : '';
-
-    // Item images / placeholder
-    const images = (p.images||[]).slice(0,4).map(src =>
-      `<img class="pkg-img-thumb" src="${src}" onerror="this.style.display='none'">`
-    ).join('');
-    const imgPlaceholder = !images ? `<div class="pkg-img-placeholder">${st.emoji}</div>` : '';
-    const imagesHtml = `<div class="pkg-images">${images||imgPlaceholder}</div>`;
-
-    // Total
-    const totalHtml = p.total
-      ? `<div class="pkg-total"><span>Shipment total</span><strong>$${p.total}</strong></div>`
-      : '';
+    // Ship to + order
+    const infoLines = [
+      p.recipient && p.city ? `<div style="font-size:13px;font-weight:700;color:var(--text)">${p.recipient} – ${p.city}</div>` : '',
+      p.orderNum ? `<div style="font-size:12px;color:var(--muted)">Order # ${p.orderNum}</div>` : '',
+      p.label && p.label!=='Package' ? `<div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px">${p.label}</div>` : '',
+      p.total ? `<div style="font-size:12px;color:var(--muted)">Total: <strong style="color:var(--text)">$${p.total}</strong></div>` : '',
+    ].filter(Boolean).join('');
 
     return `<div class="pkg-card">
-      <div class="pkg-card-banner status-${p.status}">${bannerText}</div>
-      <div class="pkg-card-body">
-        <div class="pkg-greeting">Hello ${members[0]?.name||''},</div>
-        <div class="pkg-subhead">We wanted to let you know that we have ${p.status==='ordered'?'received your order':p.status==='shipped'?'shipped your items':p.status==='out'?'sent your package out for delivery':'delivered your package'}.</div>
+      ${progressBar}
+      <div class="pkg-card-body" style="align-items:center;text-align:center;gap:12px">
+        ${imageHtml}
         ${arrivalHtml}
-        ${shipToHtml}
-        ${orderHtml}
-        ${imagesHtml}
-        ${p.label && p.label!=='Package' ? `<div style="font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.label}</div>` : ''}
-        ${totalHtml}
+        <div style="text-align:left;width:100%">${infoLines}</div>
       </div>
       <div class="pkg-card-footer">
         ${trackingUrl ? `<button class="pkg-btn primary" onclick="window.open('${trackingUrl}','_blank')">Track package</button>` : ''}
-        ${p.status!=='delivered' ? `<button class="pkg-btn" onclick="pkgAdvance(${p.id})">Advance status</button>` : ''}
-        <button class="pkg-btn danger" onclick="pkgDelete(${p.id})">Remove</button>
+        ${p.orderNum ? `<button class="pkg-btn" onclick="window.open('https://www.amazon.com/gp/your-account/order-details?orderID=${p.orderNum}','_blank')">View order</button>` : ''}
       </div>
     </div>`;
   }).join('');
