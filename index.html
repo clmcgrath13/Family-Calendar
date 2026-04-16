@@ -112,10 +112,10 @@ body {
 /* Seasonal background fills the entire topbar */
 .topbar-season-bg {
   position: absolute; inset: 0; z-index: 0;
-  background-size: 100% 100%;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  opacity: 0.35;
+  opacity: 0.45;
   pointer-events: none;
 }
 /* All topbar children sit above the bg */
@@ -1336,7 +1336,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v9.4</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v9.5</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1957,8 +1957,8 @@ function getSeason(mo, day){
 }
 
 const SEASON_BG = {
-  Spring: 'linear-gradient(135deg, #fce7f3 0%, #fdf2f8 20%, #d1fae5 50%, #fce7f3 80%, #ede9fe 100%)',
-  Summer: 'linear-gradient(180deg, #bae6fd 0%, #7dd3fc 40%, #fde68a 60%, #fbbf24 80%, #f59e0b 100%)',
+  Spring: 'url("https://raw.githubusercontent.com/clmcgrath13/Family-Calendar/main/spring1.jpg")',
+  Summer: 'url("https://raw.githubusercontent.com/clmcgrath13/Family-Calendar/main/summer.jpg")',
   Autumn: 'linear-gradient(135deg, #fef3c7 0%, #fed7aa 25%, #fca5a5 50%, #fb923c 75%, #dc2626 100%)',
   Winter: 'linear-gradient(180deg, #dbeafe 0%, #bfdbfe 30%, #e0f2fe 60%, #f0f9ff 80%, #ffffff 100%)',
 };
@@ -1983,7 +1983,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v9.4</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v9.5</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
