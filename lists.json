@@ -58,7 +58,8 @@
       },
       {
         "t": "Pasta",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "String Cheese",
@@ -67,14 +68,9 @@
       {
         "t": "Sweet potato",
         "d": false
-      },
-      {
-        "t": "Hi ava",
-        "d": false
       }
     ],
     "_history": [
-      "Hi ava",
       "Sweet potato",
       "Burritos",
       "Hand soap",
