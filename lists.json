@@ -57,15 +57,29 @@
         "d": false
       },
       {
+        "t": "Pasta",
+        "d": true,
+        "doneDate": "2026-04-16"
+      },
+      {
         "t": "String Cheese",
         "d": false
       },
       {
         "t": "Sweet potato",
         "d": false
+      },
+      {
+        "t": "Taco seasoning",
+        "d": false
+      },
+      {
+        "t": "Strawberries",
+        "d": false
       }
     ],
     "_history": [
+      "Taco seasoning",
       "Sweet potato",
       "Burritos",
       "Hand soap",
