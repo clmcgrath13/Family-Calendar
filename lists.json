@@ -47,9 +47,14 @@
       {
         "t": "Eggs",
         "d": false
+      },
+      {
+        "t": "Burritos",
+        "d": false
       }
     ],
     "_history": [
+      "Burritos",
       "Hand soap",
       "Water bottles",
       "Ketchup",
