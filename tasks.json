@@ -52,8 +52,10 @@
   {
     "id": 1776210385833,
     "title": "Call bug and lawn guys about May 9th party",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-16"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
