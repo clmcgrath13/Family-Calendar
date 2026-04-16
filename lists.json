@@ -68,9 +68,14 @@
       {
         "t": "Sweet potato",
         "d": false
+      },
+      {
+        "t": "Taco seasoning",
+        "d": false
       }
     ],
     "_history": [
+      "Taco seasoning",
       "Sweet potato",
       "Burritos",
       "Hand soap",
