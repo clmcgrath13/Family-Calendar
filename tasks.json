@@ -84,8 +84,10 @@
   {
     "id": 1776338972212,
     "title": "Take out Recycling (cardboard)",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-16"
+    ],
     "date": "2026-04-16",
     "recur": "weekly",
     "recurN": 2,
