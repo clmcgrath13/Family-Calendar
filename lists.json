@@ -43,6 +43,10 @@
       {
         "t": "Milk",
         "d": false
+      },
+      {
+        "t": "Eggs",
+        "d": false
       }
     ],
     "_history": [
