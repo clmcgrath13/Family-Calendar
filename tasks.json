@@ -477,19 +477,6 @@
     ]
   },
   {
-    "id": 1775826105651,
-    "title": "Label Ava's Haribrushes",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775826152755,
     "title": "Declutter Collin's room",
     "done": true,
@@ -503,6 +490,19 @@
     ],
     "doneOn": [
       "2026-04-11"
+    ]
+  },
+  {
+    "id": 1775826105651,
+    "title": "Label Ava's Haribrushes",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
     ]
   },
   {
