@@ -41,8 +41,8 @@
       },
       {
         "t": "Water bottles",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Hand soap",
