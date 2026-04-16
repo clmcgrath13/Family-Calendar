@@ -63,9 +63,14 @@
       {
         "t": "String Cheese",
         "d": false
+      },
+      {
+        "t": "Sweet potato",
+        "d": false
       }
     ],
     "_history": [
+      "Sweet potato",
       "Burritos",
       "Hand soap",
       "Water bottles",
