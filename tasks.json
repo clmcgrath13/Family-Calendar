@@ -699,6 +699,22 @@
     ]
   },
   {
+    "id": 1776338972212,
+    "title": "Take out Recycling (cardboard)",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-16",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Mom",
+      "Dad"
+    ]
+  },
+  {
     "id": 1775942849014,
     "title": "Put stuff back in the master bath",
     "done": false,
@@ -965,22 +981,6 @@
     "timeOfDay": "",
     "stayUntilDone": false,
     "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1776338972212,
-    "title": "Take out Recycling (cardboard)",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-04-16",
-    "recur": "weekly",
-    "recurN": 2,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Mom",
       "Dad"
     ]
   }
