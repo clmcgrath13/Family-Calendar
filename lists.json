@@ -80,7 +80,8 @@
       },
       {
         "t": "Taco seasoning",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Strawberries",
