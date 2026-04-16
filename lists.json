@@ -83,7 +83,8 @@
       },
       {
         "t": "Strawberries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       }
     ],
     "_history": [
