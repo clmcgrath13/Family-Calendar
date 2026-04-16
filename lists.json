@@ -67,9 +67,14 @@
       {
         "t": "Sweet potato",
         "d": false
+      },
+      {
+        "t": "Hi ava",
+        "d": false
       }
     ],
     "_history": [
+      "Hi ava",
       "Sweet potato",
       "Burritos",
       "Hand soap",
