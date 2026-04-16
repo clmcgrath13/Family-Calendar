@@ -65,7 +65,8 @@
       },
       {
         "t": "Steak",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "String Cheese",
