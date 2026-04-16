@@ -136,19 +136,6 @@
     ]
   },
   {
-    "id": 1775755978425,
-    "title": "Clean Dishwasher Drain",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775668858555,
     "title": "Test the generator",
     "done": true,
@@ -275,6 +262,19 @@
     ],
     "doneOn": [
       "2026-04-13"
+    ]
+  },
+  {
+    "id": 1775755978425,
+    "title": "Clean Dishwasher Drain",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
     ]
   },
   {
