@@ -87,9 +87,14 @@
         "t": "Strawberries",
         "d": true,
         "doneDate": "2026-04-16"
+      },
+      {
+        "t": "Limes",
+        "d": false
       }
     ],
     "_history": [
+      "Limes",
       "Taco seasoning",
       "Sweet potato",
       "Burritos",
