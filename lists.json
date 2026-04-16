@@ -39,6 +39,10 @@
       {
         "t": "Hand soap",
         "d": false
+      },
+      {
+        "t": "Milk",
+        "d": false
       }
     ],
     "_history": [
