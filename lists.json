@@ -55,7 +55,8 @@
       },
       {
         "t": "Eggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Burritos",
