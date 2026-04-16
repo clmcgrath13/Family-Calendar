@@ -75,7 +75,8 @@
       },
       {
         "t": "Sweet potato",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Taco seasoning",
