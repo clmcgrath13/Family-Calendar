@@ -967,5 +967,21 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1776338972212,
+    "title": "Take out Recycling (cardboard)",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-04-16",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Mom",
+      "Dad"
+    ]
   }
 ]
