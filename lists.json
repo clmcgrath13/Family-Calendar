@@ -6,35 +6,43 @@
     "items": [
       {
         "t": "Pasta",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Bread",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "cream cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Ketchup",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Oranges",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Yogurt",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-16"
       },
       {
         "t": "Water bottles",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "Hand soap",
