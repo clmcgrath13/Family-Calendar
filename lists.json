@@ -5,88 +5,8 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Pasta",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Seltzer",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Bread",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "cream cheese",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Ketchup",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Oranges",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Yogurt",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Water bottles",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
         "t": "Hand soap",
         "d": false
-      },
-      {
-        "t": "Milk",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Eggs",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Burritos",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "String Cheese",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Sweet potato",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Taco seasoning",
-        "d": true,
-        "doneDate": "2026-04-16"
-      },
-      {
-        "t": "Strawberries",
-        "d": true,
-        "doneDate": "2026-04-16"
       },
       {
         "t": "Limes",
