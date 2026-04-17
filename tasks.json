@@ -300,6 +300,23 @@
     ]
   },
   {
+    "id": 1776340259012,
+    "title": "Clean car",
+    "done": true,
+    "doneOn": [
+      "2026-04-17"
+    ],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
     "done": false,
@@ -963,23 +980,6 @@
     "title": "Empty ash from solo stove",
     "done": false,
     "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1776340259012,
-    "title": "Clean car",
-    "done": true,
-    "doneOn": [
-      "2026-04-17"
-    ],
     "date": "",
     "recur": "",
     "recurN": 1,
