@@ -1019,5 +1019,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1776446684275,
+    "title": "Change Hot Tub Filter",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-05-15",
+    "recur": "weekly",
+    "recurN": 6,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
