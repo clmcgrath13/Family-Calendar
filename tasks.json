@@ -130,19 +130,6 @@
     ]
   },
   {
-    "id": 1775756024054,
-    "title": "Clean out freezer ice bin",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775688762493,
     "title": "Rotate couch cushions",
     "done": false,
@@ -295,6 +282,19 @@
     ],
     "doneOn": [
       "2026-04-13"
+    ]
+  },
+  {
+    "id": 1775756024054,
+    "title": "Clean out freezer ice bin",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
     ]
   },
   {
