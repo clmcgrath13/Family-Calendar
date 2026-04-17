@@ -130,19 +130,6 @@
     ]
   },
   {
-    "id": 1775668825266,
-    "title": "Sharpen Knives",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
     "done": false,
@@ -326,6 +313,19 @@
   {
     "id": 1775826105651,
     "title": "Label Ava's Haribrushes",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1775668825266,
+    "title": "Sharpen Knives",
     "done": false,
     "date": "",
     "recur": "",
