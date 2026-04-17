@@ -901,6 +901,21 @@
     ]
   },
   {
+    "id": 1776454172947,
+    "title": "Clean up the driveway",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
+  },
+  {
     "id": 1776127786743,
     "title": "Put your clothes away",
     "done": false,
@@ -1033,21 +1048,6 @@
     "stayUntilDone": true,
     "who": [
       "Dad"
-    ]
-  },
-  {
-    "id": 1776454172947,
-    "title": "Clean up the driveway",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
     ]
   }
 ]
