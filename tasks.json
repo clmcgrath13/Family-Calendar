@@ -313,6 +313,19 @@
     ]
   },
   {
+    "id": 1775755978425,
+    "title": "Clean Dishwasher Drain",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775668825266,
     "title": "Sharpen Knives",
     "done": false,
@@ -328,19 +341,6 @@
   {
     "id": 1775826105651,
     "title": "Label Ava's Haribrushes",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1775755978425,
-    "title": "Clean Dishwasher Drain",
     "done": false,
     "date": "",
     "recur": "",
