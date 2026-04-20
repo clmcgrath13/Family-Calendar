@@ -937,8 +937,10 @@
   {
     "id": 1776127786743,
     "title": "Put your clothes away",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-20"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
