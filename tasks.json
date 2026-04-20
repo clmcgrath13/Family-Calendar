@@ -903,8 +903,10 @@
   {
     "id": 1776128557614,
     "title": "Clean your room",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-20"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
