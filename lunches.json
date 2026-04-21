@@ -31,6 +31,10 @@
     "2026-04-17": {
       "name": "Lentil Soup",
       "type": "preset"
+    },
+    "2026-04-20": {
+      "name": "Chicken parm",
+      "type": "custom"
     }
   },
   "Ava": {
