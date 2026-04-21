@@ -1005,8 +1005,10 @@
   {
     "id": 1776128569327,
     "title": "Clean your room",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-21"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
