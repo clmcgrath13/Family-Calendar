@@ -139,12 +139,46 @@ body {
 .tb-title { font-size: 26px; font-weight: 400; line-height: 1; font-family: 'DM Serif Display', serif; letter-spacing: -0.01em; }
 .tb-space { flex: 1; }
 
-/* On-screen keyboard — ensure inputs trigger virtual keyboard on touch */
-input, textarea, [contenteditable] {
-  touch-action: manipulation;
-  -webkit-user-select: text;
-  user-select: text;
+/* ── IN-APP TOUCH KEYBOARD ─────────────────────────────────── */
+/* Only shown on desktop/kiosk (>600px) — mobile has native keyboard */
+#touch-keyboard {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 19000;
+  background: #1c1c1e;
+  padding: 10px 8px 16px;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+  user-select: none;
+  -webkit-user-select: none;
 }
+#touch-keyboard.visible { display: block; }
+.tkb-row {
+  display: flex; justify-content: center;
+  gap: 5px; margin-bottom: 5px;
+}
+.tkb-key {
+  height: 46px; min-width: 46px; flex: 1; max-width: 72px;
+  background: #3a3a3c; color: #fff;
+  border: none; border-radius: 8px;
+  font-size: 17px; font-weight: 500;
+  font-family: var(--font);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: background 0.08s;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+.tkb-key:active { background: #636366; }
+.tkb-key.tkb-wide { flex: 2; max-width: 140px; font-size: 14px; }
+.tkb-key.tkb-space { flex: 5; max-width: 400px; }
+.tkb-key.tkb-action {
+  background: #0ea5e9; font-size: 14px; font-weight: 600;
+}
+.tkb-key.tkb-action:active { background: #0284c7; }
+.tkb-key.tkb-shift, .tkb-key.tkb-num {
+  background: #2c2c2e; font-size: 13px;
+}
+.tkb-key.tkb-active { background: #ffffff; color: #000; }
 .vdrop-wrap {
   position: relative; flex-shrink: 0;
 }
@@ -1344,7 +1378,7 @@ input, textarea, [contenteditable] {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v10.6</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v10.9</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1408,14 +1442,6 @@ input, textarea, [contenteditable] {
           <span id="vdrop-label">3 Day</span>
           <svg width="10" height="6" viewBox="0 0 10 6" fill="none"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-        <div class="vdrop-menu" id="vdrop-menu">
-          <div class="vdrop-item" onclick="pickView('month')">Month</div>
-          <div class="vdrop-item" onclick="pickView('week')">Week</div>
-          <div class="vdrop-item" onclick="pickView('workweek')">5 Day</div>
-          <div class="vdrop-item active" onclick="pickView('threeday')">3 Day</div>
-          <div class="vdrop-item" onclick="pickView('day')">Day</div>
-          <div class="vdrop-item" onclick="pickView('agenda')">Agenda</div>
-        </div>
       </div>
       <button class="arr-btn" id="nav-prev" onclick="navPrev()">
         <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M8 10L4 6l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -1432,7 +1458,23 @@ input, textarea, [contenteditable] {
 </div>
 
 <button class="fab" id="fab" onclick="openAdd()">+</button>
-<!-- Dim overlay — shown after 5 min inactivity on desktop only -->
+<!-- In-app touch keyboard (kiosk/desktop only) -->
+<div id="touch-keyboard">
+  <div class="tkb-row" id="tkb-row1"></div>
+  <div class="tkb-row" id="tkb-row2"></div>
+  <div class="tkb-row" id="tkb-row3"></div>
+  <div class="tkb-row" id="tkb-row4"></div>
+</div>
+<!-- View picker dropdown -->
+<div class="vdrop-menu" id="vdrop-menu">
+  <div class="vdrop-item" onclick="pickView('month')">Month</div>
+  <div class="vdrop-item" onclick="pickView('week')">Week</div>
+  <div class="vdrop-item" onclick="pickView('workweek')">5 Day</div>
+  <div class="vdrop-item active" onclick="pickView('threeday')">3 Day</div>
+  <div class="vdrop-item" onclick="pickView('day')">Day</div>
+  <div class="vdrop-item" onclick="pickView('agenda')">Agenda</div>
+</div>
+<!-- Dim overlay -->
 <div id="dim-overlay" style="display:none;position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.5);cursor:pointer" onclick="_dimWake()"></div>
 
 <div class="overlay" id="ov" onclick="ovClick(event)">
@@ -1910,11 +1952,20 @@ function toggleViewDrop(){
   const open = menu.classList.toggle('open');
   btn.classList.toggle('open', open);
   if(open){
-    // Position the menu below the button using fixed coords
     const r = btn.getBoundingClientRect();
-    menu.style.top  = (r.bottom + 6) + 'px';
-    menu.style.left = r.left + 'px';
+    menu.style.top      = (r.bottom + 6) + 'px';
+    menu.style.left     = r.left + 'px';
     menu.style.minWidth = r.width + 'px';
+    // Close on next outside click
+    setTimeout(()=>{
+      document.addEventListener('click', function _vClose(e){
+        if(!menu.contains(e.target) && e.target !== btn){
+          menu.classList.remove('open');
+          btn.classList.remove('open');
+        }
+        document.removeEventListener('click', _vClose);
+      });
+    }, 0);
   }
 }
 
@@ -2000,7 +2051,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v10.6</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v10.9</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -2705,10 +2756,18 @@ function _tdHandleStart(e){
   const touch = e.touches ? e.touches[0] : e;
   const card  = e.currentTarget;
   clearTimeout(_td.longTimer);
+  clearTimeout(_td.hintTimer);
+  // After 1s give a visual hint the drag is about to activate
+  _td.hintTimer = setTimeout(()=>{
+    card.style.transform = 'scale(0.97)';
+    card.style.boxShadow = '0 0 0 2px var(--today-ring)';
+  }, 1000);
   _td.longTimer = setTimeout(()=>{
+    card.style.transform = '';
+    card.style.boxShadow = '';
     e.preventDefault && e.preventDefault();
     _tdBegin(card, touch.clientX, touch.clientY);
-  }, 380);
+  }, 2000);
 }
 
 function _tdBegin(card, cx, cy){
@@ -2796,6 +2855,8 @@ function _tdUpdateGap(cy){
 
 function _tdEnd(e){
   clearTimeout(_td.longTimer);
+  clearTimeout(_td.hintTimer);
+  if(_td.sourceCard){ _td.sourceCard.style.transform=''; _td.sourceCard.style.boxShadow=''; }
   if(!_td.active) return;
 
   const sourceId = _td.sourceId;
@@ -2835,6 +2896,8 @@ function _tdEnd(e){
 
 function _tdCancel(){
   clearTimeout(_td.longTimer);
+  clearTimeout(_td.hintTimer);
+  if(_td.sourceCard){ _td.sourceCard.style.transform=''; _td.sourceCard.style.boxShadow=''; }
   _tdCleanup(true);
 }
 
@@ -5522,17 +5585,48 @@ function attachTypeahead(inputId){
 
 function addListItem(){
   const currentId = lists[_focusedList]?.id;
-  document.getElementById('mttl').textContent='Add to List';
-  document.getElementById('mbd').innerHTML=`
-    <div class="fld"><label class="flbl">List</label><select class="fin" id="lsel">${lists.map(l=>`<option value="${l.id}"${l.id===currentId?' selected':''}>${LIST_ICON_LABELS[l.icon]||'List'} — ${l.name}</option>`).join('')}</select></div>
-    <div class="fld"><label class="flbl">Item</label><input class="fin" id="litem" type="text" placeholder="Add item…" autocomplete="off"></div>`;
+  let selectedId = currentId;
+
+  const listPills = lists.map(l =>
+    `<button type="button" id="lpill-${l.id}"
+      onclick="document.querySelectorAll('.lpill').forEach(p=>p.classList.remove('sel')); this.classList.add('sel'); window._selectedListId=${l.id};"
+      class="lpill${l.id===currentId?' sel':''}"
+      style="display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:20px;border:2px solid var(--border);background:var(--bg);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.12s;color:var(--text)">
+      ${listIconSvg(l.icon)} ${l.name}
+    </button>`
+  ).join('');
+
+  document.getElementById('mttl').textContent = 'Add Item';
+  document.getElementById('mbd').innerHTML = `
+    <div class="fld" style="margin-bottom:14px">
+      <label class="flbl">Add to list</label>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${listPills}</div>
+    </div>
+    <div class="fld">
+      <label class="flbl">Item</label>
+      <input class="fin" id="litem" type="text" placeholder="Add item…" autocomplete="off"
+        style="font-size:16px;padding:12px 14px">
+    </div>`;
+
+  window._selectedListId = currentId;
+
+  // Style selected pill
+  const styleEl = document.createElement('style');
+  styleEl.textContent = '.lpill.sel { background:var(--today-ring) !important; color:#fff !important; border-color:var(--today-ring) !important; }';
+  document.head.appendChild(styleEl);
+
   attachTypeahead('litem');
-  window._save=()=>{
-    const lid=parseInt(document.getElementById('lsel').value);
-    const t=document.getElementById('litem').value.trim();
+
+  window._save = () => {
+    const lid = window._selectedListId;
+    const t = document.getElementById('litem')?.value.trim();
     if(!t) return;
-    const l=lists.find(l=>l.id===lid);
-    if(l) l.items.push({t,d:false});
+    const l = lists.find(l => l.id === lid);
+    if(l){
+      l.items.push({t, d:false});
+      if(!l._history) l._history = [];
+      if(!l._history.some(h=>h.toLowerCase()===t.toLowerCase())) l._history.unshift(t);
+    }
     closeM(); render(); listsScheduleSave();
   };
   openM();
@@ -6810,7 +6904,162 @@ async function pollForRemoteChanges(){
 
   _pollTimer = setTimeout(pollForRemoteChanges, 60000);
 }
-// ─── DIM OVERLAY (desktop/kiosk only) ────────────────────────────────────────
+// ─── IN-APP TOUCH KEYBOARD ───────────────────────────────────────────────────
+(function(){
+  if(window.innerWidth <= 600) return; // mobile has native keyboard
+
+  const KB_ALPHA = [
+    ['q','w','e','r','t','y','u','i','o','p'],
+    ['a','s','d','f','g','h','j','k','l'],
+    ['SHIFT','z','x','c','v','b','n','m','⌫'],
+    ['123','SPACE','DONE']
+  ];
+  const KB_NUM = [
+    ['1','2','3','4','5','6','7','8','9','0'],
+    ['-','/','.',',','?','!','\'','"','(',')'  ],
+    ['#+=','%','@','&','*','_',';',':','⌫'],
+    ['ABC','SPACE','DONE']
+  ];
+  const KB_SYM = [
+    ['[',']','{','}','#','%','^','*','+','='],
+    ['_','\\','|','~','<','>','$','€','£','·'],
+    ['123','.',',','?','!','\'','⌫'],
+    ['ABC','SPACE','DONE']
+  ];
+
+  let _shifted = false;
+  let _layer = 'alpha'; // alpha | num | sym
+  let _target = null;
+
+  function _build(){
+    const rows = _layer==='alpha' ? KB_ALPHA : _layer==='num' ? KB_NUM : KB_SYM;
+    ['tkb-row1','tkb-row2','tkb-row3','tkb-row4'].forEach((id, ri) => {
+      const row = document.getElementById(id);
+      if(!row) return;
+      row.innerHTML = '';
+      (rows[ri]||[]).forEach(k => {
+        const btn = document.createElement('button');
+        btn.className = 'tkb-key';
+        btn.type = 'button';
+        const disp = _shifted && k.length===1 && /[a-z]/.test(k) ? k.toUpperCase() : k;
+        btn.textContent = disp==='SPACE' ? ' ' : disp==='DONE' ? 'Done' : disp==='SHIFT' ? (_shifted?'⇧':'⇧') : disp;
+        if(k==='SPACE') btn.classList.add('tkb-space');
+        if(k==='DONE')  btn.classList.add('tkb-action');
+        if(k==='SHIFT') { btn.classList.add('tkb-shift'); if(_shifted) btn.classList.add('tkb-active'); }
+        if(k==='123'||k==='ABC'||k==='#+=') btn.classList.add('tkb-num');
+        if(k==='⌫') btn.classList.add('tkb-wide');
+        btn.addEventListener('touchstart', e=>{ e.preventDefault(); e.stopPropagation(); _press(k, btn); }, {passive:false});
+        btn.addEventListener('mousedown',  e=>{ e.preventDefault(); e.stopPropagation(); _press(k, btn); });
+        row.appendChild(btn);
+      });
+    });
+  }
+
+  function _press(k, btn){
+    if(!_target) return;
+    if(k==='DONE'){
+      _hide();
+      return;
+    }
+    if(k==='SHIFT'){
+      _shifted = !_shifted;
+      _build();
+      return;
+    }
+    if(k==='123'){ _layer='num'; _shifted=false; _build(); return; }
+    if(k==='ABC'){ _layer='alpha'; _shifted=false; _build(); return; }
+    if(k==='#+=') { _layer='sym'; _shifted=false; _build(); return; }
+    if(k==='⌫'){
+      const v = _target.value;
+      const s = _target.selectionStart;
+      const e = _target.selectionEnd;
+      if(s!==e){
+        _target.value = v.slice(0,s)+v.slice(e);
+        _target.setSelectionRange(s,s);
+      } else if(s>0){
+        _target.value = v.slice(0,s-1)+v.slice(s);
+        _target.setSelectionRange(s-1,s-1);
+      }
+    } else {
+      const ch = k==='SPACE' ? ' ' : (_shifted && /^[a-z]$/.test(k)) ? k.toUpperCase() : k;
+      const s = _target.selectionStart||0;
+      const e = _target.selectionEnd||0;
+      _target.value = _target.value.slice(0,s)+ch+_target.value.slice(e);
+      _target.setSelectionRange(s+1,s+1);
+      if(_shifted && /^[a-z]$/.test(k)){ _shifted=false; _build(); }
+    }
+    // Fire input event so app logic picks up the change
+    _target.dispatchEvent(new Event('input',{bubbles:true}));
+    _target.focus();
+  }
+
+  function _show(el){
+    if(window.innerWidth<=600) return;
+    _target = el;
+    _layer = 'alpha'; _shifted = false;
+    _build();
+    document.getElementById('touch-keyboard').classList.add('visible');
+    // Scroll target into view above keyboard
+    setTimeout(()=>{
+      const kb = document.getElementById('touch-keyboard');
+      const kbH = kb ? kb.offsetHeight : 300;
+      const r = el.getBoundingClientRect();
+      if(r.bottom > window.innerHeight - kbH - 10){
+        el.scrollIntoView({behavior:'smooth', block:'center'});
+      }
+    }, 100);
+  }
+
+  function _hide(){
+    _target = null;
+    document.getElementById('touch-keyboard').classList.remove('visible');
+  }
+
+  // Attach to all inputs/textareas — now and when DOM changes
+  function _attach(){
+    if(window.innerWidth<=600) return;
+    document.querySelectorAll('input[type="text"],input[type="search"],input:not([type]),textarea').forEach(el => {
+      if(el.dataset.tkbAttached) return;
+      el.dataset.tkbAttached = '1';
+      el.addEventListener('focus', ()=>_show(el));
+      el.setAttribute('readonly', 'readonly'); // prevent native keyboard
+      el.addEventListener('touchstart', e=>{
+        el.removeAttribute('readonly');
+        setTimeout(()=>{ el.setAttribute('readonly','readonly'); },100);
+        _show(el);
+      },{passive:true});
+    });
+  }
+
+  // Re-attach after every render
+  const _origRender = window.render;
+  if(typeof _origRender==='function'){
+    window.render = function(...args){
+      _origRender.apply(this, args);
+      setTimeout(_attach, 50);
+    };
+  }
+
+  // Initial attach
+  document.addEventListener('DOMContentLoaded', _attach);
+  setTimeout(_attach, 500);
+
+  // Close if tapping outside an input (and not on the keyboard itself)
+  document.addEventListener('touchstart', e=>{
+    const kb = document.getElementById('touch-keyboard');
+    if(!kb || !kb.classList.contains('visible')) return;
+    if(kb.contains(e.target)) return;
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+    _hide();
+  },{passive:true});
+
+  window._tkbShow = _show;
+  window._tkbHide = _hide;
+  window._tkbAttach = _attach;
+})();
+// ─── END TOUCH KEYBOARD ──────────────────────────────────────────────────────
+
+
 // Show a 50% black overlay after 5 minutes of inactivity.
 // Dismissed immediately on any touch/click.
 // Only active when screen width > 600px (not mobile).
@@ -6854,7 +7103,7 @@ _dimStart();
 
 // ─── AUTO REFRESH (every 10 minutes) ─────────────────────────────────────────
 // Silently reload the page to pick up new HTML deployments and data changes.
-setInterval(() => { location.reload(); }, 10 * 60 * 1000);
+setInterval(() => { location.reload(); }, 60 * 60 * 1000);
 // ─── END DIM / AUTO REFRESH ──────────────────────────────────────────────────
 
 
