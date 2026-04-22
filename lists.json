@@ -6,7 +6,8 @@
     "items": [
       {
         "t": "Hand soap",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-22"
       },
       {
         "t": "Limes",
