@@ -133,6 +133,21 @@
     ]
   },
   {
+    "id": 1776215179023,
+    "title": "Empty ash from solo stove",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1776540855875,
     "title": "Fix 3D printer",
     "done": true,
@@ -180,21 +195,6 @@
     ],
     "doneOn": [
       "2026-04-23"
-    ]
-  },
-  {
-    "id": 1776215179023,
-    "title": "Empty ash from solo stove",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
