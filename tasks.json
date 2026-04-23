@@ -152,8 +152,10 @@
   {
     "id": 1775957529123,
     "title": "Clean the grill",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-23"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
