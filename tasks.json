@@ -115,6 +115,20 @@
     ]
   },
   {
+    "id": 1775755993312,
+    "title": "Descale Coffee Maker",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ],
+    "doneOn": []
+  },
+  {
     "id": 1776215179023,
     "title": "Empty ash from solo stove",
     "done": false,
@@ -211,20 +225,6 @@
     "who": [
       "Dad"
     ]
-  },
-  {
-    "id": 1775755993312,
-    "title": "Descale Coffee Maker",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ],
-    "doneOn": []
   },
   {
     "id": 1775668858555,
