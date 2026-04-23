@@ -393,6 +393,21 @@
     ]
   },
   {
+    "id": 1776910891955,
+    "title": "Set up movie screen and projector for Ava party",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775755978425,
     "title": "Clean Dishwasher Drain",
     "done": true,
@@ -1098,21 +1113,6 @@
     "recurDays": [],
     "timeOfDay": "",
     "stayUntilDone": true,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1776910891955,
-    "title": "Set up movie screen and projector for Ava party",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
     "who": [
       "Dad"
     ]
