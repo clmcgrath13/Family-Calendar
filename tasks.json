@@ -1105,10 +1105,8 @@
   {
     "id": 1776910891955,
     "title": "Set up movie screen and projector for AvaÃÂÃÂ¢ÃÂÃÂÃÂÃÂs party",
-    "done": true,
-    "doneOn": [
-      "2026-04-23"
-    ],
+    "done": false,
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
