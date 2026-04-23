@@ -11,9 +11,14 @@
       {
         "t": "Apple sauce",
         "d": false
+      },
+      {
+        "t": "apppapple",
+        "d": false
       }
     ],
     "_history": [
+      "apppapple",
       "Apple sauce",
       "Limes",
       "Taco seasoning",
