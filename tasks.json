@@ -404,7 +404,7 @@
   {
     "id": 1775668825266,
     "title": "Sharpen Knives",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -412,6 +412,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-23"
     ]
   },
   {
@@ -1094,7 +1097,7 @@
   },
   {
     "id": 1776910891955,
-    "title": "Set up movie screen and projector for AvaÃ¢ÂÂs party",
+    "title": "Set up movie screen and projector for AvaÃÂ¢ÃÂÃÂs party",
     "done": false,
     "doneOn": [],
     "date": "",
