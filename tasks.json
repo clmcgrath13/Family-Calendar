@@ -544,6 +544,21 @@
     ]
   },
   {
+    "id": 1775922913717,
+    "title": "Set up 50ft pitchers mound",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775826162005,
     "title": "Declutter Ava's room",
     "done": false,
@@ -737,21 +752,6 @@
     "stayUntilDone": false,
     "who": [
       "Collin"
-    ]
-  },
-  {
-    "id": 1775922913717,
-    "title": "Set up 50ft pitchers mound",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
