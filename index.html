@@ -1379,7 +1379,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.0</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -1936,7 +1936,7 @@ function sv(v){
   const calTabs=document.getElementById('cal-tabs');
   if(calTabs) calTabs.style.display=v==='calendar'?'flex':'none';
   const fab=document.getElementById('fab');
-  if(fab) fab.style.display=(v==='settings'||v==='lists'||v==='packages')?'none':'flex';
+  if(fab) fab.style.display=(v==='settings'||v==='packages')?'none':'flex';
   // On mobile, calendar defaults to day view
   if(v==='calendar' && window.innerWidth<=600 && calV!=='day'){
     calV='day'; cur=new Date(T);
@@ -2052,7 +2052,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.0</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -3087,7 +3087,6 @@ function rLists(){
           onkeydown="if(event.key==='Enter'){event.preventDefault();laddCommit();}">
         <div class="typeahead-list" id="ladd-drop" style="display:none;position:absolute;bottom:calc(100% + 6px);top:auto;left:0;right:0"></div>
       </div>
-      <button class="ladd-btn" onclick="laddCommit()" title="Add">+</button>
       <button class="ladd-btn" onclick="listsRefresh(this)" title="Refresh from cloud"
         style="background:var(--bg);border:1px solid var(--border);color:var(--muted);font-size:16px;width:38px">↻</button>
     </div>
@@ -4574,6 +4573,7 @@ function openLunchPicker(dateStr, kid){
     renderAvaPicker(overlay, dateStr, lbl, existing);
   }
   document.body.appendChild(overlay);
+  setTimeout(()=>{ if(window._tkbAttach) window._tkbAttach(); }, 80);
 }
 
 function renderCollinPicker(overlay, dateStr, lbl, existing){
@@ -6910,156 +6910,113 @@ async function pollForRemoteChanges(){
 }
 // ─── IN-APP TOUCH KEYBOARD ───────────────────────────────────────────────────
 (function(){
-  if(window.innerWidth <= 600) return; // mobile has native keyboard
+  if(window.innerWidth<=600 || window.matchMedia('(max-width:600px)').matches) return;
 
-  const KB_ALPHA = [
-    ['q','w','e','r','t','y','u','i','o','p'],
-    ['a','s','d','f','g','h','j','k','l'],
-    ['SHIFT','z','x','c','v','b','n','m','⌫'],
-    ['123','SPACE','DONE']
-  ];
-  const KB_NUM = [
-    ['1','2','3','4','5','6','7','8','9','0'],
-    ['-','/','.',',','?','!','\'','"','(',')'  ],
-    ['#+=','%','@','&','*','_',';',':','⌫'],
-    ['ABC','SPACE','DONE']
-  ];
-  const KB_SYM = [
-    ['[',']','{','}','#','%','^','*','+','='],
-    ['_','\\','|','~','<','>','$','€','£','·'],
-    ['123','.',',','?','!','\'','⌫'],
-    ['ABC','SPACE','DONE']
-  ];
+  const KB_ALPHA=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['SHIFT','z','x','c','v','b','n','m','⌫'],['123','SPACE','DONE']];
+  const KB_NUM=[['1','2','3','4','5','6','7','8','9','0'],['-','/','.',',' ,"?",'!',"'",'"','(',')'],['#+=','%','@','&','*','_',';',':','⌫'],['ABC','SPACE','DONE']];
+  const KB_SYM=[['[',']','{','}','#','%','^','*','+','='],['_','|','~','<','>','$','€','£','·'],['123','.',',','?','!',"'",'⌫'],['ABC','SPACE','DONE']];
 
-  let _shifted = false;
-  let _layer = 'alpha'; // alpha | num | sym
-  let _target = null;
+  let _shifted=false, _layer='alpha', _target=null;
+  const KBH=300;
 
   function _build(){
-    const rows = _layer==='alpha' ? KB_ALPHA : _layer==='num' ? KB_NUM : KB_SYM;
-    ['tkb-row1','tkb-row2','tkb-row3','tkb-row4'].forEach((id, ri) => {
-      const row = document.getElementById(id);
-      if(!row) return;
-      row.innerHTML = '';
-      (rows[ri]||[]).forEach(k => {
-        const btn = document.createElement('button');
-        btn.className = 'tkb-key';
-        btn.type = 'button';
-        const disp = _shifted && k.length===1 && /[a-z]/.test(k) ? k.toUpperCase() : k;
-        btn.textContent = disp==='SPACE' ? ' ' : disp==='DONE' ? 'Done' : disp==='SHIFT' ? (_shifted?'⇧':'⇧') : disp;
+    const rows=_layer==='alpha'?KB_ALPHA:_layer==='num'?KB_NUM:KB_SYM;
+    ['tkb-row1','tkb-row2','tkb-row3','tkb-row4'].forEach((id,ri)=>{
+      const row=document.getElementById(id); if(!row) return; row.innerHTML='';
+      (rows[ri]||[]).forEach(k=>{
+        const btn=document.createElement('button'); btn.className='tkb-key'; btn.type='button';
+        const disp=_shifted&&k.length===1&&/[a-z]/.test(k)?k.toUpperCase():k;
+        btn.textContent=disp==='SPACE'?' ':disp==='DONE'?'Done':disp;
         if(k==='SPACE') btn.classList.add('tkb-space');
         if(k==='DONE')  btn.classList.add('tkb-action');
         if(k==='SHIFT') { btn.classList.add('tkb-shift'); if(_shifted) btn.classList.add('tkb-active'); }
         if(k==='123'||k==='ABC'||k==='#+=') btn.classList.add('tkb-num');
         if(k==='⌫') btn.classList.add('tkb-wide');
-        btn.addEventListener('touchstart', e=>{ e.preventDefault(); e.stopPropagation(); _press(k, btn); }, {passive:false});
-        btn.addEventListener('mousedown',  e=>{ e.preventDefault(); e.stopPropagation(); _press(k, btn); });
+        btn.addEventListener('touchstart',e=>{e.preventDefault();e.stopPropagation();_press(k);},{passive:false});
+        btn.addEventListener('mousedown',e=>{e.preventDefault();e.stopPropagation();_press(k);});
         row.appendChild(btn);
       });
     });
   }
 
-  function _press(k, btn){
+  function _press(k){
     if(!_target) return;
-    if(k==='DONE'){
-      _hide();
-      return;
-    }
-    if(k==='SHIFT'){
-      _shifted = !_shifted;
-      _build();
-      return;
-    }
-    if(k==='123'){ _layer='num'; _shifted=false; _build(); return; }
-    if(k==='ABC'){ _layer='alpha'; _shifted=false; _build(); return; }
-    if(k==='#+=') { _layer='sym'; _shifted=false; _build(); return; }
+    if(k==='DONE'){_hide();return;}
+    if(k==='SHIFT'){_shifted=!_shifted;_build();return;}
+    if(k==='123'){_layer='num';_shifted=false;_build();return;}
+    if(k==='ABC'){_layer='alpha';_shifted=false;_build();return;}
+    if(k==='#+='){_layer='sym';_shifted=false;_build();return;}
     if(k==='⌫'){
-      const v = _target.value;
-      const s = _target.selectionStart;
-      const e = _target.selectionEnd;
-      if(s!==e){
-        _target.value = v.slice(0,s)+v.slice(e);
-        _target.setSelectionRange(s,s);
-      } else if(s>0){
-        _target.value = v.slice(0,s-1)+v.slice(s);
-        _target.setSelectionRange(s-1,s-1);
-      }
+      const v=_target.value,s=_target.selectionStart,e=_target.selectionEnd;
+      if(s!==e){_target.value=v.slice(0,s)+v.slice(e);_target.setSelectionRange(s,s);}
+      else if(s>0){_target.value=v.slice(0,s-1)+v.slice(s);_target.setSelectionRange(s-1,s-1);}
     } else {
-      const ch = k==='SPACE' ? ' ' : (_shifted && /^[a-z]$/.test(k)) ? k.toUpperCase() : k;
-      const s = _target.selectionStart||0;
-      const e = _target.selectionEnd||0;
-      _target.value = _target.value.slice(0,s)+ch+_target.value.slice(e);
+      const ch=k==='SPACE'?' ':(_shifted&&/^[a-z]$/.test(k))?k.toUpperCase():k;
+      const s=_target.selectionStart||0,e=_target.selectionEnd||0;
+      _target.value=_target.value.slice(0,s)+ch+_target.value.slice(e);
       _target.setSelectionRange(s+1,s+1);
-      if(_shifted && /^[a-z]$/.test(k)){ _shifted=false; _build(); }
+      if(_shifted&&/^[a-z]$/.test(k)){_shifted=false;_build();}
     }
-    // Fire input event so app logic picks up the change
     _target.dispatchEvent(new Event('input',{bubbles:true}));
     _target.focus();
   }
 
   function _show(el){
     if(window.innerWidth<=600) return;
-    _target = el;
-    _layer = 'alpha'; _shifted = false;
-    _build();
-    document.getElementById('touch-keyboard').classList.add('visible');
-    // Scroll target into view above keyboard
+    _target=el; _layer='alpha'; _shifted=false; _build();
+    const kb=document.getElementById('touch-keyboard');
+    if(kb) kb.classList.add('visible');
+    // Push ladd-bar above keyboard
+    const ladd=document.querySelector('.ladd-bar');
+    if(ladd) ladd.style.marginBottom=KBH+'px';
+    // Scroll input into view above keyboard
     setTimeout(()=>{
-      const kb = document.getElementById('touch-keyboard');
-      const kbH = kb ? kb.offsetHeight : 300;
-      const r = el.getBoundingClientRect();
-      if(r.bottom > window.innerHeight - kbH - 10){
-        el.scrollIntoView({behavior:'smooth', block:'center'});
-      }
-    }, 100);
+      const r=el.getBoundingClientRect();
+      if(r.bottom>window.innerHeight-KBH-20) el.scrollIntoView({behavior:'smooth',block:'nearest'});
+    },100);
   }
 
   function _hide(){
-    _target = null;
-    document.getElementById('touch-keyboard').classList.remove('visible');
+    _target=null;
+    const kb=document.getElementById('touch-keyboard');
+    if(kb) kb.classList.remove('visible');
+    const ladd=document.querySelector('.ladd-bar');
+    if(ladd) ladd.style.marginBottom='';
   }
 
-  // Attach to all inputs/textareas — now and when DOM changes
   function _attach(){
     if(window.innerWidth<=600) return;
-    document.querySelectorAll('input[type="text"],input[type="search"],input:not([type]),textarea').forEach(el => {
+    document.querySelectorAll('input[type="text"],input[type="search"],input:not([type]),textarea').forEach(el=>{
       if(el.dataset.tkbAttached) return;
-      el.dataset.tkbAttached = '1';
-      el.addEventListener('focus', ()=>_show(el));
-      el.setAttribute('readonly', 'readonly'); // prevent native keyboard
-      el.addEventListener('touchstart', e=>{
+      el.dataset.tkbAttached='1';
+      el.addEventListener('focus',()=>_show(el));
+      el.setAttribute('readonly','readonly');
+      el.addEventListener('touchstart',()=>{
         el.removeAttribute('readonly');
-        setTimeout(()=>{ el.setAttribute('readonly','readonly'); },100);
+        setTimeout(()=>el.setAttribute('readonly','readonly'),100);
         _show(el);
       },{passive:true});
     });
   }
 
-  // Re-attach after every render
-  const _origRender = window.render;
+  const _origRender=window.render;
   if(typeof _origRender==='function'){
-    window.render = function(...args){
-      _origRender.apply(this, args);
-      setTimeout(_attach, 50);
-    };
+    window.render=function(...args){_origRender.apply(this,args);setTimeout(_attach,50);};
   }
+  document.addEventListener('DOMContentLoaded',_attach);
+  setTimeout(_attach,500);
 
-  // Initial attach
-  document.addEventListener('DOMContentLoaded', _attach);
-  setTimeout(_attach, 500);
-
-  // Close if tapping outside an input (and not on the keyboard itself)
-  document.addEventListener('touchstart', e=>{
-    const kb = document.getElementById('touch-keyboard');
-    if(!kb || !kb.classList.contains('visible')) return;
+  function _outsideHandler(e){
+    const kb=document.getElementById('touch-keyboard');
+    if(!kb||!kb.classList.contains('visible')) return;
     if(kb.contains(e.target)) return;
     if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
     _hide();
-  },{passive:true});
+  }
+  document.addEventListener('touchstart', _outsideHandler, {passive:true});
+  document.addEventListener('mousedown',  _outsideHandler, {passive:true});
 
-  window._tkbShow = _show;
-  window._tkbHide = _hide;
-  window._tkbAttach = _attach;
+  window._tkbShow=_show; window._tkbHide=_hide; window._tkbAttach=_attach;
 })();
 // ─── END TOUCH KEYBOARD ──────────────────────────────────────────────────────
 
