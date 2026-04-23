@@ -132,6 +132,21 @@
     ]
   },
   {
+    "id": 1776540855875,
+    "title": "Fix 3D printer",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775957529123,
     "title": "Clean the grill",
     "done": false,
@@ -1061,21 +1076,6 @@
     "recurDays": [],
     "timeOfDay": "",
     "stayUntilDone": true,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1776540855875,
-    "title": "Fix 3D printer",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
     "who": [
       "Dad"
     ]
