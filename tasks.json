@@ -85,24 +85,6 @@
     ]
   },
   {
-    "id": 1775744075613,
-    "title": "Take out recycling (bottles & cans)",
-    "done": true,
-    "date": "2026-04-09",
-    "recur": "weekly",
-    "recurN": 2,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad",
-      "Mom"
-    ],
-    "doneOn": [
-      "2026-04-09",
-      "2026-04-23"
-    ]
-  },
-  {
     "id": 1776109390346,
     "title": "Get oil changed",
     "done": false,
@@ -162,6 +144,24 @@
     "stayUntilDone": false,
     "who": [
       "Dad"
+    ]
+  },
+  {
+    "id": 1775744075613,
+    "title": "Take out recycling (bottles & cans)",
+    "done": true,
+    "date": "2026-04-09",
+    "recur": "weekly",
+    "recurN": 2,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad",
+      "Mom"
+    ],
+    "doneOn": [
+      "2026-04-09",
+      "2026-04-23"
     ]
   },
   {
