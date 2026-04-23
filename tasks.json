@@ -395,7 +395,7 @@
   {
     "id": 1775755978425,
     "title": "Clean Dishwasher Drain",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -403,6 +403,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-23"
     ]
   },
   {
