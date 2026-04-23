@@ -167,7 +167,7 @@
   {
     "id": 1775688762493,
     "title": "Rotate couch cushions",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -175,6 +175,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-23"
     ]
   },
   {
