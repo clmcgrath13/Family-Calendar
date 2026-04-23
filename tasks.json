@@ -115,6 +115,22 @@
     ]
   },
   {
+    "id": 1775756024054,
+    "title": "Clean out freezer ice bin",
+    "done": true,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ],
+    "doneOn": [
+      "2026-04-23"
+    ]
+  },
+  {
     "id": 1775755993312,
     "title": "Descale Coffee Maker",
     "done": false,
@@ -370,22 +386,6 @@
     "stayUntilDone": false,
     "who": [
       "Dad"
-    ]
-  },
-  {
-    "id": 1775756024054,
-    "title": "Clean out freezer ice bin",
-    "done": true,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ],
-    "doneOn": [
-      "2026-04-23"
     ]
   },
   {
