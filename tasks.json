@@ -145,8 +145,10 @@
   {
     "id": 1776215179023,
     "title": "Empty ash from solo stove",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-04-23"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
