@@ -183,6 +183,21 @@
     ]
   },
   {
+    "id": 1776215179023,
+    "title": "Empty ash from solo stove",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1776040445132,
     "title": "Fix deck hot tub camera",
     "done": false,
@@ -370,21 +385,6 @@
       "Dad"
     ],
     "doneOn": []
-  },
-  {
-    "id": 1776215179023,
-    "title": "Empty ash from solo stove",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
   },
   {
     "id": 1775755978425,
