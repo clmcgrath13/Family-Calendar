@@ -67,21 +67,6 @@
     ]
   },
   {
-    "id": 1776109390346,
-    "title": "Get oil changed",
-    "done": false,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1776338972212,
     "title": "Take out Recycling (cardboard)",
     "done": true,
@@ -114,6 +99,21 @@
     ],
     "doneOn": [
       "2026-04-09"
+    ]
+  },
+  {
+    "id": 1776109390346,
+    "title": "Get oil changed",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
     ]
   },
   {
