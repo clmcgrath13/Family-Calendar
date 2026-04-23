@@ -192,7 +192,7 @@
   {
     "id": 1775755993312,
     "title": "Descale Coffee Maker",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -200,6 +200,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-23"
     ]
   },
   {
