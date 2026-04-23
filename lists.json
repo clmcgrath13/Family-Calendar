@@ -5,11 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Hand soap",
-        "d": true,
-        "doneDate": "2026-04-22"
-      },
-      {
         "t": "Limes",
         "d": false
       },
