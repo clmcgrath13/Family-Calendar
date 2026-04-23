@@ -179,6 +179,7 @@ body {
   background: #2c2c2e; font-size: 13px;
 }
 .tkb-key.tkb-active { background: #ffffff; color: #000; }
+.lpill.sel { background: var(--today-ring) !important; color: #fff !important; border-color: var(--today-ring) !important; }
 .vdrop-wrap {
   position: relative; flex-shrink: 0;
 }
@@ -1378,7 +1379,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v10.9</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.0</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -2051,7 +2052,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v10.9</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.0</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -5585,14 +5586,13 @@ function attachTypeahead(inputId){
 
 function addListItem(){
   const currentId = lists[_focusedList]?.id;
-  let selectedId = currentId;
+  window._selectedListId = currentId;
 
   const listPills = lists.map(l =>
-    `<button type="button" id="lpill-${l.id}"
-      onclick="document.querySelectorAll('.lpill').forEach(p=>p.classList.remove('sel')); this.classList.add('sel'); window._selectedListId=${l.id};"
+    `<button type="button" data-lid="${l.id}"
       class="lpill${l.id===currentId?' sel':''}"
       style="display:flex;align-items:center;gap:6px;padding:10px 16px;border-radius:20px;border:2px solid var(--border);background:var(--bg);font-size:14px;font-weight:600;cursor:pointer;transition:all 0.12s;color:var(--text)">
-      ${listIconSvg(l.icon)} ${l.name}
+      ${l.name}
     </button>`
   ).join('');
 
@@ -5600,7 +5600,7 @@ function addListItem(){
   document.getElementById('mbd').innerHTML = `
     <div class="fld" style="margin-bottom:14px">
       <label class="flbl">Add to list</label>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${listPills}</div>
+      <div id="list-pill-row" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${listPills}</div>
     </div>
     <div class="fld">
       <label class="flbl">Item</label>
@@ -5608,14 +5608,17 @@ function addListItem(){
         style="font-size:16px;padding:12px 14px">
     </div>`;
 
-  window._selectedListId = currentId;
-
-  // Style selected pill
-  const styleEl = document.createElement('style');
-  styleEl.textContent = '.lpill.sel { background:var(--today-ring) !important; color:#fff !important; border-color:var(--today-ring) !important; }';
-  document.head.appendChild(styleEl);
+  // Attach pill click handlers after innerHTML is set
+  document.querySelectorAll('#list-pill-row .lpill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#list-pill-row .lpill').forEach(p => p.classList.remove('sel'));
+      btn.classList.add('sel');
+      window._selectedListId = parseInt(btn.dataset.lid);
+    });
+  });
 
   attachTypeahead('litem');
+  if(window._tkbAttach) window._tkbAttach(); // attach on-screen keyboard to new inputs
 
   window._save = () => {
     const lid = window._selectedListId;
@@ -5698,10 +5701,11 @@ function mealEdit(){ /* legacy stub */ }
 
 
 function openM(){
-  // Save scroll position before modal opens so calendar doesn't jump on close
   const body = document.querySelector('.wbody') || document.querySelector('.daybody');
   window._savedModalScroll = body ? body.scrollTop : null;
   document.getElementById('ov').classList.add('open');
+  // Attach on-screen keyboard to any inputs inside the modal
+  setTimeout(()=>{ if(window._tkbAttach) window._tkbAttach(); }, 80);
 }
 function closeM(){
   document.getElementById('ov').classList.remove('open');
