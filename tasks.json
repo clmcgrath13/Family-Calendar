@@ -319,7 +319,7 @@
   {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -327,6 +327,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-04-23"
     ]
   },
   {
