@@ -375,7 +375,7 @@
   {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -384,7 +384,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-04-23"
+    ]
   },
   {
     "id": 1775755978425,
