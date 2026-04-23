@@ -115,6 +115,21 @@
     ]
   },
   {
+    "id": 1776910891955,
+    "title": "Set up movie screen and projector for Ava party",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
     "done": true,
@@ -170,21 +185,6 @@
     "doneOn": [
       "2026-04-23"
     ],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1776910891955,
-    "title": "Set up movie screen and projector for Ava party",
-    "done": false,
-    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
