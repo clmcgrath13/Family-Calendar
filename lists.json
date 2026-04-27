@@ -15,9 +15,14 @@
       {
         "t": "Sweet potato",
         "d": false
+      },
+      {
+        "t": "Apples",
+        "d": false
       }
     ],
     "_history": [
+      "Apples",
       "Apple sauce",
       "Limes",
       "Taco seasoning",
