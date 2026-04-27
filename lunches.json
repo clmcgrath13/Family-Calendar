@@ -113,6 +113,10 @@
     "2026-04-30": {
       "name": "Emoji Waffles, Juicy Breakfast Sausages, Breakfast Potatoes",
       "type": "school"
+    },
+    "2026-04-28": {
+      "name": "Bagel",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
