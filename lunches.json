@@ -101,6 +101,10 @@
     "2026-04-06": {
       "name": "Bagel",
       "type": "custom"
+    },
+    "2026-04-27": {
+      "name": "Juicy Cheeseburger on a Bun, Juicy Hamburger on a Bun, BBQ Baked Beans",
+      "type": "school"
     }
   },
   "_avaCustoms": [
