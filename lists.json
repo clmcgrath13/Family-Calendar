@@ -39,9 +39,14 @@
       {
         "t": "Yogurt",
         "d": false
+      },
+      {
+        "t": "chicken noodle soup",
+        "d": false
       }
     ],
     "_history": [
+      "chicken noodle soup",
       "Apples",
       "Apple sauce",
       "Limes",
