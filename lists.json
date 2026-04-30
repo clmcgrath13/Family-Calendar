@@ -10,11 +10,13 @@
       },
       {
         "t": "Apple sauce",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "Sweet potato",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-30"
       },
       {
         "t": "Apples",
