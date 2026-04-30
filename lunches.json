@@ -55,6 +55,10 @@
     "2026-04-29": {
       "name": "Bagel w/ Cream Cheese",
       "type": "preset"
+    },
+    "2026-04-30": {
+      "name": "pasta",
+      "type": "custom"
     }
   },
   "Ava": {
