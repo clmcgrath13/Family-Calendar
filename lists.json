@@ -22,7 +22,8 @@
       },
       {
         "t": "Steak",
-        "d": false
+        "d": true,
+        "doneDate": "2026-04-30"
       },
       {
         "t": "Chicken Thighs",
