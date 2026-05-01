@@ -87,8 +87,10 @@
   {
     "id": 1776109398250,
     "title": "Change bronco oil",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-01"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
