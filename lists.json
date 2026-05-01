@@ -14,18 +14,8 @@
         "doneDate": null
       },
       {
-        "t": "Sweet potato",
-        "d": true,
-        "doneDate": "2026-04-30"
-      },
-      {
         "t": "Apples",
         "d": false
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-04-30"
       },
       {
         "t": "Chicken Thighs",
