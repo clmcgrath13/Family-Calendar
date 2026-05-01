@@ -117,8 +117,10 @@
   {
     "id": 1776109390346,
     "title": "Get oil changed",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-01"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
