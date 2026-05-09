@@ -36,9 +36,14 @@
       {
         "t": "chicken noodle soup",
         "d": false
+      },
+      {
+        "t": "Travel sunscreen",
+        "d": false
       }
     ],
     "_history": [
+      "Travel sunscreen",
       "chicken noodle soup",
       "Apples",
       "Apple sauce",
