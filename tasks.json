@@ -268,8 +268,10 @@
   {
     "id": 1778353991596,
     "title": "Set up Ava’s watch",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-09"
+    ],
     "date": "2026-05-09",
     "recur": "",
     "recurN": 1,
