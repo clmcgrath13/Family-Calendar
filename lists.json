@@ -48,9 +48,14 @@
       {
         "t": "Steak",
         "d": false
+      },
+      {
+        "t": "Burgers",
+        "d": false
       }
     ],
     "_history": [
+      "Burgers",
       "Travel sunscreen",
       "chicken noodle soup",
       "Apples",
