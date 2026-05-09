@@ -459,6 +459,21 @@
     ]
   },
   {
+    "id": 1778353991596,
+    "title": "Set up Ava’s watch",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-05-09",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1775826105651,
     "title": "Label Ava's Haribrushes",
     "done": false,
@@ -611,21 +626,6 @@
     ],
     "doneOn": [
       "2026-04-11"
-    ]
-  },
-  {
-    "id": 1778353991596,
-    "title": "Set up Ava’s watch",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-05-09",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
     ]
   },
   {
