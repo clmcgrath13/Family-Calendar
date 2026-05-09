@@ -1081,8 +1081,10 @@
   {
     "id": 1776127891655,
     "title": "Move the Legos against the wall in the basement",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-09"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
