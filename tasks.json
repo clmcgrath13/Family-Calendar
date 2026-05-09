@@ -102,23 +102,6 @@
     ]
   },
   {
-    "id": 1776910891955,
-    "title": "Set up movie screen and projector for Ava party",
-    "done": true,
-    "doneOn": [
-      "2026-05-09"
-    ],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1776109390346,
     "title": "Get oil changed",
     "done": true,
@@ -250,6 +233,23 @@
     ],
     "doneOn": [
       "2026-04-23"
+    ]
+  },
+  {
+    "id": 1776910891955,
+    "title": "Set up movie screen and projector for Ava party",
+    "done": true,
+    "doneOn": [
+      "2026-05-09"
+    ],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
     ]
   },
   {
