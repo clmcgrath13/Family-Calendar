@@ -633,7 +633,8 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-04-21"
+      "2026-04-21",
+      "2026-05-09"
     ],
     "date": "2026-04-19",
     "recur": "weekly",
