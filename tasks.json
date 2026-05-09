@@ -253,19 +253,6 @@
     ]
   },
   {
-    "id": 1775826162005,
-    "title": "Declutter Ava's room",
-    "done": false,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1778353991596,
     "title": "Set up Ava’s watch",
     "done": false,
@@ -276,6 +263,19 @@
     "recurDays": [],
     "timeOfDay": "",
     "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1775826162005,
+    "title": "Declutter Ava's room",
+    "done": false,
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
     "who": [
       "Dad"
     ]
