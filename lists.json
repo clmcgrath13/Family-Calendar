@@ -52,7 +52,8 @@
       },
       {
         "t": "Steak",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-10"
       },
       {
         "t": "Burgers",
