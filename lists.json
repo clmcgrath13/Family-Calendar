@@ -6,12 +6,13 @@
     "items": [
       {
         "t": "Limes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-11"
       },
       {
         "t": "Apple sauce",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-05-11"
       },
       {
         "t": "Chicken Breast",
