@@ -31,9 +31,14 @@
         "t": "Burgers",
         "d": true,
         "doneDate": "2026-05-11"
+      },
+      {
+        "t": "Sea salt",
+        "d": false
       }
     ],
     "_history": [
+      "Sea salt",
       "Burgers",
       "Travel sunscreen",
       "chicken noodle soup",
