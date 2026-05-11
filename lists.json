@@ -14,33 +14,8 @@
         "doneDate": null
       },
       {
-        "t": "Apples",
-        "d": true,
-        "doneDate": "2026-05-10"
-      },
-      {
-        "t": "Chicken Thighs",
-        "d": true,
-        "doneDate": "2026-05-10"
-      },
-      {
         "t": "Chicken Breast",
         "d": false
-      },
-      {
-        "t": "Yogurt Smoothies",
-        "d": true,
-        "doneDate": "2026-05-10"
-      },
-      {
-        "t": "Yogurt",
-        "d": true,
-        "doneDate": "2026-05-10"
-      },
-      {
-        "t": "chicken noodle soup",
-        "d": true,
-        "doneDate": "2026-05-10"
       },
       {
         "t": "Travel sunscreen",
@@ -49,11 +24,6 @@
       {
         "t": "Seltzer",
         "d": false
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-05-10"
       },
       {
         "t": "Burgers",
