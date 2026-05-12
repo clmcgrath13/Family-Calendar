@@ -5,32 +5,12 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Limes",
-        "d": true,
-        "doneDate": "2026-05-11"
-      },
-      {
-        "t": "Apple sauce",
-        "d": true,
-        "doneDate": "2026-05-11"
-      },
-      {
         "t": "Chicken Breast",
         "d": false
       },
       {
         "t": "Travel sunscreen",
         "d": false
-      },
-      {
-        "t": "Seltzer",
-        "d": true,
-        "doneDate": "2026-05-11"
-      },
-      {
-        "t": "Burgers",
-        "d": true,
-        "doneDate": "2026-05-11"
       },
       {
         "t": "Sea salt",
