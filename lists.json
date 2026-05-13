@@ -16,9 +16,14 @@
         "t": "Sea salt",
         "d": true,
         "doneDate": "2026-05-12"
+      },
+      {
+        "t": "Allergy meds",
+        "d": false
       }
     ],
     "_history": [
+      "Allergy meds",
       "Sea salt",
       "Burgers",
       "Travel sunscreen",
