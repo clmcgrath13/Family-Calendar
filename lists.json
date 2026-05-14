@@ -19,9 +19,14 @@
       {
         "t": "Pickles",
         "d": false
+      },
+      {
+        "t": "Burger buns",
+        "d": false
       }
     ],
     "_history": [
+      "Burger buns",
       "Pickles",
       "Allergy meds",
       "Sea salt",
