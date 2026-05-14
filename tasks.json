@@ -50,6 +50,19 @@
     ]
   },
   {
+    "id": 1775759462130,
+    "title": "Replace hot tub filter",
+    "done": false,
+    "date": "2026-05-14",
+    "recur": "weekly",
+    "recurN": 6,
+    "recurDays": [],
+    "timeOfDay": "",
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1776338972212,
     "title": "Take out Recycling (cardboard)",
     "done": true,
@@ -582,19 +595,6 @@
     ],
     "doneOn": [
       "2026-04-11"
-    ]
-  },
-  {
-    "id": 1775759462130,
-    "title": "Replace hot tub filter",
-    "done": false,
-    "date": "2026-05-14",
-    "recur": "weekly",
-    "recurN": 6,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad"
     ]
   },
   {
