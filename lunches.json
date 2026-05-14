@@ -71,6 +71,10 @@
     "2026-05-13": {
       "name": "Chili & Chips",
       "type": "preset"
+    },
+    "2026-05-14": {
+      "name": "pasta with red sauce",
+      "type": "custom"
     }
   },
   "Ava": {
