@@ -67,6 +67,10 @@
     "2026-05-12": {
       "name": "Chicken noodle soup",
       "type": "custom"
+    },
+    "2026-05-13": {
+      "name": "Chili & Chips",
+      "type": "preset"
     }
   },
   "Ava": {
