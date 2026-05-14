@@ -478,7 +478,7 @@
   {
     "id": 1775826105651,
     "title": "Label Ava's Haribrushes",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -487,7 +487,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-05-14"
+    ]
   },
   {
     "id": 1775696639278,
