@@ -251,7 +251,7 @@
   },
   {
     "id": 1778353991596,
-    "title": "Set up Avaâs watch",
+    "title": "Set up AvaÃ¢ÂÂs watch",
     "done": false,
     "doneOn": [],
     "date": "2026-05-09",
@@ -1193,6 +1193,21 @@
   {
     "id": 1778792550270,
     "title": "Clean car",
+    "done": false,
+    "doneOn": [],
+    "date": "",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
+    "id": 1779114943475,
+    "title": "Add hook to closet door",
     "done": false,
     "doneOn": [],
     "date": "",
