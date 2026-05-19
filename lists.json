@@ -27,9 +27,14 @@
       {
         "t": "Salad bags",
         "d": false
+      },
+      {
+        "t": "Honey mustard",
+        "d": false
       }
     ],
     "_history": [
+      "Honey mustard",
       "Salad bags",
       "Burger buns",
       "Pickles",
