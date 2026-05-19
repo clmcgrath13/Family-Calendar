@@ -14,7 +14,8 @@
       },
       {
         "t": "Allergy meds",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-18"
       },
       {
         "t": "Pickles",
