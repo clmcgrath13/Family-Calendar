@@ -19,15 +19,18 @@
       },
       {
         "t": "Pickles",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-18"
       },
       {
         "t": "Burger buns",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-18"
       },
       {
         "t": "Salad bags",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-18"
       },
       {
         "t": "Honey mustard",
