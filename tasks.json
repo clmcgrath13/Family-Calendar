@@ -836,8 +836,10 @@
   {
     "id": 1775942849014,
     "title": "Put stuff back in the master bath",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-21"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
