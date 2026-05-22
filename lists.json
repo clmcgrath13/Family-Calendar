@@ -14,11 +14,13 @@
       },
       {
         "t": "Honey mustard",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-21"
       },
       {
         "t": "Ketchup",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-21"
       }
     ],
     "_history": [
