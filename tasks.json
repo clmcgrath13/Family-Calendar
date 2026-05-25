@@ -1270,8 +1270,10 @@
   {
     "id": 1779116495051,
     "title": "Check water softener",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-25"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
