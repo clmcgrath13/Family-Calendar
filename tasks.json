@@ -1141,8 +1141,10 @@
   {
     "id": 1776446684275,
     "title": "Change Hot Tub Filter",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-05-25"
+    ],
     "date": "2026-05-15",
     "recur": "weekly",
     "recurN": 6,
