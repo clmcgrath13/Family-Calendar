@@ -14,7 +14,8 @@
       },
       {
         "t": "Mozzarella",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-26"
       }
     ],
     "_history": [
