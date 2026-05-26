@@ -6,11 +6,13 @@
     "items": [
       {
         "t": "Chicken Breast",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-26"
       },
       {
         "t": "Travel sunscreen",
-        "d": false
+        "d": true,
+        "doneDate": "2026-05-26"
       },
       {
         "t": "Mozzarella",
