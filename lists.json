@@ -3,23 +3,7 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [
-      {
-        "t": "Chicken Breast",
-        "d": true,
-        "doneDate": "2026-05-26"
-      },
-      {
-        "t": "Travel sunscreen",
-        "d": true,
-        "doneDate": "2026-05-26"
-      },
-      {
-        "t": "Mozzarella",
-        "d": true,
-        "doneDate": "2026-05-26"
-      }
-    ],
+    "items": [],
     "_history": [
       "Honey mustard",
       "Salad bags",
