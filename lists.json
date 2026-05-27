@@ -3,8 +3,14 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [],
+    "items": [
+      {
+        "t": "sugar cubes",
+        "d": false
+      }
+    ],
     "_history": [
+      "sugar cubes",
       "Honey mustard",
       "Salad bags",
       "Burger buns",
