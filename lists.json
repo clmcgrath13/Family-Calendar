@@ -5,11 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "sugar cubes",
-        "d": true,
-        "doneDate": "2026-05-28"
-      },
-      {
         "t": "apple sauce",
         "d": false
       }
