@@ -7,9 +7,14 @@
       {
         "t": "apple sauce",
         "d": false
+      },
+      {
+        "t": "Chicken nuggets",
+        "d": false
       }
     ],
     "_history": [
+      "Chicken nuggets",
       "sugar cubes",
       "Honey mustard",
       "Salad bags",
