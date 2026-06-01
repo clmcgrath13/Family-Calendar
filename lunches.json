@@ -99,6 +99,10 @@
     "2026-05-28": {
       "name": "Bagel w/ Cream Cheese",
       "type": "preset"
+    },
+    "2026-06-01": {
+      "name": "chicken noodle  soup",
+      "type": "custom"
     }
   },
   "Ava": {
