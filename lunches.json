@@ -189,11 +189,15 @@
     "2026-05-20": {
       "name": "Freshly Baked Pizza Crunchers, Marinara Sauce, Fresh Dinner Roll, Emoji Fries",
       "type": "school"
+    },
+    "2026-06-01": {
+      "name": "Chili",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Chili",
     "Bagel",
-    "Pasta with Mariners sauce",
-    "Chili"
+    "Pasta with Mariners sauce"
   ]
 }
