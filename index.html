@@ -12,7 +12,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --sidebar-w: 88px;
+  --sidebar-w: 96px;
   --bg: #ffffff;
   --sidebar-bg: #f0f0ee;
   --border: #e2e2de;
@@ -29,7 +29,7 @@ body {
   font-family: var(--font);
   background: var(--bg);
   color: var(--text);
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   display: flex;
   overflow: hidden;
@@ -53,21 +53,21 @@ body {
 
 
 .nav-btn {
-  width: 72px; height: 58px;
-  border-radius: 12px;
+  width: 80px; height: 68px;
+  border-radius: 14px;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 4px;
+  gap: 5px;
   cursor: pointer;
   border: none;
   background: transparent;
   color: var(--muted);
   transition: background 0.13s, color 0.13s;
 }
-.nav-btn:hover { background: rgba(0,0,0,0.04); }
-.nav-btn.active { background: #fff; color: var(--today-ring); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-.nav-btn svg { width: 20px; height: 20px; }
-.nav-lbl { font-size: 10px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+.nav-btn:hover { background: rgba(0,0,0,0.05); }
+.nav-btn.active { background: #fff; color: var(--today-ring); box-shadow: 0 1px 6px rgba(0,0,0,0.10); }
+.nav-btn svg { width: 26px; height: 26px; }
+.nav-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
 
 .member-legend {
   margin-top: auto;
@@ -1191,10 +1191,14 @@ body {
 
 /* ── MOBILE (≤600px) ─────────────────────────────────────────── */
 @media (max-width: 600px) {
-  /* Safe area padding for notch/home indicator */
+  /* Safe area for notch/dynamic island/home indicator */
   body {
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    box-sizing: border-box;
+    height: 100dvh; /* dynamic viewport height for mobile browsers */
   }
 
   /* Hide left sidebar — replaced by bottom nav */
@@ -1379,7 +1383,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.4</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.8</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -2052,7 +2056,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.4</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.8</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -4578,8 +4582,9 @@ function openLunchPicker(dateStr, kid){
 
 function renderCollinPicker(overlay, dateStr, lbl, existing){
   window._collinPickerDate = dateStr;
+  const history = _mealHistorySorted();
 
-  const opts = COLLIN_PRESETS.map((p,i) => `
+  const presetOpts = COLLIN_PRESETS.map((p,i) => `
     <button class="lunch-opt" data-preset-idx="${i}" onclick="pickCollinPreset(this)">
       <span class="lunch-opt-icon">${p.icon}</span>
       <span class="lunch-opt-name">${p.name}</span>
@@ -4592,43 +4597,52 @@ function renderCollinPicker(overlay, dateStr, lbl, existing){
       <button class="lunch-picker-close" onclick="this.closest('.lunch-picker-overlay').remove()">✕</button>
     </div>
     <div class="lunch-picker-body">
-      <div class="lunch-opts">${opts}</div>
-      <div class="lunch-option-section">Custom</div>
+      ${presetOpts ? `<div class="lunch-option-section">Quick Picks</div><div class="lunch-opts">${presetOpts}</div>` : ''}
+
+      <div class="lunch-option-section" style="margin-top:14px">Previous Meals</div>
+      <div id="collin-history-list" class="lunch-opts" style="max-height:240px;overflow-y:auto;gap:5px;margin-bottom:10px">
+        ${_renderMealHistoryItems(history, existing?.name, 'Collin', dateStr)}
+      </div>
+
       <div class="lunch-custom-row">
-        <input class="fin" id="lunch-custom-input" type="text" placeholder="Type something else…" value="${existing&&existing.type==='custom'?existing.name.replace(/"/g,'&quot;'):''}">
+        <input class="fin" id="lunch-custom-input" type="text" placeholder="Type a meal…" value=""
+          oninput="_filterMealHistory('collin-history-list','Collin','${dateStr}',this.value)">
         <button class="btn btn-p" id="collin-custom-save">Save</button>
       </div>
-      ${existing?`<button class="lunch-opt" style="margin-top:8px;color:#c44;border-color:#f5c5c5" onclick="clearLunch('Collin','${dateStr}');document.querySelector('.lunch-picker-overlay').remove()">
+      ${existing?`<button class="lunch-opt" style="margin-top:8px;color:#c44;border-color:#f5c5c5"
+        onclick="clearLunch('Collin','${dateStr}');document.querySelector('.lunch-picker-overlay').remove()">
         <span class="lunch-opt-icon">🗑️</span><span class="lunch-opt-name">Clear</span>
       </button>`:''}
     </div>
   </div>`;
 
-  // Safe event wiring — search within overlay, not document
   overlay.querySelector('#collin-custom-save').onclick = () => {
     const v = overlay.querySelector('#lunch-custom-input').value.trim();
     if(v){ logLunch('Collin', dateStr, v, 'custom'); overlay.remove(); }
   };
+  setTimeout(()=>{ if(window._tkbAttach) window._tkbAttach(); }, 80);
 }
 
 async function renderAvaPicker(overlay, dateStr, lbl, existing){
-  // Show loading state first
   overlay.innerHTML = `<div class="lunch-picker">
     <div class="lunch-picker-hd">
       <span class="lunch-picker-title">Ava's Lunch — ${lbl}</span>
       <button class="lunch-picker-close" onclick="this.closest('.lunch-picker-overlay').remove()">✕</button>
     </div>
     <div class="lunch-picker-body" id="ava-picker-body">
-      <div style="color:var(--muted);text-align:center;padding:24px">Loading school menu…</div>
+      <div style="color:var(--muted);text-align:center;padding:24px">Loading…</div>
     </div>
   </div>`;
 
   const schoolItems = await fetchSchoolMenu(dateStr);
-  const avaCustoms = lunches._avaCustoms || [];
   const body = document.getElementById('ava-picker-body');
   if(!body) return;
 
-  // Group all school items into one combined lunch option
+  window._avaSchoolItems = schoolItems;
+  window._avaPickerDate  = dateStr;
+
+  const history = _mealHistorySorted();
+
   const schoolOptHtml = schoolItems.length
     ? `<button class="lunch-opt school" id="ava-school-opt" onclick="pickAvaSchoolLunch('${dateStr}')">
         <span class="lunch-opt-icon">🏫</span>
@@ -4638,40 +4652,33 @@ async function renderAvaPicker(overlay, dateStr, lbl, existing){
         </div>
         ${existing&&existing.type==='school'?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
       </button>`
-    : `<div style="color:var(--muted);font-size:12px;padding:8px">No school menu available for this day</div>`;
-
-  // Store school items on window for the onclick to access safely (avoids escaping issues)
-  window._avaSchoolItems = schoolItems;
-  window._avaPickerDate  = dateStr;
-
-  const customOpts = avaCustoms.length
-    ? avaCustoms.map((name,i) => `
-      <button class="lunch-opt" data-custom-idx="${i}" onclick="pickAvaCustomLunch(this)">
-        <span class="lunch-opt-icon">🏠</span>
-        <span class="lunch-opt-name">${name.replace(/</g,'&lt;')}</span>
-        ${existing&&existing.name===name?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
-      </button>`).join('')
-    : '';
+    : `<div style="color:var(--muted);font-size:12px;padding:8px">No school menu for this day</div>`;
 
   body.innerHTML = `
     <div class="lunch-option-section">🏫 Today's School Menu</div>
     <div class="lunch-opts">${schoolOptHtml}</div>
-    ${customOpts?`<div class="lunch-option-section">Recent Custom Lunches</div><div class="lunch-opts">${customOpts}</div>`:''}
-    <div class="lunch-option-section">Custom</div>
+
+    <div class="lunch-option-section" style="margin-top:14px">Previous Meals</div>
+    <div id="ava-history-list" class="lunch-opts" style="max-height:240px;overflow-y:auto;gap:5px;margin-bottom:10px">
+      ${_renderMealHistoryItems(history, existing?.name, 'Ava', dateStr)}
+    </div>
+
     <div class="lunch-custom-row">
-      <input class="fin" id="lunch-custom-input" type="text" placeholder="Type something else…" value="">
+      <input class="fin" id="lunch-custom-input" type="text" placeholder="Type a meal…" value=""
+        oninput="_filterMealHistory('ava-history-list','Ava','${dateStr}',this.value)">
       <button class="btn btn-p" id="lunch-custom-save">Save</button>
     </div>
-    ${existing?`<button class="lunch-opt" style="margin-top:8px;color:#c44;border-color:#f5c5c5" onclick="clearLunch('Ava','${dateStr}');document.querySelector('.lunch-picker-overlay').remove()">
+    ${existing?`<button class="lunch-opt" style="margin-top:8px;color:#c44;border-color:#f5c5c5"
+      onclick="clearLunch('Ava','${dateStr}');document.querySelector('.lunch-picker-overlay').remove()">
       <span class="lunch-opt-icon">🗑️</span><span class="lunch-opt-name">Clear</span>
     </button>`:''}`;
 
-  // Wire custom save button safely within overlay
   const saveBtn = overlay.querySelector('#lunch-custom-save');
   if(saveBtn) saveBtn.onclick = () => {
     const v = overlay.querySelector('#lunch-custom-input').value.trim();
     if(v){ logLunch('Ava', dateStr, v, 'custom'); overlay.remove(); }
   };
+  setTimeout(()=>{ if(window._tkbAttach) window._tkbAttach(); }, 80);
 }
 
 function pickCollinPreset(btn){
@@ -4703,14 +4710,64 @@ function logLunch(kid, dateStr, name, type){
   if(!lunches[kid]) lunches[kid] = {};
   lunches[kid][dateStr] = {name, type};
 
-  // Save Ava custom options (last 5, no duplicates)
+  // Track meal frequency in a shared history — used for smart preselects
+  if(!lunches._mealHistory) lunches._mealHistory = {};
+  // For school lunches, log each item individually
+  const names = type==='school' ? name.split(', ') : [name];
+  names.forEach(n => {
+    n = n.trim();
+    if(!n || n.length < 2) return;
+    lunches._mealHistory[n] = (lunches._mealHistory[n] || 0) + 1;
+  });
+
+  // Legacy: keep _avaCustoms for backward compat
   if(kid==='Ava' && type==='custom'){
     if(!lunches._avaCustoms) lunches._avaCustoms = [];
-    lunches._avaCustoms = [name, ...lunches._avaCustoms.filter(n=>n!==name)].slice(0,5);
+    lunches._avaCustoms = [name, ...lunches._avaCustoms.filter(n=>n!==name)].slice(0,20);
   }
 
   render();
   lunchScheduleSave();
+}
+
+// Returns meals sorted by frequency, most common first
+function _mealHistorySorted(filter){
+  const hist = lunches._mealHistory || {};
+  return Object.entries(hist)
+    .sort((a,b) => b[1]-a[1])
+    .map(([name]) => name)
+    .filter(n => !filter || n.toLowerCase().includes(filter.toLowerCase()));
+}
+
+// Render meal history items as buttons
+function _renderMealHistoryItems(meals, selectedName, kid, dateStr){
+  if(!meals.length) return `<div style="color:var(--muted);font-size:13px;padding:8px 0">No meal history yet — meals you log will appear here.</div>`;
+  return meals.map(name => `
+    <button class="lunch-opt" data-meal="${name.replace(/"/g,'&quot;')}" data-kid="${kid}" data-date="${dateStr}"
+      onclick="_pickHistoryMeal(this)" style="padding:10px 12px">
+      <span class="lunch-opt-icon">🍽️</span>
+      <span class="lunch-opt-name" style="font-size:14px">${name.replace(/</g,'&lt;')}</span>
+      ${selectedName===name?'<span style="color:var(--today-ring);font-size:18px">✓</span>':''}
+    </button>`).join('');
+}
+
+// Handle picking a meal from history
+function _pickHistoryMeal(btn){
+  const name = btn.dataset.meal;
+  const kid  = btn.dataset.kid;
+  const date = btn.dataset.date;
+  if(name && kid && date){
+    logLunch(kid, date, name, 'custom');
+    document.querySelector('.lunch-picker-overlay')?.remove();
+  }
+}
+
+// Filter the history list by what user is typing in the custom input
+function _filterMealHistory(listId, kid, dateStr, query){
+  const list = document.getElementById(listId);
+  if(!list) return;
+  const meals = _mealHistorySorted(query);
+  list.innerHTML = _renderMealHistoryItems(meals, null, kid, dateStr);
 }
 
 function clearLunch(kid, dateStr){
@@ -6912,9 +6969,9 @@ async function pollForRemoteChanges(){
 (function(){
   if(window.innerWidth<=600 || window.matchMedia('(max-width:600px)').matches) return;
 
-  const KB_ALPHA=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['SHIFT','z','x','c','v','b','n','m','⌫'],['123','SPACE','DONE']];
-  const KB_NUM=[['1','2','3','4','5','6','7','8','9','0'],['-','/','.',',' ,"?",'!',"'",'"','(',')'],['#+=','%','@','&','*','_',';',':','⌫'],['ABC','SPACE','DONE']];
-  const KB_SYM=[['[',']','{','}','#','%','^','*','+','='],['_','|','~','<','>','$','€','£','·'],['123','.',',','?','!',"'",'⌫'],['ABC','SPACE','DONE']];
+  const KB_ALPHA=[['q','w','e','r','t','y','u','i','o','p'],['a','s','d','f','g','h','j','k','l'],['SHIFT','z','x','c','v','b','n','m','⌫'],['123','SPACE','ENTER','HIDE']];
+  const KB_NUM=[['1','2','3','4','5','6','7','8','9','0'],['-','/','.',',' ,"?",'!',"'",'"','(',')'],['#+=','%','@','&','*','_',';',':','⌫'],['ABC','SPACE','ENTER','HIDE']];
+  const KB_SYM=[['[',']','{','}','#','%','^','*','+','='],['_','|','~','<','>','$','€','£','·'],['123','.',',','?','!',"'",'⌫'],['ABC','SPACE','ENTER','HIDE']];
 
   let _shifted=false, _layer='alpha', _target=null;
   const KBH=300;
@@ -6926,9 +6983,10 @@ async function pollForRemoteChanges(){
       (rows[ri]||[]).forEach(k=>{
         const btn=document.createElement('button'); btn.className='tkb-key'; btn.type='button';
         const disp=_shifted&&k.length===1&&/[a-z]/.test(k)?k.toUpperCase():k;
-        btn.textContent=disp==='SPACE'?' ':disp==='DONE'?'Done':disp;
+        btn.textContent=disp==='SPACE'?' ':disp==='ENTER'?'↵':disp==='HIDE'?'⌨':disp;
         if(k==='SPACE') btn.classList.add('tkb-space');
-        if(k==='DONE')  btn.classList.add('tkb-action');
+        if(k==='ENTER') btn.classList.add('tkb-action');
+        if(k==='HIDE')  { btn.classList.add('tkb-num'); btn.style.fontSize='20px'; }
         if(k==='SHIFT') { btn.classList.add('tkb-shift'); if(_shifted) btn.classList.add('tkb-active'); }
         if(k==='123'||k==='ABC'||k==='#+=') btn.classList.add('tkb-num');
         if(k==='⌫') btn.classList.add('tkb-wide');
@@ -6941,7 +6999,16 @@ async function pollForRemoteChanges(){
 
   function _press(k){
     if(!_target) return;
-    if(k==='DONE'){_hide();return;}
+    if(k==='HIDE'){_hide();return;}
+    if(k==='ENTER'){
+      // Fire a real Enter keydown so app listeners (laddCommit, search, etc.) respond
+      if(_target){
+        _target.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',keyCode:13,which:13,bubbles:true}));
+        _target.dispatchEvent(new KeyboardEvent('keyup',  {key:'Enter',code:'Enter',keyCode:13,which:13,bubbles:true}));
+      }
+      _hide();
+      return;
+    }
     if(k==='SHIFT'){_shifted=!_shifted;_build();return;}
     if(k==='123'){_layer='num';_shifted=false;_build();return;}
     if(k==='ABC'){_layer='alpha';_shifted=false;_build();return;}
