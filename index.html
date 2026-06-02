@@ -1383,7 +1383,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.8</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v11.9</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -2056,7 +2056,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.8</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v11.9</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -5742,7 +5742,32 @@ async function lunchLoadData(){
     const data = await r.json();
     _lunchSha = data.sha;
     const loaded = JSON.parse(atob(data.content.replace(/\n/g,'')));
-    if(loaded && typeof loaded==='object') lunches = loaded;
+    if(loaded && typeof loaded==='object'){
+      lunches = loaded;
+      // Rebuild frequency map from all logged meals if not already present
+      // This handles existing lunches.json files that predate the _mealHistory field
+      if(!lunches._mealHistory || Object.keys(lunches._mealHistory).length === 0){
+        lunches._mealHistory = {};
+        const kids = Object.keys(lunches).filter(k => !k.startsWith('_'));
+        for(const kid of kids){
+          const kidData = lunches[kid];
+          if(typeof kidData !== 'object') continue;
+          for(const dateStr of Object.keys(kidData)){
+            const entry = kidData[dateStr];
+            if(!entry || !entry.name) continue;
+            // School lunches may be comma-separated items
+            const names = entry.type==='school' ? entry.name.split(', ') : [entry.name];
+            names.forEach(n => {
+              n = n.trim();
+              if(n.length < 2) return;
+              lunches._mealHistory[n] = (lunches._mealHistory[n] || 0) + 1;
+            });
+          }
+        }
+        // Save the rebuilt history back
+        lunchScheduleSave();
+      }
+    }
     _lunchesLoaded = true;
     if(appV==='meals') render();
   } catch(e){ console.error('Lunch load failed:', e); _lunchesLoaded=true; }
