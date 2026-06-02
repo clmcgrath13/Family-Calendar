@@ -6,11 +6,13 @@
     "items": [
       {
         "t": "apple sauce",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "Chicken nuggets",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-02"
       }
     ],
     "_history": [
