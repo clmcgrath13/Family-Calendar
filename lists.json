@@ -8,11 +8,6 @@
         "t": "apple sauce",
         "d": false,
         "doneDate": null
-      },
-      {
-        "t": "Chicken nuggets",
-        "d": true,
-        "doneDate": "2026-06-02"
       }
     ],
     "_history": [
