@@ -8,9 +8,14 @@
         "t": "apple sauce",
         "d": false,
         "doneDate": null
+      },
+      {
+        "t": "popcorn",
+        "d": false
       }
     ],
     "_history": [
+      "popcorn",
       "Chicken nuggets",
       "sugar cubes",
       "Honey mustard",
