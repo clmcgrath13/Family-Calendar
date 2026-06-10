@@ -57,7 +57,8 @@
       },
       {
         "t": "Ketchup",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "Salad bags",
