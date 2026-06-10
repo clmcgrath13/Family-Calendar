@@ -25,7 +25,8 @@
       },
       {
         "t": "Sweet Potatos",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "Yogurt (chobani)",
@@ -34,11 +35,13 @@
       },
       {
         "t": "Beef Broth",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "Chicken Broth",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "Chicken Thighs",
