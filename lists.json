@@ -48,6 +48,10 @@
       {
         "t": "Ground Beef",
         "d": false
+      },
+      {
+        "t": "Eggs",
+        "d": false
       }
     ],
     "_history": [
