@@ -20,6 +20,10 @@
       {
         "t": "bananas",
         "d": false
+      },
+      {
+        "t": "Sweet Potatos",
+        "d": false
       }
     ],
     "_history": [
