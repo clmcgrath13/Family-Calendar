@@ -16,9 +16,14 @@
       {
         "t": "Steak",
         "d": false
+      },
+      {
+        "t": "bananas",
+        "d": false
       }
     ],
     "_history": [
+      "bananas",
       "popcorn",
       "Chicken nuggets",
       "sugar cubes",
