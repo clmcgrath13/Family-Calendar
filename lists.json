@@ -6,8 +6,8 @@
     "items": [
       {
         "t": "apple sauce",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "popcorn",
