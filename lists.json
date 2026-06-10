@@ -42,7 +42,8 @@
       },
       {
         "t": "Chicken Thighs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "Ground Beef",
