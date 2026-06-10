@@ -1338,5 +1338,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1781097595243,
+    "title": "Take your pills",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-06-11",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "morning",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
