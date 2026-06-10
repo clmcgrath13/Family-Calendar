@@ -32,6 +32,10 @@
       {
         "t": "Beef Broth",
         "d": false
+      },
+      {
+        "t": "Chicken Broth",
+        "d": false
       }
     ],
     "_history": [
