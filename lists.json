@@ -15,11 +15,13 @@
       },
       {
         "t": "Steak",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "bananas",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-10"
       },
       {
         "t": "Sweet Potatos",
