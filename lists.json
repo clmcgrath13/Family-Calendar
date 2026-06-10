@@ -60,9 +60,14 @@
       {
         "t": "Chicken wings",
         "d": false
+      },
+      {
+        "t": "Bacon",
+        "d": false
       }
     ],
     "_history": [
+      "Bacon",
       "Chicken wings",
       "bananas",
       "popcorn",
@@ -117,7 +122,8 @@
       "Chicken Broth",
       "Beef Broth",
       "Tomato Sauce",
-      "Pasta"
+      "Pasta",
+      "Yogurt (chobani)"
     ]
   },
   {
