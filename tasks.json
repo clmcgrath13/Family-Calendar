@@ -1330,7 +1330,7 @@
     "done": false,
     "doneOn": [],
     "date": "2026-06-11",
-    "recur": "",
+    "recur": "daily",
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "morning",
