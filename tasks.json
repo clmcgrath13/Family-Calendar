@@ -1353,5 +1353,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1781097648752,
+    "title": "Fill up your water bottle",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-06-11",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "morning",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
