@@ -56,9 +56,14 @@
       {
         "t": "Salad bags",
         "d": false
+      },
+      {
+        "t": "Chicken wings",
+        "d": false
       }
     ],
     "_history": [
+      "Chicken wings",
       "bananas",
       "popcorn",
       "Chicken nuggets",
