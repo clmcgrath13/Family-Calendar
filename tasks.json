@@ -1422,5 +1422,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1781124362505,
+    "title": "Make sure beach badge is put away",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-06-11",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "evening",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
