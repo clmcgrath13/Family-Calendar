@@ -78,9 +78,14 @@
         "t": "Bacon",
         "d": true,
         "doneDate": "2026-06-10"
+      },
+      {
+        "t": "Pancake mix",
+        "d": false
       }
     ],
     "_history": [
+      "Pancake mix",
       "Bacon",
       "Chicken wings",
       "bananas",
