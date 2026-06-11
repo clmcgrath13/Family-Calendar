@@ -1346,8 +1346,10 @@
   {
     "id": 1781097648752,
     "title": "Fill up your water bottle",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-06-11"
+    ],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
