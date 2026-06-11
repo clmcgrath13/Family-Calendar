@@ -1382,8 +1382,10 @@
   {
     "id": 1781097550458,
     "title": "Put sunscreen on your face",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-06-11"
+    ],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
