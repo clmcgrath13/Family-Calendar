@@ -848,9 +848,7 @@
     "id": 1776002459364,
     "title": "Clean up the driveway",
     "done": true,
-    "doneOn": [
-      "2026-04-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -865,9 +863,7 @@
     "id": 1776002477717,
     "title": "fix fence for zorro",
     "done": true,
-    "doneOn": [
-      "2026-04-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1318,7 +1314,8 @@
     "title": "Take your pills",
     "done": true,
     "doneOn": [
-      "2026-06-11"
+      "2026-06-11",
+      "2026-06-12"
     ],
     "date": "2026-06-11",
     "recur": "daily",
