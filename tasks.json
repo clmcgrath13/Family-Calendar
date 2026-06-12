@@ -1346,6 +1346,21 @@
     ]
   },
   {
+    "id": 1781270107043,
+    "title": "get dressed",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-06-12",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "morning",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
+  },
+  {
     "id": 1781097648752,
     "title": "Fill up your water bottle",
     "done": true,
@@ -1442,21 +1457,6 @@
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "evening",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1781270107043,
-    "title": "get dressed",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-06-12",
-    "recur": "daily",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "morning",
     "stayUntilDone": false,
     "who": [
       "Collin"
