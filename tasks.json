@@ -1367,7 +1367,8 @@
     "title": "Clean up your place",
     "done": true,
     "doneOn": [
-      "2026-06-11"
+      "2026-06-11",
+      "2026-06-12"
     ],
     "date": "2026-06-11",
     "recur": "daily",
