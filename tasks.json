@@ -1446,5 +1446,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1781270107043,
+    "title": "get dressed",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-06-12",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "morning",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
