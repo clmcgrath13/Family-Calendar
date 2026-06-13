@@ -305,9 +305,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-04-13"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775672431043,
@@ -363,9 +361,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-04-13"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775668867871,
@@ -379,17 +375,13 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-04-13"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776105655707,
     "title": "Change Island Lightbulb",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -412,9 +404,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-04-13"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776340259012,
@@ -729,9 +719,7 @@
     "id": 1776106453513,
     "title": "put new seltzer box in the mini fridge",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "2026-04-13",
     "recur": "",
     "recurN": 1,
@@ -746,9 +734,7 @@
     "id": 1776107853789,
     "title": "Bring a box of seltzer up to the office",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -763,9 +749,7 @@
     "id": 1776042670985,
     "title": "Organize your sports drawer",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -780,9 +764,7 @@
     "id": 1775919246479,
     "title": "Throw away garbage in your workbench area in the garage",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -814,9 +796,7 @@
     "id": 1775919280332,
     "title": "Put stuff back on your dresser and night stand",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -882,9 +862,7 @@
     "id": 1776040466932,
     "title": "Order hot tub cover",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -899,9 +877,7 @@
     "id": 1776087319706,
     "title": "Put baseball in the calendar",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -916,9 +892,7 @@
     "id": 1776092526494,
     "title": "Find Zyrtec for collin",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -934,9 +908,7 @@
     "id": 1776104533310,
     "title": "Fill up the generator with gas",
     "done": true,
-    "doneOn": [
-      "2026-04-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1372,7 +1344,8 @@
     "done": true,
     "doneOn": [
       "2026-06-11",
-      "2026-06-12"
+      "2026-06-12",
+      "2026-06-13"
     ],
     "date": "2026-06-11",
     "recur": "daily",
