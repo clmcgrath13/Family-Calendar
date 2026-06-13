@@ -1441,10 +1441,8 @@
   {
     "id": 1781097705405,
     "title": "Read for 30 minutes",
-    "done": true,
-    "doneOn": [
-      "2026-06-12"
-    ],
+    "done": false,
+    "doneOn": [],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
@@ -1460,7 +1458,8 @@
     "title": "Make sure beach badge is put away",
     "done": true,
     "doneOn": [
-      "2026-06-11"
+      "2026-06-11",
+      "2026-06-12"
     ],
     "date": "2026-06-11",
     "recur": "daily",
