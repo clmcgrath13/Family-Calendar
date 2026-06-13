@@ -1328,7 +1328,8 @@
     "title": "get dressed",
     "done": true,
     "doneOn": [
-      "2026-06-12"
+      "2026-06-12",
+      "2026-06-13"
     ],
     "date": "2026-06-12",
     "recur": "daily",
