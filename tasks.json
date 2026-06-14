@@ -1,20 +1,5 @@
 [
   {
-    "id": 1776108713307,
-    "title": "Finish the laundry",
-    "done": true,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775668846809,
     "title": "Put your clothes away",
     "done": true,
