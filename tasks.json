@@ -1283,5 +1283,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1781458057165,
+    "title": "Journal Entry #1",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-06-14",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
