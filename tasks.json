@@ -451,21 +451,6 @@
     ]
   },
   {
-    "id": 1775755960905,
-    "title": "Review Finances in Quicken",
-    "done": true,
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "who": [
-      "Dad",
-      "Mom"
-    ],
-    "doneOn": []
-  },
-  {
     "id": 1775756044638,
     "title": "Clean fridge drawers",
     "done": false,
