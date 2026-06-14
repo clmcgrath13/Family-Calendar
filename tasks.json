@@ -319,21 +319,6 @@
     "doneOn": []
   },
   {
-    "id": 1776105655707,
-    "title": "Change Island Lightbulb",
-    "done": true,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1775688776638,
     "title": "Clean bathroom light",
     "done": true,
