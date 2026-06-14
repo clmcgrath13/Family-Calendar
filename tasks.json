@@ -731,7 +731,9 @@
     "id": 1776107853789,
     "title": "Bring a box of seltzer up to the office",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-06-14"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
