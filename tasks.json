@@ -562,6 +562,9 @@
     "stayUntilDone": true,
     "who": [
       "Dad"
+    ],
+    "skipDates": [
+      "2026-06-14"
     ]
   },
   {
