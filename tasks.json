@@ -1258,10 +1258,8 @@
   {
     "id": 1781097705405,
     "title": "Read for 30 minutes",
-    "done": true,
-    "doneOn": [
-      "2026-06-17"
-    ],
+    "done": false,
+    "doneOn": [],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
