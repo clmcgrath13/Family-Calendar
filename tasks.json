@@ -1314,7 +1314,7 @@
     "recurN": 1,
     "recurDays": [],
     "timeOfDay": "morning",
-    "stayUntilDone": false,
+    "stayUntilDone": true,
     "who": [
       "Collin"
     ]
