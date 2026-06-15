@@ -1393,7 +1393,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v12.3</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v12.4</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -2066,7 +2066,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v12.3</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v12.4</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -7089,16 +7089,23 @@ async function pollForRemoteChanges(){
 
   function _attach(){
     if(window.innerWidth<=600) return;
+    // Only suppress native keyboard on touch-primary devices (the Pi kiosk)
+    // On desktop/laptop with a real keyboard, never set readonly
+    const isTouchPrimary = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
     document.querySelectorAll('input[type="text"],input[type="search"],input:not([type]),textarea').forEach(el=>{
       if(el.dataset.tkbAttached) return;
       el.dataset.tkbAttached='1';
-      el.addEventListener('focus',()=>_show(el));
-      el.setAttribute('readonly','readonly');
-      el.addEventListener('touchstart',()=>{
-        el.removeAttribute('readonly');
-        setTimeout(()=>el.setAttribute('readonly','readonly'),100);
-        _show(el);
-      },{passive:true});
+      if(isTouchPrimary){
+        // Touch-only device: suppress native keyboard, use our custom one
+        el.setAttribute('readonly','readonly');
+        el.addEventListener('touchstart',()=>{
+          el.removeAttribute('readonly');
+          setTimeout(()=>el.setAttribute('readonly','readonly'),100);
+          _show(el);
+        },{passive:true});
+        el.addEventListener('focus',()=>_show(el));
+      }
+      // On desktop: just let the native keyboard work, no readonly, no custom keyboard
     });
   }
 
