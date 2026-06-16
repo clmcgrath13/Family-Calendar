@@ -1318,21 +1318,6 @@
     "recurEnd": "2026-06-16"
   },
   {
-    "id": 1781531162970,
-    "title": "journal entry 2",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-06-21",
-    "recur": "daily",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "morning",
-    "stayUntilDone": true,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
     "id": 1781531198957,
     "title": "journal entry 3",
     "done": false,
