@@ -1393,7 +1393,7 @@ body {
     <svg viewBox="0 0 20 20" fill="none"><path d="M10 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" stroke="currentColor" stroke-width="1.5"/><path d="M16.5 10c0-.34-.03-.67-.08-1l1.5-1.17-1.5-2.6-1.77.72a6 6 0 00-1.72-1l-.27-1.95h-3l-.27 1.95a6 6 0 00-1.72 1L5.58 5.23l-1.5 2.6 1.5 1.17A6.1 6.1 0 005.5 10c0 .34.03.67.08 1l-1.5 1.17 1.5 2.6 1.77-.72a6 6 0 001.72 1l.27 1.95h3l.27-1.95a6 6 0 001.72-1l1.77.72 1.5-2.6-1.5-1.17c.05-.33.08-.66.08-1z" stroke="currentColor" stroke-width="1.5"/></svg>
     <span class="nav-lbl">Settings</span>
   </button>
-  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v12.6</div>
+  <div style="font-size:9px;color:#333;text-align:center;padding:4px 0 2px;user-select:none">v12.7</div>
 </nav>
 
 <!-- Mobile bottom nav (hidden on desktop via CSS) -->
@@ -2066,7 +2066,7 @@ function utb(){
     if(showMobSettings){
       nowBar.style.display = 'flex';
       nowBar.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:22px;font-weight:400;color:var(--text)">Settings</div>
-        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v12.6</div>`;
+        <div style="font-size:11px;color:var(--muted);font-weight:600;margin-left:6px;align-self:flex-end;padding-bottom:3px">v12.7</div>`;
     } else {
       nowBar.style.display = showNow ? 'flex' : 'none';
       if(showNow && nowBar.querySelector('#tb-now-date') === null){
@@ -5250,7 +5250,7 @@ function _taskModalHtml(t){
       <label class="flbl">Date</label>
       <div class="tog-wrap">
         <label class="tog"><input type="checkbox" id="t-has-date" ${hasDate?'checked':''}
-          onchange="document.getElementById('t-date-row').style.display=this.checked?'':'none'">
+          onchange="document.getElementById('t-date-row').style.display=this.checked?'':'none'; document.getElementById('t-stay-row').style.display=this.checked||document.getElementById('t-has-recur')?.checked?'':'none'">
           <span class="tog-slider"></span></label>
         <span style="font-size:13px;color:var(--muted)">${hasDate?'On a date':'Any time'}</span>
       </div>
@@ -5274,7 +5274,7 @@ function _taskModalHtml(t){
       <label class="flbl">Repeats</label>
       <div class="tog-wrap">
         <label class="tog"><input type="checkbox" id="t-has-recur" ${hasRecur?'checked':''}
-          onchange="document.getElementById('t-recur-rows').style.display=this.checked?'':'none'">
+          onchange="document.getElementById('t-recur-rows').style.display=this.checked?'':'none'; document.getElementById('t-stay-row').style.display=this.checked||document.getElementById('t-has-date')?.checked?'':'none'">
           <span class="tog-slider"></span></label>
         <span style="font-size:13px;color:var(--muted)">Recurring</span>
       </div>
@@ -5314,14 +5314,14 @@ function _taskModalHtml(t){
         <label class="flbl">On these days</label>
         <div class="dow-picker" id="t-dow-picker">${dowBtns}</div>
       </div>
-      <div class="fld" style="margin-top:6px">
-        <div class="tog-wrap">
-          <label class="tog"><input type="checkbox" id="t-stay-until-done" ${isEdit&&t.stayUntilDone?'checked':''}>
-            <span class="tog-slider"></span></label>
-          <span style="font-size:13px;color:var(--muted)">Keep showing until completed</span>
-        </div>
-        <div style="font-size:10px;color:var(--muted);margin-top:3px;margin-left:48px">If unchecked, task disappears after its scheduled day</div>
+    </div>
+    <div class="fld" style="margin-top:6px" id="t-stay-row" ${!hasDate && !hasRecur ? 'style="display:none"' : ''}>
+      <div class="tog-wrap">
+        <label class="tog"><input type="checkbox" id="t-stay-until-done" ${isEdit&&t.stayUntilDone?'checked':''}>
+          <span class="tog-slider"></span></label>
+        <span style="font-size:13px;color:var(--muted)">Keep showing until completed</span>
       </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:3px;margin-left:48px">Task stays visible from its start date until checked off</div>
     </div>`;
 }
 
@@ -5418,7 +5418,7 @@ function addTask(){
         recurN: parseInt(document.getElementById('t-interval')?.value)||1,
         recurDays: [...document.querySelectorAll('#t-dow-picker .dow-btn.sel')].map(b=>parseInt(b.getAttribute('onclick').match(/\d+/)[0])),
         timeOfDay: document.getElementById('ttod')?.value||'',
-        stayUntilDone: document.getElementById('t-has-recur')?.checked && (document.getElementById('t-stay-until-done')?.checked||false),
+        stayUntilDone: document.getElementById('t-stay-until-done')?.checked || false,
       });
       return;
     }
@@ -5433,7 +5433,7 @@ function addTask(){
                     .map(b => parseInt(b.getAttribute('onclick').match(/\d+/)[0]));
     }
     const timeOfDay = document.getElementById('ttod')?.value || '';
-    const stayUntilDone = hasRecur && (document.getElementById('t-stay-until-done')?.checked || false);
+    const stayUntilDone = document.getElementById('t-stay-until-done')?.checked || false;
     tasks.push({id:Date.now(), title, done:false, doneOn:[], date, recur, recurN, recurDays, timeOfDay, stayUntilDone, who:[...window._selPeople]});
     closeM(); render(); ghScheduleSave();
   };
@@ -5462,7 +5462,7 @@ function editTask(id){
       title, date, recur, recurN, recurDays,
       who: [...window._selPeople],
       timeOfDay: document.getElementById('ttod')?.value || '',
-      stayUntilDone: recur ? (document.getElementById('t-stay-until-done')?.checked||false) : false,
+      stayUntilDone: document.getElementById('t-stay-until-done')?.checked || false,
     };
 
     // If recurring, ask scope
