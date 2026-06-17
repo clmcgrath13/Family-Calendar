@@ -19,7 +19,9 @@
     "id": 1776210385833,
     "title": "Call bug and lawn guys about May 9th party",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-06-16"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -319,9 +321,7 @@
     "id": 1776340259012,
     "title": "Clean car",
     "done": true,
-    "doneOn": [
-      "2026-04-17"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
