@@ -534,7 +534,6 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-04-21",
       "2026-05-09",
       "2026-05-19",
       "2026-05-31",
@@ -768,9 +767,7 @@
     "id": 1776108698970,
     "title": "Put your clothes away",
     "done": true,
-    "doneOn": [
-      "2026-04-21"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -785,9 +782,7 @@
     "id": 1776117377000,
     "title": "Organize medicine cabinet",
     "done": true,
-    "doneOn": [
-      "2026-04-21"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -898,9 +893,7 @@
     "id": 1776128569327,
     "title": "Clean your room",
     "done": true,
-    "doneOn": [
-      "2026-04-21"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1121,7 +1114,8 @@
       "2026-06-15",
       "2026-06-17",
       "2026-06-18",
-      "2026-06-20"
+      "2026-06-20",
+      "2026-06-21"
     ],
     "date": "2026-06-11",
     "recur": "daily",
