@@ -39,7 +39,8 @@
       },
       {
         "t": "American Cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-22"
       },
       {
         "t": "Tortilla Chips",
