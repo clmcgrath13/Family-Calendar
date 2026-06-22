@@ -44,7 +44,8 @@
       },
       {
         "t": "Tortilla Chips",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-22"
       },
       {
         "t": "Chicken Thighs",
