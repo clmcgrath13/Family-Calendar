@@ -6,11 +6,13 @@
     "items": [
       {
         "t": "Pancake mix",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-22"
       },
       {
         "t": "American Cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-06-22"
       },
       {
         "t": "Steak",
