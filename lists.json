@@ -47,9 +47,14 @@
       {
         "t": "Chicken Thighs",
         "d": false
+      },
+      {
+        "t": "Broccoli",
+        "d": false
       }
     ],
     "_history": [
+      "Broccoli",
       "Pancake mix",
       "Bacon",
       "Chicken wings",
