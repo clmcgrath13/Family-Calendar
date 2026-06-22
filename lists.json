@@ -19,6 +19,10 @@
       {
         "t": "Eggs",
         "d": false
+      },
+      {
+        "t": "Pancake mix",
+        "d": false
       }
     ],
     "_history": [
