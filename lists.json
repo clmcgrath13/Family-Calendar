@@ -35,6 +35,10 @@
       {
         "t": "Burgers",
         "d": false
+      },
+      {
+        "t": "American Cheese",
+        "d": false
       }
     ],
     "_history": [
