@@ -51,9 +51,14 @@
       {
         "t": "Broccoli",
         "d": false
+      },
+      {
+        "t": "Fries",
+        "d": false
       }
     ],
     "_history": [
+      "Fries",
       "Broccoli",
       "Pancake mix",
       "Bacon",
