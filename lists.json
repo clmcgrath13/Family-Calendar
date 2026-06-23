@@ -5,58 +5,8 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Pancake mix",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "American Cheese",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "Eggs",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "bananas",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
         "t": "Burger buns",
         "d": false
-      },
-      {
-        "t": "Burgers",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "American Cheese",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "Tortilla Chips",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "Chicken Thighs",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "Broccoli",
-        "d": true,
-        "doneDate": "2026-06-22"
       },
       {
         "t": "Fries",
@@ -69,16 +19,6 @@
       {
         "t": "Ravioli",
         "d": false
-      },
-      {
-        "t": "Onions",
-        "d": true,
-        "doneDate": "2026-06-22"
-      },
-      {
-        "t": "Salad bags",
-        "d": true,
-        "doneDate": "2026-06-22"
       }
     ],
     "_history": [
