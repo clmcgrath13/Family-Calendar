@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Burger buns",
-        "d": false
-      },
-      {
         "t": "Fries",
         "d": false
       },
