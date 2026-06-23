@@ -185,7 +185,9 @@
     "id": 1775957529123,
     "title": "Clean the grill",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-06-23"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -208,7 +210,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-06-23"
+    ]
   },
   {
     "id": 1776910891955,
@@ -253,7 +257,8 @@
     "timeOfDay": "",
     "who": [
       "Dad"
-    ]
+    ],
+    "doneOn": []
   },
   {
     "id": 1776040445132,
