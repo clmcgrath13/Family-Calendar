@@ -803,7 +803,9 @@
     "id": 1776128557614,
     "title": "Clean your room",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-06-24"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
