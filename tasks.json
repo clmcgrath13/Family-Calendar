@@ -820,7 +820,9 @@
     "id": 1776454172947,
     "title": "Clean up the driveway",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-06-24"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
