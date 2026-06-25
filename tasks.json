@@ -705,7 +705,9 @@
     "id": 1775919280332,
     "title": "Put stuff back on your dresser and night stand",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-06-24"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
