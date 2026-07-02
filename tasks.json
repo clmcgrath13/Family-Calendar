@@ -928,8 +928,10 @@
   {
     "id": 1776340266844,
     "title": "Clean car",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-02"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
