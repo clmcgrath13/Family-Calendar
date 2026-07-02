@@ -1471,5 +1471,20 @@
       "Collin"
     ],
     "recurEnd": "2026-06-27"
+  },
+  {
+    "id": 1783017317188,
+    "title": "Test Generator",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-01",
+    "recur": "monthly",
+    "recurN": 3,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
