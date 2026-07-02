@@ -1527,14 +1527,15 @@
     "title": "Review Finances",
     "done": false,
     "doneOn": [],
-    "date": "2026-07-01",
+    "date": "2026-07-02",
     "recur": "monthly",
     "recurN": 3,
     "recurDays": [],
     "timeOfDay": "",
     "stayUntilDone": true,
     "who": [
-      "Dad"
+      "Dad",
+      "Mom"
     ]
   },
   {
