@@ -1612,5 +1612,21 @@
       "Dad",
       "Mom"
     ]
+  },
+  {
+    "id": 1783017615142,
+    "title": "Organize the Medicine Cabinet",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-01",
+    "recur": "monthly",
+    "recurN": 3,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad",
+      "Mom"
+    ]
   }
 ]
