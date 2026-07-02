@@ -793,7 +793,9 @@
     "id": 1776117377000,
     "title": "Organize medicine cabinet",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-07-01"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
