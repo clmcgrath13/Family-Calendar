@@ -18,7 +18,8 @@
       },
       {
         "t": "Fries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-02"
       },
       {
         "t": "American Cheese",
