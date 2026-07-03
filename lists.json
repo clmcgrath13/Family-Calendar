@@ -18,19 +18,23 @@
       },
       {
         "t": "American Cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-03"
       },
       {
         "t": "potatos",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-03"
       },
       {
         "t": "onions",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-03"
       },
       {
         "t": "Bread",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-03"
       }
     ],
     "_history": [
