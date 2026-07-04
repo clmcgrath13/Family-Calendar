@@ -19,9 +19,14 @@
       {
         "t": "Mussels",
         "d": false
+      },
+      {
+        "t": "clams",
+        "d": false
       }
     ],
     "_history": [
+      "clams",
       "Mussels",
       "Onions",
       "Ravioli",
