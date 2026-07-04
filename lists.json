@@ -5,37 +5,12 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Fries",
-        "d": true,
-        "doneDate": "2026-07-03"
-      },
-      {
         "t": "Ravioli",
         "d": false
       },
       {
         "t": "Chicken nuggets",
         "d": false
-      },
-      {
-        "t": "American Cheese",
-        "d": true,
-        "doneDate": "2026-07-03"
-      },
-      {
-        "t": "potatos",
-        "d": true,
-        "doneDate": "2026-07-03"
-      },
-      {
-        "t": "onions",
-        "d": true,
-        "doneDate": "2026-07-03"
-      },
-      {
-        "t": "Bread",
-        "d": true,
-        "doneDate": "2026-07-03"
       }
     ],
     "_history": [
