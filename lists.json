@@ -16,7 +16,8 @@
       },
       {
         "t": "Burger buns",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-04"
       },
       {
         "t": "Mussels",
