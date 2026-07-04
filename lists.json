@@ -20,15 +20,18 @@
       },
       {
         "t": "Mussels",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-04"
       },
       {
         "t": "clams",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-04"
       },
       {
         "t": "limes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-04"
       }
     ],
     "_history": [
