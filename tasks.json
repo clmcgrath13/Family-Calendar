@@ -949,7 +949,8 @@
     "title": "Change Hot Tub Filter",
     "done": true,
     "doneOn": [
-      "2026-05-25"
+      "2026-05-25",
+      "2026-07-05"
     ],
     "date": "2026-05-15",
     "recur": "weekly",
