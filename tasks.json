@@ -1554,8 +1554,10 @@
   {
     "id": 1783017455317,
     "title": "Clean Stove Exhaust Fan",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-05"
+    ],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
