@@ -1693,5 +1693,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1783291416957,
+    "title": "Journal Entry 7",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-26",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "morning",
+    "stayUntilDone": true,
+    "who": [
+      "Collin"
+    ]
   }
 ]
