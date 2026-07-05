@@ -5,36 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Ravioli",
-        "d": true,
-        "doneDate": "2026-07-04"
-      },
-      {
-        "t": "Chicken nuggets",
-        "d": true,
-        "doneDate": "2026-07-04"
-      },
-      {
-        "t": "Burger buns",
-        "d": true,
-        "doneDate": "2026-07-04"
-      },
-      {
-        "t": "Mussels",
-        "d": true,
-        "doneDate": "2026-07-04"
-      },
-      {
-        "t": "clams",
-        "d": true,
-        "doneDate": "2026-07-04"
-      },
-      {
-        "t": "limes",
-        "d": true,
-        "doneDate": "2026-07-04"
-      },
-      {
         "t": "Butter",
         "d": false
       }
