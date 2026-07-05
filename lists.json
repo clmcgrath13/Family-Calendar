@@ -7,9 +7,14 @@
       {
         "t": "Butter",
         "d": false
+      },
+      {
+        "t": "ham",
+        "d": false
       }
     ],
     "_history": [
+      "ham",
       "clams",
       "Mussels",
       "Onions",
