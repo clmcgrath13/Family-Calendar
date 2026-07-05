@@ -1648,5 +1648,20 @@
       "Dad",
       "Mom"
     ]
+  },
+  {
+    "id": 1783291317975,
+    "title": "Journal Entry 4",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-05",
+    "recur": "daily",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Collin"
+    ]
   }
 ]
