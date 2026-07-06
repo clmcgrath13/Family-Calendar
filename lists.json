@@ -15,6 +15,10 @@
       {
         "t": "turkey",
         "d": false
+      },
+      {
+        "t": "American Cheese",
+        "d": false
       }
     ],
     "_history": [
