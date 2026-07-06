@@ -1743,5 +1743,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1783343175276,
+    "title": "Clean up squishies from the basement",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-06",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Ava"
+    ]
   }
 ]
