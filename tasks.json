@@ -1637,10 +1637,8 @@
   {
     "id": 1783017594726,
     "title": "Organize the Junk Drawer",
-    "done": true,
-    "doneOn": [
-      "2026-07-06"
-    ],
+    "done": false,
+    "doneOn": [],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
