@@ -10,19 +10,23 @@
       },
       {
         "t": "ham",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-07"
       },
       {
         "t": "turkey",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-07"
       },
       {
         "t": "American Cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-07"
       },
       {
         "t": "Oranges",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-07"
       }
     ],
     "_history": [
