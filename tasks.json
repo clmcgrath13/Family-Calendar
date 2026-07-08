@@ -1786,8 +1786,10 @@
   {
     "id": 1783343196901,
     "title": "Vacuum the playroom carpet",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-08"
+    ],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
