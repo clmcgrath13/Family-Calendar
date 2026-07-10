@@ -219,9 +219,7 @@
     "id": 1776910891955,
     "title": "Set up movie screen and projector for Ava party",
     "done": true,
-    "doneOn": [
-      "2026-05-09"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -374,7 +372,6 @@
     "title": "Clean Zorro's Water Bowl",
     "done": true,
     "doneOn": [
-      "2026-05-09",
       "2026-05-19",
       "2026-05-25",
       "2026-06-14",
@@ -542,7 +539,6 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-05-09",
       "2026-05-19",
       "2026-05-31",
       "2026-06-16",
@@ -897,9 +893,7 @@
     "id": 1776127891655,
     "title": "Move the Legos against the wall in the basement",
     "done": true,
-    "doneOn": [
-      "2026-05-09"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -966,9 +960,7 @@
     "id": 1776994280617,
     "title": "cleanyour room",
     "done": true,
-    "doneOn": [
-      "2026-05-09"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1674,8 +1666,10 @@
   {
     "id": 1783017615142,
     "title": "Organize the Medicine Cabinet",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-10"
+    ],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
