@@ -458,7 +458,7 @@
   {
     "id": 1775756044638,
     "title": "Clean fridge drawers",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -466,6 +466,9 @@
     "timeOfDay": "",
     "who": [
       "Dad"
+    ],
+    "doneOn": [
+      "2026-07-10"
     ]
   },
   {
