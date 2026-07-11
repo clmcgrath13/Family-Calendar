@@ -3,7 +3,12 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [],
+    "items": [
+      {
+        "t": "Eggs",
+        "d": false
+      }
+    ],
     "_history": [
       "turkey",
       "ham",
