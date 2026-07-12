@@ -6,11 +6,13 @@
     "items": [
       {
         "t": "Eggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-12"
       },
       {
         "t": "Milk",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-12"
       },
       {
         "t": "Chicken Thighs",
