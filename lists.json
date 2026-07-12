@@ -16,11 +16,13 @@
       },
       {
         "t": "Chicken Thighs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-12"
       },
       {
         "t": "Steak",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-12"
       },
       {
         "t": "Mexican Cheese",
