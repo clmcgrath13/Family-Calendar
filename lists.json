@@ -26,7 +26,8 @@
       },
       {
         "t": "Mexican Cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-12"
       },
       {
         "t": "Broccoli",
