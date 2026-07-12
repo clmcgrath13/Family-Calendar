@@ -27,9 +27,14 @@
       {
         "t": "Broccoli",
         "d": false
+      },
+      {
+        "t": "dish  soap",
+        "d": false
       }
     ],
     "_history": [
+      "dish  soap",
       "turkey",
       "ham",
       "clams",
