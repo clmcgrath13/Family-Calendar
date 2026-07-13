@@ -5,31 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Eggs",
-        "d": true,
-        "doneDate": "2026-07-12"
-      },
-      {
-        "t": "Milk",
-        "d": true,
-        "doneDate": "2026-07-12"
-      },
-      {
-        "t": "Chicken Thighs",
-        "d": true,
-        "doneDate": "2026-07-12"
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-07-12"
-      },
-      {
-        "t": "Mexican Cheese",
-        "d": true,
-        "doneDate": "2026-07-12"
-      },
-      {
         "t": "Broccoli",
         "d": false
       },
