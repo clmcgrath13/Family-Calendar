@@ -22,9 +22,14 @@
       {
         "t": "American Cheese",
         "d": false
+      },
+      {
+        "t": "bell peppers",
+        "d": false
       }
     ],
     "_history": [
+      "bell peppers",
       "dish  soap",
       "turkey",
       "ham",
