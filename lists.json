@@ -10,11 +10,13 @@
       },
       {
         "t": "dish  soap",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-14"
       },
       {
         "t": "Seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-14"
       }
     ],
     "_history": [
