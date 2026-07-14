@@ -50,7 +50,6 @@
     "title": "Take out Recycling (cardboard)",
     "done": true,
     "doneOn": [
-      "2026-05-14",
       "2026-06-11"
     ],
     "date": "2026-04-16",
@@ -1835,6 +1834,21 @@
     "stayUntilDone": true,
     "who": [
       "Ava"
+    ]
+  },
+  {
+    "id": 1784043064174,
+    "title": "Trim driveway bushes",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-14",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
     ]
   }
 ]
