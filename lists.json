@@ -30,6 +30,10 @@
       {
         "t": "Onions",
         "d": false
+      },
+      {
+        "t": "Fries",
+        "d": false
       }
     ],
     "_history": [
