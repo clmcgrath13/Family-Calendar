@@ -1880,5 +1880,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1784043105070,
+    "title": "clean up trimmings",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-14",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
