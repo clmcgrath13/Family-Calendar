@@ -18,6 +18,10 @@
         "t": "Seltzer",
         "d": true,
         "doneDate": "2026-07-14"
+      },
+      {
+        "t": "American Cheese",
+        "d": false
       }
     ],
     "_history": [
