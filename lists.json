@@ -6,7 +6,8 @@
     "items": [
       {
         "t": "Broccoli",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-14"
       },
       {
         "t": "dish  soap",
