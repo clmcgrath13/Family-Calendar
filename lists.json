@@ -5,21 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Broccoli",
-        "d": true,
-        "doneDate": "2026-07-14"
-      },
-      {
-        "t": "dish  soap",
-        "d": true,
-        "doneDate": "2026-07-14"
-      },
-      {
-        "t": "Seltzer",
-        "d": true,
-        "doneDate": "2026-07-14"
-      },
-      {
         "t": "American Cheese",
         "d": false
       },
