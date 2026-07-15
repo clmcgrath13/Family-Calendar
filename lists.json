@@ -30,12 +30,13 @@
       },
       {
         "t": "American Cheese",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-07-15"
       },
       {
         "t": "Burgers",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-15"
       },
       {
         "t": "Seltzer",
