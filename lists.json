@@ -19,6 +19,10 @@
       {
         "t": "Fries",
         "d": false
+      },
+      {
+        "t": "sugar cubes",
+        "d": false
       }
     ],
     "_history": [
