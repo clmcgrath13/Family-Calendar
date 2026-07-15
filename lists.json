@@ -10,23 +10,28 @@
       },
       {
         "t": "bell peppers",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-15"
       },
       {
         "t": "Onions",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-15"
       },
       {
         "t": "Fries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-15"
       },
       {
         "t": "sugar cubes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-15"
       },
       {
         "t": "American Cheese",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "Burgers",
