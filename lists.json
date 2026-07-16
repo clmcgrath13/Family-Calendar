@@ -7,41 +7,6 @@
       {
         "t": "American Cheese",
         "d": false
-      },
-      {
-        "t": "bell peppers",
-        "d": true,
-        "doneDate": "2026-07-15"
-      },
-      {
-        "t": "Onions",
-        "d": true,
-        "doneDate": "2026-07-15"
-      },
-      {
-        "t": "Fries",
-        "d": true,
-        "doneDate": "2026-07-15"
-      },
-      {
-        "t": "sugar cubes",
-        "d": true,
-        "doneDate": "2026-07-15"
-      },
-      {
-        "t": "American Cheese",
-        "d": true,
-        "doneDate": "2026-07-15"
-      },
-      {
-        "t": "Burgers",
-        "d": true,
-        "doneDate": "2026-07-15"
-      },
-      {
-        "t": "Seltzer",
-        "d": true,
-        "doneDate": "2026-07-15"
       }
     ],
     "_history": [
