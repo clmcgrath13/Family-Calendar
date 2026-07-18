@@ -1887,8 +1887,10 @@
   {
     "id": 1784043095390,
     "title": "trim bush by front door",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-18"
+    ],
     "date": "2026-07-14",
     "recur": "",
     "recurN": 1,
