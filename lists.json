@@ -19,9 +19,14 @@
       {
         "t": "Seltzer",
         "d": false
+      },
+      {
+        "t": "apple juice",
+        "d": false
       }
     ],
     "_history": [
+      "apple juice",
       "cold cuts",
       "q tips",
       "bell peppers",
