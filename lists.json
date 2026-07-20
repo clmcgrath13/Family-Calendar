@@ -10,7 +10,8 @@
       },
       {
         "t": "q tips",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-20"
       },
       {
         "t": "cold cuts",
@@ -19,15 +20,18 @@
       },
       {
         "t": "Seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-20"
       },
       {
         "t": "apple juice",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-20"
       },
       {
         "t": "Eggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-20"
       }
     ],
     "_history": [
