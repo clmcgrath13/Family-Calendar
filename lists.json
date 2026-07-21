@@ -3,38 +3,7 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [
-      {
-        "t": "American Cheese",
-        "d": true,
-        "doneDate": "2026-07-20"
-      },
-      {
-        "t": "q tips",
-        "d": true,
-        "doneDate": "2026-07-20"
-      },
-      {
-        "t": "cold cuts",
-        "d": true,
-        "doneDate": "2026-07-20"
-      },
-      {
-        "t": "Seltzer",
-        "d": true,
-        "doneDate": "2026-07-20"
-      },
-      {
-        "t": "apple juice",
-        "d": true,
-        "doneDate": "2026-07-20"
-      },
-      {
-        "t": "Eggs",
-        "d": true,
-        "doneDate": "2026-07-20"
-      }
-    ],
+    "items": [],
     "_history": [
       "apple juice",
       "cold cuts",
