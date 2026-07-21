@@ -1757,8 +1757,10 @@
   {
     "id": 1783291390011,
     "title": "Journal Entry 6",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-21"
+    ],
     "date": "2026-07-19",
     "recur": "",
     "recurN": 1,
