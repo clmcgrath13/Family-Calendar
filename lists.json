@@ -134,9 +134,14 @@
       {
         "t": "snacks",
         "d": false
+      },
+      {
+        "t": "fan",
+        "d": false
       }
     ],
     "_history": [
+      "fan",
       "snacks",
       "seltzer",
       "chargers",
