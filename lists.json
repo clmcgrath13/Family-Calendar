@@ -11,6 +11,10 @@
       {
         "t": "String Cheese",
         "d": false
+      },
+      {
+        "t": "Yogurt",
+        "d": false
       }
     ],
     "_history": [
