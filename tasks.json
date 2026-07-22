@@ -525,7 +525,9 @@
     "id": 1775922913717,
     "title": "Set up 50ft pitchers mound",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-07-22"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
