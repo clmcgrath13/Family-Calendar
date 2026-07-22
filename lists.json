@@ -182,9 +182,14 @@
       {
         "t": "bucket golf",
         "d": false
+      },
+      {
+        "t": "soap",
+        "d": false
       }
     ],
     "_history": [
+      "soap",
       "bucket golf",
       "gummies",
       "speaker",
