@@ -162,9 +162,14 @@
       {
         "t": "rain pants",
         "d": false
+      },
+      {
+        "t": "golf jacket",
+        "d": false
       }
     ],
     "_history": [
+      "golf jacket",
       "rain pants",
       "golf bag",
       "golf shoes",
