@@ -1028,7 +1028,9 @@
     "id": 1779114943475,
     "title": "Add hook to closet door",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-07-22"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
