@@ -1045,7 +1045,9 @@
     "id": 1779115011122,
     "title": "Closet hanging rail in corner",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-07-22"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
