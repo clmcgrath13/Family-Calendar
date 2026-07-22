@@ -126,9 +126,14 @@
       {
         "t": "chargers",
         "d": false
+      },
+      {
+        "t": "seltzer",
+        "d": false
       }
     ],
     "_history": [
+      "seltzer",
       "chargers",
       "shorts",
       "Sleeping bag"
