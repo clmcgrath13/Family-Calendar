@@ -146,9 +146,14 @@
       {
         "t": "sunscreen",
         "d": false
+      },
+      {
+        "t": "balls",
+        "d": false
       }
     ],
     "_history": [
+      "balls",
       "sunscreen",
       "suit case",
       "poker chips",
