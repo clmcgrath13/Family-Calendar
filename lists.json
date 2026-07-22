@@ -3,7 +3,12 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [],
+    "items": [
+      {
+        "t": "cream cheese",
+        "d": false
+      }
+    ],
     "_history": [
       "apple juice",
       "cold cuts",
