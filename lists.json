@@ -138,9 +138,14 @@
       {
         "t": "poker chips",
         "d": false
+      },
+      {
+        "t": "suit case",
+        "d": false
       }
     ],
     "_history": [
+      "suit case",
       "poker chips",
       "fan",
       "snacks",
