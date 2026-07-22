@@ -7,6 +7,10 @@
       {
         "t": "cream cheese",
         "d": false
+      },
+      {
+        "t": "String Cheese",
+        "d": false
       }
     ],
     "_history": [
