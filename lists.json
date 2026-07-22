@@ -194,9 +194,14 @@
       {
         "t": "golf watch",
         "d": false
+      },
+      {
+        "t": "golf watch charger",
+        "d": false
       }
     ],
     "_history": [
+      "golf watch charger",
       "golf watch",
       "water bottles",
       "soap",
