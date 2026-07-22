@@ -170,9 +170,14 @@
       {
         "t": "hat",
         "d": false
+      },
+      {
+        "t": "speaker",
+        "d": false
       }
     ],
     "_history": [
+      "speaker",
       "hat",
       "golf jacket",
       "rain pants",
