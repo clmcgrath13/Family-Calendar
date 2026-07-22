@@ -114,7 +114,14 @@
     "id": 1775952130298,
     "name": "Vacation",
     "icon": "beach",
-    "items": [],
-    "_history": []
+    "items": [
+      {
+        "t": "Sleeping bag",
+        "d": false
+      }
+    ],
+    "_history": [
+      "Sleeping bag"
+    ]
   }
 ]
