@@ -154,9 +154,14 @@
       {
         "t": "golf shoes",
         "d": false
+      },
+      {
+        "t": "golf bag",
+        "d": false
       }
     ],
     "_history": [
+      "golf bag",
       "golf shoes",
       "balls",
       "sunscreen",
