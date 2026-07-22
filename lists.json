@@ -158,9 +158,14 @@
       {
         "t": "golf bag",
         "d": false
+      },
+      {
+        "t": "rain pants",
+        "d": false
       }
     ],
     "_history": [
+      "rain pants",
       "golf bag",
       "golf shoes",
       "balls",
