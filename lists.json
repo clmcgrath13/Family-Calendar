@@ -142,9 +142,14 @@
       {
         "t": "suit case",
         "d": false
+      },
+      {
+        "t": "sunscreen",
+        "d": false
       }
     ],
     "_history": [
+      "sunscreen",
       "suit case",
       "poker chips",
       "fan",
