@@ -118,9 +118,14 @@
       {
         "t": "Sleeping bag",
         "d": false
+      },
+      {
+        "t": "shorts",
+        "d": false
       }
     ],
     "_history": [
+      "shorts",
       "Sleeping bag"
     ]
   }
