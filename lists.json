@@ -150,9 +150,14 @@
       {
         "t": "balls",
         "d": false
+      },
+      {
+        "t": "golf shoes",
+        "d": false
       }
     ],
     "_history": [
+      "golf shoes",
       "balls",
       "sunscreen",
       "suit case",
