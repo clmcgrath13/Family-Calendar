@@ -186,9 +186,14 @@
       {
         "t": "soap",
         "d": false
+      },
+      {
+        "t": "water bottles",
+        "d": false
       }
     ],
     "_history": [
+      "water bottles",
       "soap",
       "bucket golf",
       "gummies",
