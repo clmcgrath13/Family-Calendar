@@ -122,9 +122,14 @@
       {
         "t": "shorts",
         "d": false
+      },
+      {
+        "t": "chargers",
+        "d": false
       }
     ],
     "_history": [
+      "chargers",
       "shorts",
       "Sleeping bag"
     ]
