@@ -174,9 +174,14 @@
       {
         "t": "speaker",
         "d": false
+      },
+      {
+        "t": "gummies",
+        "d": false
       }
     ],
     "_history": [
+      "gummies",
       "speaker",
       "hat",
       "golf jacket",
