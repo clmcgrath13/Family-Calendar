@@ -135,11 +135,13 @@
       },
       {
         "t": "fan",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-22"
       },
       {
         "t": "poker chips",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-22"
       },
       {
         "t": "suit case",
