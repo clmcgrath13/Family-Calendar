@@ -132,7 +132,8 @@
       },
       {
         "t": "snacks",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "fan",
