@@ -117,7 +117,8 @@
     "items": [
       {
         "t": "Sleeping bag",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-22"
       },
       {
         "t": "chargers",
