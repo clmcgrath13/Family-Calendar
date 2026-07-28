@@ -725,7 +725,9 @@
     "id": 1775942849014,
     "title": "Put stuff back in the master bath",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-07-28"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
