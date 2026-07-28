@@ -24,9 +24,14 @@
         "t": "oreos",
         "d": true,
         "doneDate": "2026-07-28"
+      },
+      {
+        "t": "parmesean cheese",
+        "d": false
       }
     ],
     "_history": [
+      "parmesean cheese",
       "oreos",
       "apple juice",
       "cold cuts",
