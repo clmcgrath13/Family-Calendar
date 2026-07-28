@@ -22,7 +22,8 @@
       },
       {
         "t": "oreos",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-28"
       }
     ],
     "_history": [
