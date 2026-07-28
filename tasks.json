@@ -372,7 +372,6 @@
     "title": "Clean Zorro's Water Bowl",
     "done": true,
     "doneOn": [
-      "2026-05-25",
       "2026-06-14",
       "2026-06-23",
       "2026-07-10",
@@ -434,7 +433,6 @@
       "Mom"
     ],
     "doneOn": [
-      "2026-05-27",
       "2026-06-10",
       "2026-06-24",
       "2026-07-01"
@@ -947,7 +945,6 @@
     "title": "Change Hot Tub Filter",
     "done": true,
     "doneOn": [
-      "2026-05-25",
       "2026-07-05"
     ],
     "date": "2026-05-15",
@@ -1062,9 +1059,7 @@
     "id": 1779115099860,
     "title": "Bug stickies in kitchen",
     "done": true,
-    "doneOn": [
-      "2026-05-25"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1079,9 +1074,7 @@
     "id": 1779116495051,
     "title": "Check water softener",
     "done": true,
-    "doneOn": [
-      "2026-05-25"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1928,6 +1921,21 @@
     "stayUntilDone": true,
     "who": [
       "Dad"
+    ]
+  },
+  {
+    "id": 1785265200472,
+    "title": "put your hamper with dirty clothes in the closet next to the washing machine",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-28",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
     ]
   }
 ]
