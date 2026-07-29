@@ -35,11 +35,13 @@
       },
       {
         "t": "Eggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-29"
       },
       {
         "t": "Yogurt Smoothies",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-29"
       },
       {
         "t": "Jelly",
