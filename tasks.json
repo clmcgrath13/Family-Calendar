@@ -1994,5 +1994,20 @@
     "who": [
       "Collin"
     ]
+  },
+  {
+    "id": 1785351049335,
+    "title": "Bring up garbage cans",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-07-29",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
+    ]
   }
 ]
