@@ -1966,53 +1966,8 @@
     ]
   },
   {
-    "id": 1785350831693,
-    "title": "Pick up the dog poop",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-07-29",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1785350842498,
-    "title": "Clean up the driveway",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-07-29",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1785350861603,
-    "title": "Try on your football pads and jersey",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-07-29",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
-    "id": 1785350874097,
-    "title": "Bring up the garbage cans",
+    "id": 1785351021728,
+    "title": "Pick up dog poop",
     "done": false,
     "doneOn": [],
     "date": "2026-07-29",
