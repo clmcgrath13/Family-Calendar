@@ -1894,8 +1894,10 @@
   {
     "id": 1784043081372,
     "title": "cut down tree next to garage",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-07-30"
+    ],
     "date": "2026-07-14",
     "recur": "",
     "recurN": 1,
