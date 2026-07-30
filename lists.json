@@ -9,39 +9,9 @@
         "d": false
       },
       {
-        "t": "String Cheese",
-        "d": true,
-        "doneDate": "2026-07-29"
-      },
-      {
-        "t": "Yogurt",
-        "d": true,
-        "doneDate": "2026-07-29"
-      },
-      {
-        "t": "Yogurt Smoothies",
-        "d": true,
-        "doneDate": "2026-07-29"
-      },
-      {
         "t": "parmesean cheese",
         "d": false,
         "doneDate": null
-      },
-      {
-        "t": "Tomato Sauce",
-        "d": true,
-        "doneDate": "2026-07-29"
-      },
-      {
-        "t": "Eggs",
-        "d": true,
-        "doneDate": "2026-07-29"
-      },
-      {
-        "t": "Yogurt Smoothies",
-        "d": true,
-        "doneDate": "2026-07-29"
       },
       {
         "t": "Jelly",
