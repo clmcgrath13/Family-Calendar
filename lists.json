@@ -5,23 +5,8 @@
     "icon": "cart",
     "items": [
       {
-        "t": "cream cheese",
-        "d": true,
-        "doneDate": "2026-07-30"
-      },
-      {
-        "t": "parmesean cheese",
-        "d": true,
-        "doneDate": "2026-07-30"
-      },
-      {
         "t": "Jelly",
         "d": false
-      },
-      {
-        "t": "Yogurt",
-        "d": true,
-        "doneDate": "2026-07-30"
       },
       {
         "t": "salt",
