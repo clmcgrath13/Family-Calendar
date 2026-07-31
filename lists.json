@@ -6,12 +6,13 @@
     "items": [
       {
         "t": "cream cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-07-30"
       },
       {
         "t": "parmesean cheese",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-07-30"
       },
       {
         "t": "Jelly",
