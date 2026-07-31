@@ -20,9 +20,14 @@
       {
         "t": "Yogurt",
         "d": false
+      },
+      {
+        "t": "salt",
+        "d": false
       }
     ],
     "_history": [
+      "salt",
       "parmesean cheese",
       "oreos",
       "apple juice",
