@@ -11,9 +11,14 @@
       {
         "t": "salt",
         "d": false
+      },
+      {
+        "t": "whipped cream",
+        "d": false
       }
     ],
     "_history": [
+      "whipped cream",
       "salt",
       "parmesean cheese",
       "oreos",
