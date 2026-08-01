@@ -15,9 +15,14 @@
       {
         "t": "whipped cream",
         "d": false
+      },
+      {
+        "t": "kids toothpaste",
+        "d": false
       }
     ],
     "_history": [
+      "kids toothpaste",
       "whipped cream",
       "salt",
       "parmesean cheese",
