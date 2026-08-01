@@ -542,7 +542,6 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-05-31",
       "2026-06-16",
       "2026-07-02",
       "2026-07-12"
@@ -2072,6 +2071,21 @@
     "stayUntilDone": true,
     "who": [
       "Dad"
+    ]
+  },
+  {
+    "id": 1785589198454,
+    "title": "throw out dead worms",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-08-01",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "morning",
+    "stayUntilDone": false,
+    "who": [
+      "Collin"
     ]
   }
 ]
