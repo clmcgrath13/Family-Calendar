@@ -1078,7 +1078,9 @@
     "id": 1779116495051,
     "title": "Check water softener",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-05"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
