@@ -69,7 +69,8 @@
       },
       {
         "t": "Yogurt",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-09"
       },
       {
         "t": "Strawberries",
