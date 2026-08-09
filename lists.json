@@ -11,7 +11,8 @@
       },
       {
         "t": "salt",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "whipped cream",
