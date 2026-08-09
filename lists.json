@@ -64,9 +64,14 @@
       {
         "t": "Strawberries",
         "d": false
+      },
+      {
+        "t": "limmes",
+        "d": false
       }
     ],
     "_history": [
+      "limmes",
       "French toast sticks",
       "kids toothpaste",
       "whipped cream",
