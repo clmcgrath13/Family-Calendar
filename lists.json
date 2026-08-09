@@ -51,6 +51,10 @@
       {
         "t": "apples",
         "d": false
+      },
+      {
+        "t": "Yogurt Smoothies",
+        "d": false
       }
     ],
     "_history": [
