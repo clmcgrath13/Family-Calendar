@@ -30,8 +30,8 @@
       },
       {
         "t": "chicken noodle soup",
-        "d": true,
-        "doneDate": "2026-08-09"
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "Chicken Thighs",
