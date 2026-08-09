@@ -47,6 +47,10 @@
       {
         "t": "eggs",
         "d": false
+      },
+      {
+        "t": "apples",
+        "d": false
       }
     ],
     "_history": [
