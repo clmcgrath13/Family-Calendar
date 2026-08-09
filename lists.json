@@ -35,9 +35,14 @@
       {
         "t": "Chicken Thighs",
         "d": false
+      },
+      {
+        "t": "French toast sticks",
+        "d": false
       }
     ],
     "_history": [
+      "French toast sticks",
       "kids toothpaste",
       "whipped cream",
       "salt",
