@@ -2129,5 +2129,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1786374938391,
+    "title": "Fix playroom camera",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-08-10",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
