@@ -11,9 +11,7 @@
     "who": [
       "Collin"
     ],
-    "doneOn": [
-      "2026-06-10"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776210385833,
@@ -437,7 +435,6 @@
       "Mom"
     ],
     "doneOn": [
-      "2026-06-10",
       "2026-06-24",
       "2026-07-01",
       "2026-08-05"
@@ -549,7 +546,8 @@
       "2026-06-16",
       "2026-07-02",
       "2026-07-12",
-      "2026-08-04"
+      "2026-08-04",
+      "2026-08-10"
     ],
     "date": "2026-04-19",
     "recur": "weekly",
@@ -866,9 +864,7 @@
     "id": 1776127817480,
     "title": "Hang up your tools on your workbench in the garage",
     "done": true,
-    "doneOn": [
-      "2026-06-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -883,9 +879,7 @@
     "id": 1776127835922,
     "title": "put away your fishing stuff by your workbench in the garage",
     "done": true,
-    "doneOn": [
-      "2026-06-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1115,9 +1109,7 @@
     "id": 1779189547173,
     "title": "put your clothes away",
     "done": true,
-    "doneOn": [
-      "2026-06-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
