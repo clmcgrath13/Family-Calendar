@@ -869,7 +869,9 @@
     "id": 1776127835922,
     "title": "put away your fishing stuff by your workbench in the garage",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-11"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
