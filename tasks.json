@@ -852,7 +852,9 @@
     "id": 1776127817480,
     "title": "Hang up your tools on your workbench in the garage",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-11"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
