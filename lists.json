@@ -7,9 +7,14 @@
       {
         "t": "beef sticks",
         "d": false
+      },
+      {
+        "t": "chocolate milm",
+        "d": false
       }
     ],
     "_history": [
+      "chocolate milm",
       "beef sticks",
       "limmes",
       "French toast sticks",
