@@ -47,9 +47,7 @@
     "id": 1776338972212,
     "title": "Take out Recycling (cardboard)",
     "done": true,
-    "doneOn": [
-      "2026-06-11"
-    ],
+    "doneOn": [],
     "date": "2026-04-16",
     "recur": "weekly",
     "recurN": 2,
@@ -452,9 +450,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-06-11"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775756044638,
@@ -484,9 +480,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-06-11"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775826092780,
@@ -501,9 +495,7 @@
       "Mom",
       "Dad"
     ],
-    "doneOn": [
-      "2026-06-11"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775826152755,
@@ -517,9 +509,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-06-11"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775922913717,
@@ -611,9 +601,7 @@
     "id": 1775919233714,
     "title": "Move rocks from driveway to the woods",
     "done": true,
-    "doneOn": [
-      "2026-06-11"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -694,9 +682,7 @@
     "id": 1775919257796,
     "title": "Clean your workbench area in the basement",
     "done": true,
-    "doneOn": [
-      "2026-06-11"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1125,7 +1111,6 @@
     "title": "Take your pills",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-13",
       "2026-06-14",
@@ -1169,7 +1154,6 @@
     "title": "Eat breakfast",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-13",
       "2026-06-14",
@@ -1252,7 +1236,6 @@
     "title": "Fill up your water bottle",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-13",
       "2026-06-14",
@@ -1294,7 +1277,6 @@
     "title": "Clean up your place",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-13",
       "2026-06-14",
@@ -1338,7 +1320,6 @@
     "title": "Put sunscreen on your face",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-13",
       "2026-06-14",
@@ -1375,7 +1356,6 @@
     "title": "Put sunscreen on arms and neck",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-13",
       "2026-06-14",
@@ -1443,7 +1423,6 @@
     "title": "Make sure beach badge is put away",
     "done": true,
     "doneOn": [
-      "2026-06-11",
       "2026-06-12",
       "2026-06-14",
       "2026-06-24",
@@ -2070,8 +2049,10 @@
   {
     "id": 1785351921494,
     "title": "Oil change",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-08-11"
+    ],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
