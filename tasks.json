@@ -2,7 +2,7 @@
   {
     "id": 1775668846809,
     "title": "Put your clothes away",
-    "done": true,
+    "done": false,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -11,9 +11,7 @@
     "who": [
       "Collin"
     ],
-    "doneOn": [
-      "2026-08-11"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776210385833,
@@ -852,7 +850,9 @@
     "id": 1776127817480,
     "title": "Hang up your tools on your workbench in the garage",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-11"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
