@@ -373,7 +373,6 @@
     "title": "Clean Zorro's Water Bowl",
     "done": true,
     "doneOn": [
-      "2026-06-14",
       "2026-06-23",
       "2026-07-10",
       "2026-07-22",
@@ -482,7 +481,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-08-14"
+    ]
   },
   {
     "id": 1775826092780,
@@ -497,7 +498,9 @@
       "Mom",
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-08-14"
+    ]
   },
   {
     "id": 1775826152755,
@@ -633,9 +636,7 @@
     "id": 1776107853789,
     "title": "Bring a box of seltzer up to the office",
     "done": true,
-    "doneOn": [
-      "2026-06-14"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -650,9 +651,7 @@
     "id": 1776042670985,
     "title": "Organize your sports drawer",
     "done": true,
-    "doneOn": [
-      "2026-06-14"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -667,9 +666,7 @@
     "id": 1775919246479,
     "title": "Throw away garbage in your workbench area in the garage",
     "done": true,
-    "doneOn": [
-      "2026-06-14"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -733,9 +730,7 @@
     "id": 1776002459364,
     "title": "Clean up the driveway",
     "done": true,
-    "doneOn": [
-      "2026-06-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -750,9 +745,7 @@
     "id": 1776002477717,
     "title": "fix fence for zorro",
     "done": true,
-    "doneOn": [
-      "2026-06-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1117,9 +1110,6 @@
     "title": "Take your pills",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-15",
       "2026-06-17",
       "2026-06-18",
@@ -1160,9 +1150,6 @@
     "title": "Eat breakfast",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-15",
       "2026-06-17",
       "2026-06-18",
@@ -1203,9 +1190,6 @@
     "title": "get dressed",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-17",
       "2026-06-18",
       "2026-06-22",
@@ -1242,9 +1226,6 @@
     "title": "Fill up your water bottle",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-17",
       "2026-06-18",
       "2026-06-20",
@@ -1283,9 +1264,6 @@
     "title": "Clean up your place",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-15",
       "2026-06-17",
       "2026-06-18",
@@ -1326,9 +1304,6 @@
     "title": "Put sunscreen on your face",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-17",
       "2026-06-18",
       "2026-06-24",
@@ -1362,9 +1337,6 @@
     "title": "Put sunscreen on arms and neck",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-13",
-      "2026-06-14",
       "2026-06-17",
       "2026-06-18",
       "2026-06-24",
@@ -1429,8 +1401,6 @@
     "title": "Make sure beach badge is put away",
     "done": true,
     "doneOn": [
-      "2026-06-12",
-      "2026-06-14",
       "2026-06-24",
       "2026-06-25",
       "2026-07-02",
