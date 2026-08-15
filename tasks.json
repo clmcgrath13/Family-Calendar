@@ -691,7 +691,9 @@
     "id": 1775919257796,
     "title": "Clean your workbench area in the basement",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-15"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
