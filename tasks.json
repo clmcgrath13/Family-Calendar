@@ -1108,7 +1108,9 @@
     "id": 1779189547173,
     "title": "put your clothes away",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-15"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
