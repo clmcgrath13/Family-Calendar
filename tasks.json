@@ -676,7 +676,9 @@
     "id": 1775919246479,
     "title": "Throw away garbage in your workbench area in the garage",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-08-15"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
