@@ -3,12 +3,7 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [
-      {
-        "t": "beef sticks",
-        "d": false
-      }
-    ],
+    "items": [],
     "_history": [
       "chocolate milm",
       "beef sticks",
