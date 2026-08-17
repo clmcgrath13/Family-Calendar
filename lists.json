@@ -23,9 +23,14 @@
       {
         "t": "carrot sticks",
         "d": false
+      },
+      {
+        "t": "salteines",
+        "d": false
       }
     ],
     "_history": [
+      "salteines",
       "carrot sticks",
       "gum",
       "Solo cups multi color",
