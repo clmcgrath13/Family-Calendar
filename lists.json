@@ -19,9 +19,14 @@
       {
         "t": "Burgers",
         "d": false
+      },
+      {
+        "t": "carrot sticks",
+        "d": false
       }
     ],
     "_history": [
+      "carrot sticks",
       "gum",
       "Solo cups multi color",
       "Sea Salt grinder",
