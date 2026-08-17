@@ -3,8 +3,14 @@
     "id": 1775919137615,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [],
+    "items": [
+      {
+        "t": "Sea Salt grinder",
+        "d": false
+      }
+    ],
     "_history": [
+      "Sea Salt grinder",
       "chocolate milm",
       "beef sticks",
       "limmes",
