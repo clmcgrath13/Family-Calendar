@@ -27,9 +27,14 @@
       {
         "t": "saltines",
         "d": false
+      },
+      {
+        "t": "mac and cheese",
+        "d": false
       }
     ],
     "_history": [
+      "mac and cheese",
       "saltines",
       "carrot sticks",
       "gum",
