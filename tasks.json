@@ -2092,5 +2092,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1786974984478,
+    "title": "Properly label fuses in basement",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-08-17",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
