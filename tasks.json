@@ -417,9 +417,7 @@
     "who": [
       "Ava"
     ],
-    "doneOn": [
-      "2026-06-17"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775696663826,
@@ -1094,9 +1092,7 @@
     "id": 1779189523529,
     "title": "put your clothes away",
     "done": true,
-    "doneOn": [
-      "2026-06-17"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1127,7 +1123,6 @@
     "title": "Take your pills",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-20",
       "2026-06-21",
@@ -1167,7 +1162,6 @@
     "title": "Eat breakfast",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-20",
       "2026-06-21",
@@ -1207,7 +1201,6 @@
     "title": "get dressed",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-22",
       "2026-06-23",
@@ -1243,7 +1236,6 @@
     "title": "Fill up your water bottle",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-20",
       "2026-06-21",
@@ -1281,7 +1273,6 @@
     "title": "Clean up your place",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-20",
       "2026-06-21",
@@ -1321,7 +1312,6 @@
     "title": "Put sunscreen on your face",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-24",
       "2026-06-25",
@@ -1354,7 +1344,6 @@
     "title": "Put sunscreen on arms and neck",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-24",
       "2026-06-25",
@@ -1529,7 +1518,6 @@
     "title": "Journal Entry 1",
     "done": true,
     "doneOn": [
-      "2026-06-17",
       "2026-06-18",
       "2026-06-20",
       "2026-06-24",
@@ -2088,6 +2076,21 @@
     "stayUntilDone": false,
     "who": [
       "Collin"
+    ]
+  },
+  {
+    "id": 1786974959748,
+    "title": "Get gas for generator",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-08-17",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
     ]
   }
 ]
