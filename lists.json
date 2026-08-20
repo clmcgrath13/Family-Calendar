@@ -6,7 +6,8 @@
     "items": [
       {
         "t": "Sea Salt grinder",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-20"
       },
       {
         "t": "Solo cups multi color",
