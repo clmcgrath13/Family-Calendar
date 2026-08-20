@@ -33,7 +33,8 @@
       },
       {
         "t": "mac and cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-20"
       },
       {
         "t": "Mexican Cheese",
