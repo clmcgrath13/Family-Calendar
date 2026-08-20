@@ -59,9 +59,14 @@
       {
         "t": "Cream",
         "d": false
+      },
+      {
+        "t": "bone broth (chicken)",
+        "d": false
       }
     ],
     "_history": [
+      "bone broth (chicken)",
       "mac and cheese",
       "saltines",
       "carrot sticks",
