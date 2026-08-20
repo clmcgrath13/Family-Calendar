@@ -46,11 +46,13 @@
       },
       {
         "t": "seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-20"
       },
       {
         "t": "French toast sticks",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-20"
       },
       {
         "t": "Steak",
