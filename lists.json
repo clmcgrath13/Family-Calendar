@@ -66,7 +66,8 @@
       },
       {
         "t": "Cream",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-20"
       },
       {
         "t": "bone broth (chicken)",
