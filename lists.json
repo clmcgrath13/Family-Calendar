@@ -143,9 +143,14 @@
       {
         "t": "7’ wall",
         "d": false
+      },
+      {
+        "t": "30” door",
+        "d": false
       }
     ],
     "_history": [
+      "30” door",
       "7’ wall",
       "interior door",
       "drywall",
