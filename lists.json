@@ -5,77 +5,12 @@
     "icon": "cart",
     "items": [
       {
-        "t": "Sea Salt grinder",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "Solo cups multi color",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
         "t": "gum",
         "d": false
       },
       {
         "t": "Burgers",
         "d": false
-      },
-      {
-        "t": "carrot sticks",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "saltines",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "mac and cheese",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "Mexican Cheese",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "Mozzarella",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "seltzer",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "French toast sticks",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "milk",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "Cream",
-        "d": true,
-        "doneDate": "2026-08-20"
-      },
-      {
-        "t": "bone broth (chicken)",
-        "d": true,
-        "doneDate": "2026-08-20"
       }
     ],
     "_history": [
