@@ -123,9 +123,14 @@
       {
         "t": "101” tall",
         "d": false
+      },
+      {
+        "t": "laser measurer",
+        "d": false
       }
     ],
     "_history": [
+      "laser measurer",
       "101” tall",
       "Stuff for 15’ long wall"
     ]
