@@ -119,9 +119,14 @@
       {
         "t": "Stuff for 15’ long wall",
         "d": false
+      },
+      {
+        "t": "101” tall",
+        "d": false
       }
     ],
     "_history": [
+      "101” tall",
       "Stuff for 15’ long wall"
     ]
   },
