@@ -115,8 +115,15 @@
     "id": 1775952123606,
     "name": "Home Depot",
     "icon": "tools",
-    "items": [],
-    "_history": []
+    "items": [
+      {
+        "t": "Stuff for 15’ long wall",
+        "d": false
+      }
+    ],
+    "_history": [
+      "Stuff for 15’ long wall"
+    ]
   },
   {
     "id": 1775952130298,
