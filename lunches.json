@@ -193,11 +193,26 @@
     "2026-06-01": {
       "name": "Chili",
       "type": "custom"
+    },
+    "2026-08-28": {
+      "name": "Lentil Soup",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Lentil Soup",
     "Chili",
     "Bagel",
     "Pasta with Mariners sauce"
-  ]
+  ],
+  "_mealHistory": {
+    "Lentil Soup": 6,
+    "Bagel W/ Cream Cheese": 8,
+    "Chili & Chips": 4,
+    "Chicken Parm": 1,
+    "Pasta": 1,
+    "Pasta With Red Sauce": 3,
+    "Chicken Noodle Soup": 2,
+    "Chicken Noodle  Soup": 1
+  }
 }
