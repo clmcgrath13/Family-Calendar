@@ -19,9 +19,14 @@
       {
         "t": "fingerling potatoes",
         "d": false
+      },
+      {
+        "t": "Maldon salt flakes",
+        "d": false
       }
     ],
     "_history": [
+      "Maldon salt flakes",
       "fingerling potatoes",
       "Asparagus",
       "bone broth (chicken)",
@@ -127,11 +132,11 @@
     "icon": "tools",
     "items": [
       {
-        "t": "Stuff for 15â long wall",
+        "t": "Stuff for 15Ã¢ÂÂ long wall",
         "d": false
       },
       {
-        "t": "101â tall",
+        "t": "101Ã¢ÂÂ tall",
         "d": false
       },
       {
@@ -151,11 +156,11 @@
         "d": false
       },
       {
-        "t": "7â wall",
+        "t": "7Ã¢ÂÂ wall",
         "d": false
       },
       {
-        "t": "30â door",
+        "t": "30Ã¢ÂÂ door",
         "d": false
       },
       {
@@ -164,14 +169,14 @@
       }
     ],
     "_history": [
-      "30â door",
-      "7â wall",
+      "30Ã¢ÂÂ door",
+      "7Ã¢ÂÂ wall",
       "interior door",
       "drywall",
       "screws",
       "laser measurer",
-      "101â tall",
-      "Stuff for 15â long wall"
+      "101Ã¢ÂÂ tall",
+      "Stuff for 15Ã¢ÂÂ long wall"
     ]
   },
   {
