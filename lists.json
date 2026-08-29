@@ -11,9 +11,14 @@
       {
         "t": "Burgers",
         "d": false
+      },
+      {
+        "t": "Asparagus",
+        "d": false
       }
     ],
     "_history": [
+      "Asparagus",
       "bone broth (chicken)",
       "mac and cheese",
       "saltines",
@@ -117,11 +122,11 @@
     "icon": "tools",
     "items": [
       {
-        "t": "Stuff for 15’ long wall",
+        "t": "Stuff for 15â long wall",
         "d": false
       },
       {
-        "t": "101” tall",
+        "t": "101â tall",
         "d": false
       },
       {
@@ -141,11 +146,11 @@
         "d": false
       },
       {
-        "t": "7’ wall",
+        "t": "7â wall",
         "d": false
       },
       {
-        "t": "30” door",
+        "t": "30â door",
         "d": false
       },
       {
@@ -154,14 +159,14 @@
       }
     ],
     "_history": [
-      "30” door",
-      "7’ wall",
+      "30â door",
+      "7â wall",
       "interior door",
       "drywall",
       "screws",
       "laser measurer",
-      "101” tall",
-      "Stuff for 15’ long wall"
+      "101â tall",
+      "Stuff for 15â long wall"
     ]
   },
   {
