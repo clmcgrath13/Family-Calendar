@@ -15,9 +15,14 @@
       {
         "t": "Asparagus",
         "d": false
+      },
+      {
+        "t": "fingerling potatoes",
+        "d": false
       }
     ],
     "_history": [
+      "fingerling potatoes",
       "Asparagus",
       "bone broth (chicken)",
       "mac and cheese",
