@@ -131,8 +131,14 @@
     "id": 1775952123606,
     "name": "Home Depot",
     "icon": "tools",
-    "items": [],
+    "items": [
+      {
+        "t": "R 7 rigid insulation",
+        "d": false
+      }
+    ],
     "_history": [
+      "R 7 rigid insulation",
       "30ÃÂ¢ÃÂÃÂ door",
       "7ÃÂ¢ÃÂÃÂ wall",
       "interior door",
