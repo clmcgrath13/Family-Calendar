@@ -18,7 +18,8 @@
       },
       {
         "t": "fingerling potatoes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-08-30"
       },
       {
         "t": "Maldon salt flakes",
@@ -132,11 +133,11 @@
     "icon": "tools",
     "items": [
       {
-        "t": "Stuff for 15Ã¢ÂÂ long wall",
+        "t": "Stuff for 15ÃÂ¢ÃÂÃÂ long wall",
         "d": false
       },
       {
-        "t": "101Ã¢ÂÂ tall",
+        "t": "101ÃÂ¢ÃÂÃÂ tall",
         "d": false
       },
       {
@@ -156,11 +157,11 @@
         "d": false
       },
       {
-        "t": "7Ã¢ÂÂ wall",
+        "t": "7ÃÂ¢ÃÂÃÂ wall",
         "d": false
       },
       {
-        "t": "30Ã¢ÂÂ door",
+        "t": "30ÃÂ¢ÃÂÃÂ door",
         "d": false
       },
       {
@@ -169,14 +170,14 @@
       }
     ],
     "_history": [
-      "30Ã¢ÂÂ door",
-      "7Ã¢ÂÂ wall",
+      "30ÃÂ¢ÃÂÃÂ door",
+      "7ÃÂ¢ÃÂÃÂ wall",
       "interior door",
       "drywall",
       "screws",
       "laser measurer",
-      "101Ã¢ÂÂ tall",
-      "Stuff for 15Ã¢ÂÂ long wall"
+      "101ÃÂ¢ÃÂÃÂ tall",
+      "Stuff for 15ÃÂ¢ÃÂÃÂ long wall"
     ]
   },
   {
