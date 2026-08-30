@@ -131,12 +131,7 @@
     "id": 1775952123606,
     "name": "Home Depot",
     "icon": "tools",
-    "items": [
-      {
-        "t": "Stuff for 15ÃÂ¢ÃÂÃÂ long wall",
-        "d": false
-      }
-    ],
+    "items": [],
     "_history": [
       "30ÃÂ¢ÃÂÃÂ door",
       "7ÃÂ¢ÃÂÃÂ wall",
