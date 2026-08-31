@@ -27,9 +27,14 @@
       {
         "t": "sweet potatoes",
         "d": false
+      },
+      {
+        "t": "garlic",
+        "d": false
       }
     ],
     "_history": [
+      "garlic",
       "sweet potatoes",
       "Maldon salt flakes",
       "fingerling potatoes",
