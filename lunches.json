@@ -217,9 +217,14 @@
     "2026-09-10": {
       "name": "Mandarin Orange Popcorn Chicken, Steamed Rice, Steamed Broccoli, Muffin Bag Meal, Cereal Bag, Bagel Bag with Yogurt and Cheese, PB&J Uncrustable Meal, Ham & Cheese on a Kaiser Roll, French Toast Bite Bento Box, Chicken Caesar Salad",
       "type": "school"
+    },
+    "2026-08-31": {
+      "name": "Chicken Noodle Soup",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Chicken Noodle Soup",
     "Bagel W/ Cream Cheese",
     "Lentil Soup",
     "Chili",
