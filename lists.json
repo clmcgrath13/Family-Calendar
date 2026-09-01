@@ -50,8 +50,8 @@
       },
       {
         "t": "black peppercorns",
-        "d": true,
-        "doneDate": "2026-09-01"
+        "d": false,
+        "doneDate": null
       }
     ],
     "_history": [
