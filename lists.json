@@ -47,9 +47,14 @@
       {
         "t": "Burritos",
         "d": false
+      },
+      {
+        "t": "black peppercorns",
+        "d": false
       }
     ],
     "_history": [
+      "black peppercorns",
       "worchester sauce",
       "garlic",
       "sweet potatoes",
