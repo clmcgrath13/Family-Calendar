@@ -10,7 +10,8 @@
       },
       {
         "t": "Burgers",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-01"
       },
       {
         "t": "Asparagus",
