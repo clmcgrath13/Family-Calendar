@@ -47,8 +47,8 @@
       },
       {
         "t": "black peppercorns",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-09-02"
       },
       {
         "t": "tortillla chips",
