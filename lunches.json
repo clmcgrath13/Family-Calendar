@@ -223,11 +223,12 @@
       "type": "custom"
     },
     "2026-09-02": {
-      "name": "Bagel W/ Cream Cheese",
+      "name": "Chili & Chips",
       "type": "custom"
     }
   },
   "_avaCustoms": [
+    "Chili & Chips",
     "Bagel W/ Cream Cheese",
     "Chicken Noodle Soup",
     "Lentil Soup",
