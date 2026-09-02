@@ -38,7 +38,8 @@
       },
       {
         "t": "Worcestershire Sauce",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-02"
       },
       {
         "t": "Burritos",
