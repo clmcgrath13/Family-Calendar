@@ -46,7 +46,8 @@
       },
       {
         "t": "Oranges",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-06"
       },
       {
         "t": "screws",
