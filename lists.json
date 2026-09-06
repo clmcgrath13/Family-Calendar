@@ -26,11 +26,13 @@
       },
       {
         "t": "garlic",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-06"
       },
       {
         "t": "Strawberries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-06"
       },
       {
         "t": "Chicken Thighs",
