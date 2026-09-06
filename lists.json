@@ -22,7 +22,8 @@
       },
       {
         "t": "sweet potatoes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-06"
       },
       {
         "t": "garlic",
