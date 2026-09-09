@@ -7,9 +7,14 @@
       {
         "t": "burritos",
         "d": false
+      },
+      {
+        "t": "seltzer",
+        "d": false
       }
     ],
     "_history": [
+      "seltzer",
       "burritos"
     ]
   },
