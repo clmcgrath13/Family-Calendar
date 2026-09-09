@@ -10,5 +10,11 @@
     "name": "Home Depot",
     "icon": "tools",
     "items": []
+  },
+  {
+    "id": 1788976915764,
+    "name": "Vacation",
+    "icon": "beach",
+    "items": []
   }
 ]
