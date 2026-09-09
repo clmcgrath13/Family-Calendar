@@ -3,7 +3,15 @@
     "id": 1788976898065,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": []
+    "items": [
+      {
+        "t": "burritos",
+        "d": false
+      }
+    ],
+    "_history": [
+      "burritos"
+    ]
   },
   {
     "id": 1788976903264,
