@@ -16,5 +16,11 @@
     "name": "Vacation",
     "icon": "beach",
     "items": []
+  },
+  {
+    "id": 1788976925581,
+    "name": "BJs or Costco",
+    "icon": "checklist",
+    "items": []
   }
 ]
