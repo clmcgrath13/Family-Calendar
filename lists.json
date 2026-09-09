@@ -22,7 +22,15 @@
     "id": 1788976903264,
     "name": "Home Depot",
     "icon": "tools",
-    "items": []
+    "items": [
+      {
+        "t": "wire",
+        "d": false
+      }
+    ],
+    "_history": [
+      "wire"
+    ]
   },
   {
     "id": 1788976915764,
