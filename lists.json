@@ -27,9 +27,14 @@
       {
         "t": "wire",
         "d": false
+      },
+      {
+        "t": "round junction boxes",
+        "d": false
       }
     ],
     "_history": [
+      "round junction boxes",
       "wire"
     ]
   },
