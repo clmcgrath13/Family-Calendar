@@ -4,5 +4,11 @@
     "name": "Stop n Shop",
     "icon": "cart",
     "items": []
+  },
+  {
+    "id": 1788976903264,
+    "name": "Home Depot",
+    "icon": "tools",
+    "items": []
   }
 ]
