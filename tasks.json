@@ -1950,8 +1950,10 @@
   {
     "id": 1786984940744,
     "title": "Clean up the Legos in the Basement",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-09-10"
+    ],
     "date": "2026-08-17",
     "recur": "",
     "recurN": 1,
