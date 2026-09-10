@@ -144,7 +144,9 @@
     "id": 1776540855875,
     "title": "Fix 3D printer",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-10"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -169,14 +171,17 @@
       "Mom"
     ],
     "doneOn": [
-      "2026-07-30"
+      "2026-07-30",
+      "2026-09-10"
     ]
   },
   {
     "id": 1775957529123,
     "title": "Clean the grill",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-10"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
