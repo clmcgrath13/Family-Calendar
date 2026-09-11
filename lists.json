@@ -11,9 +11,14 @@
       {
         "t": "seltzer",
         "d": false
+      },
+      {
+        "t": "paper plates",
+        "d": false
       }
     ],
     "_history": [
+      "paper plates",
       "round junction boxes",
       "seltzer",
       "burritos"
@@ -42,12 +47,14 @@
     "id": 1788976915764,
     "name": "Vacation",
     "icon": "beach",
-    "items": []
+    "items": [],
+    "_history": []
   },
   {
     "id": 1788976925581,
     "name": "BJs or Costco",
     "icon": "checklist",
-    "items": []
+    "items": [],
+    "_history": []
   }
 ]
