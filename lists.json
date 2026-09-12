@@ -40,9 +40,14 @@
       {
         "t": "mirror rail",
         "d": false
+      },
+      {
+        "t": "mirror clips",
+        "d": false
       }
     ],
     "_history": [
+      "mirror clips",
       "mirror rail",
       "door hardware",
       "round junction boxes",
