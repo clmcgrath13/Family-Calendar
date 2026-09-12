@@ -6,15 +6,18 @@
     "items": [
       {
         "t": "burritos",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-11"
       },
       {
         "t": "seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-11"
       },
       {
         "t": "paper plates",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-11"
       }
     ],
     "_history": [
