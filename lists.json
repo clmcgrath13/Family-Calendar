@@ -26,8 +26,14 @@
     "id": 1788976903264,
     "name": "Home Depot",
     "icon": "tools",
-    "items": [],
+    "items": [
+      {
+        "t": "door hardware",
+        "d": false
+      }
+    ],
     "_history": [
+      "door hardware",
       "round junction boxes",
       "wire"
     ]
