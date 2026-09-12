@@ -48,9 +48,14 @@
       {
         "t": "sheetrock",
         "d": false
+      },
+      {
+        "t": "2x4s",
+        "d": false
       }
     ],
     "_history": [
+      "2x4s",
       "sheetrock",
       "mirror clips",
       "mirror rail",
