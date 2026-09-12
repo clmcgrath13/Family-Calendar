@@ -69,7 +69,14 @@
     "id": 1788976925581,
     "name": "BJs or Costco",
     "icon": "checklist",
-    "items": [],
-    "_history": []
+    "items": [
+      {
+        "t": "pork shoulder",
+        "d": false
+      }
+    ],
+    "_history": [
+      "pork shoulder"
+    ]
   }
 ]
