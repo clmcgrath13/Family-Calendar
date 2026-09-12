@@ -698,21 +698,6 @@
     ]
   },
   {
-    "id": 1775919280332,
-    "title": "Put stuff back on your dresser and night stand",
-    "done": true,
-    "doneOn": [],
-    "date": "",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": false,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
     "id": 1775942849014,
     "title": "Put stuff back in the master bath",
     "done": true,
