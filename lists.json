@@ -81,9 +81,14 @@
       {
         "t": "pork shoulder",
         "d": false
+      },
+      {
+        "t": "organic strawberries",
+        "d": false
       }
     ],
     "_history": [
+      "organic strawberries",
       "pork shoulder"
     ]
   }
