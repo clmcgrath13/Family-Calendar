@@ -5,21 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "burritos",
-        "d": true,
-        "doneDate": "2026-09-11"
-      },
-      {
-        "t": "seltzer",
-        "d": true,
-        "doneDate": "2026-09-11"
-      },
-      {
-        "t": "paper plates",
-        "d": true,
-        "doneDate": "2026-09-11"
-      },
-      {
         "t": "tomato sauce",
         "d": false
       },
@@ -41,18 +26,7 @@
     "id": 1788976903264,
     "name": "Home Depot",
     "icon": "tools",
-    "items": [
-      {
-        "t": "wire",
-        "d": true,
-        "doneDate": "2026-09-11"
-      },
-      {
-        "t": "round junction boxes",
-        "d": true,
-        "doneDate": "2026-09-11"
-      }
-    ],
+    "items": [],
     "_history": [
       "round junction boxes",
       "wire"
