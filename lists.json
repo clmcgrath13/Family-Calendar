@@ -15,9 +15,14 @@
       {
         "t": "sheetrock",
         "d": false
+      },
+      {
+        "t": "mirror clips",
+        "d": false
       }
     ],
     "_history": [
+      "mirror clips",
       "sheetrock",
       "graduation  card",
       "tomato sauce",
