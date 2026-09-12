@@ -1651,7 +1651,9 @@
     "id": 1783343175276,
     "title": "Clean up squishies from the basement",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
@@ -1666,7 +1668,9 @@
     "id": 1783343196901,
     "title": "Vacuum the playroom carpet",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
@@ -1681,7 +1685,9 @@
     "id": 1783343220229,
     "title": "Clean up blankets from basement",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
