@@ -18,9 +18,14 @@
         "t": "paper plates",
         "d": true,
         "doneDate": "2026-09-11"
+      },
+      {
+        "t": "tomato sauce",
+        "d": false
       }
     ],
     "_history": [
+      "tomato sauce",
       "paper plates",
       "round junction boxes",
       "seltzer",
