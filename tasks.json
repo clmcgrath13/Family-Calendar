@@ -1409,7 +1409,9 @@
     "id": 1783017340838,
     "title": "Sharpen Knives",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
@@ -1423,7 +1425,7 @@
   {
     "id": 1783017366713,
     "title": "Rotate Couch Cushions",
-    "done": true,
+    "done": false,
     "doneOn": [],
     "date": "2026-07-01",
     "recur": "monthly",
