@@ -80,7 +80,9 @@
     "id": 1776109390346,
     "title": "Get oil changed",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -528,7 +530,6 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-07-12",
       "2026-08-04",
       "2026-08-10",
       "2026-08-30",
@@ -869,9 +870,7 @@
     "id": 1776127891655,
     "title": "Move the Legos against the wall in the basement",
     "done": true,
-    "doneOn": [
-      "2026-07-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -933,9 +932,7 @@
     "id": 1776994280617,
     "title": "cleanyour room",
     "done": true,
-    "doneOn": [
-      "2026-07-13"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1098,8 +1095,6 @@
     "title": "Take your pills",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-20",
@@ -1124,8 +1119,6 @@
     "title": "Eat breakfast",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-20",
@@ -1150,8 +1143,6 @@
     "title": "get dressed",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-21",
@@ -1174,8 +1165,6 @@
     "title": "Fill up your water bottle",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-21",
@@ -1198,8 +1187,6 @@
     "title": "Clean up your place",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-20",
@@ -1224,8 +1211,6 @@
     "title": "Put sunscreen on your face",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-21",
@@ -1248,8 +1233,6 @@
     "title": "Put sunscreen on arms and neck",
     "done": true,
     "doneOn": [
-      "2026-07-12",
-      "2026-07-13",
       "2026-07-16",
       "2026-07-17",
       "2026-07-21",
@@ -1272,7 +1255,6 @@
     "title": "Read for 30 minutes",
     "done": true,
     "doneOn": [
-      "2026-07-12",
       "2026-07-16",
       "2026-07-17",
       "2026-07-20",
