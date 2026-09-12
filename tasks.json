@@ -893,7 +893,9 @@
     "id": 1776128569327,
     "title": "Clean your room",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1070,7 +1072,9 @@
     "id": 1779189523529,
     "title": "put your clothes away",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
