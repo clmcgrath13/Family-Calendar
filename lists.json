@@ -39,11 +39,13 @@
     "items": [
       {
         "t": "wire",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-11"
       },
       {
         "t": "round junction boxes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-11"
       }
     ],
     "_history": [
