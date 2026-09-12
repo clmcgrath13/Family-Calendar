@@ -285,7 +285,9 @@
     "who": [
       "Mom"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-09-12"
+    ]
   },
   {
     "id": 1775688679226,
@@ -780,7 +782,9 @@
     "id": 1776117377000,
     "title": "Organize medicine cabinet",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-12"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
