@@ -11,9 +11,14 @@
       {
         "t": "tortilla chips",
         "d": false
+      },
+      {
+        "t": "bread",
+        "d": false
       }
     ],
     "_history": [
+      "bread",
       "tortilla chips",
       "mirror clips",
       "sheetrock",
