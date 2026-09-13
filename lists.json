@@ -68,7 +68,8 @@
       },
       {
         "t": "2x4s",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       }
     ],
     "_history": [
