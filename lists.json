@@ -52,7 +52,8 @@
       },
       {
         "t": "mirror clips",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       },
       {
         "t": "sheetrock",
