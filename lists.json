@@ -6,7 +6,8 @@
     "items": [
       {
         "t": "tomato sauce",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       },
       {
         "t": "tortilla chips",
