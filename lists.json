@@ -26,9 +26,14 @@
       {
         "t": "burger buns",
         "d": false
+      },
+      {
+        "t": "gf flour",
+        "d": false
       }
     ],
     "_history": [
+      "gf flour",
       "burger buns",
       "bread",
       "tortilla chips",
