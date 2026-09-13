@@ -42,11 +42,13 @@
     "items": [
       {
         "t": "door hardware",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       },
       {
         "t": "mirror rail",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       },
       {
         "t": "mirror clips",
