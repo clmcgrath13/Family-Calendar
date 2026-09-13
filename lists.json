@@ -96,11 +96,13 @@
     "items": [
       {
         "t": "pork shoulder",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       },
       {
         "t": "organic strawberries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-13"
       }
     ],
     "_history": [
