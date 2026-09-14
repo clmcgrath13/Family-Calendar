@@ -34,7 +34,8 @@
       },
       {
         "t": "yogurt smoothie",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-14"
       },
       {
         "t": "tin foil",
@@ -42,7 +43,8 @@
       },
       {
         "t": "butter",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-14"
       },
       {
         "t": "cold cuts",
