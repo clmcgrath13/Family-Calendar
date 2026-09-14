@@ -31,9 +31,14 @@
       {
         "t": "yogurt smoothie",
         "d": false
+      },
+      {
+        "t": "tin foil",
+        "d": false
       }
     ],
     "_history": [
+      "tin foil",
       "yogurt smoothie",
       "string cheese",
       "gf pasta",
