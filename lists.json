@@ -39,9 +39,14 @@
       {
         "t": "butter",
         "d": false
+      },
+      {
+        "t": "cold cuts",
+        "d": false
       }
     ],
     "_history": [
+      "cold cuts",
       "butter",
       "tin foil",
       "yogurt smoothie",
