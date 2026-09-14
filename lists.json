@@ -27,9 +27,14 @@
       {
         "t": "string cheese",
         "d": false
+      },
+      {
+        "t": "yogurt smoothie",
+        "d": false
       }
     ],
     "_history": [
+      "yogurt smoothie",
       "string cheese",
       "gf pasta",
       "gf breadcrumbs",
