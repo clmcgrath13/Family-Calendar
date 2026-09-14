@@ -14,19 +14,23 @@
       },
       {
         "t": "gf flour",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-14"
       },
       {
         "t": "gf breadcrumbs",
-        "d": false
+        "d": false,
+        "doneDate": null
       },
       {
         "t": "gf pasta",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-14"
       },
       {
         "t": "string cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-14"
       },
       {
         "t": "yogurt smoothie",
