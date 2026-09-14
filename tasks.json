@@ -1919,5 +1919,20 @@
       "Collin",
       "Dad"
     ]
+  },
+  {
+    "id": 1789405873098,
+    "title": "swap out bug stickies",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-09-14",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
