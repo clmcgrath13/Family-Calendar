@@ -35,9 +35,14 @@
       {
         "t": "tin foil",
         "d": false
+      },
+      {
+        "t": "butter",
+        "d": false
       }
     ],
     "_history": [
+      "butter",
       "tin foil",
       "yogurt smoothie",
       "string cheese",
