@@ -5,23 +5,8 @@
     "icon": "cart",
     "items": [
       {
-        "t": "tomato sauce",
-        "d": true,
-        "doneDate": "2026-09-13"
-      },
-      {
-        "t": "tortilla chips",
-        "d": true,
-        "doneDate": "2026-09-13"
-      },
-      {
         "t": "bread",
         "d": false
-      },
-      {
-        "t": "paper plates",
-        "d": true,
-        "doneDate": "2026-09-13"
       },
       {
         "t": "burger buns",
@@ -63,28 +48,8 @@
     "icon": "tools",
     "items": [
       {
-        "t": "door hardware",
-        "d": true,
-        "doneDate": "2026-09-13"
-      },
-      {
-        "t": "mirror rail",
-        "d": true,
-        "doneDate": "2026-09-13"
-      },
-      {
-        "t": "mirror clips",
-        "d": true,
-        "doneDate": "2026-09-13"
-      },
-      {
         "t": "sheetrock",
         "d": false
-      },
-      {
-        "t": "2x4s",
-        "d": true,
-        "doneDate": "2026-09-13"
       }
     ],
     "_history": [
@@ -108,18 +73,7 @@
     "id": 1788976925581,
     "name": "BJs or Costco",
     "icon": "checklist",
-    "items": [
-      {
-        "t": "pork shoulder",
-        "d": true,
-        "doneDate": "2026-09-13"
-      },
-      {
-        "t": "organic strawberries",
-        "d": true,
-        "doneDate": "2026-09-13"
-      }
-    ],
+    "items": [],
     "_history": [
       "organic strawberries",
       "pork shoulder"
