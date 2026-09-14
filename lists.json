@@ -40,7 +40,8 @@
       },
       {
         "t": "tin foil",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-14"
       },
       {
         "t": "butter",
