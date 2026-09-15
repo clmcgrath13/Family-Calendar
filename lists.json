@@ -28,9 +28,14 @@
       {
         "t": "avocado",
         "d": false
+      },
+      {
+        "t": "kiwi",
+        "d": false
       }
     ],
     "_history": [
+      "kiwi",
       "avocado",
       "eggs",
       "cilantro",
