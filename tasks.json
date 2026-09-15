@@ -1934,5 +1934,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1789435772605,
+    "title": "Throw out Ava’s humidifier",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-09-14",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
