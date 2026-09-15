@@ -36,9 +36,14 @@
       {
         "t": "bananas",
         "d": false
+      },
+      {
+        "t": "grappefrut",
+        "d": false
       }
     ],
     "_history": [
+      "grappefrut",
       "bananas",
       "kiwi",
       "avocado",
