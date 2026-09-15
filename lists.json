@@ -5,54 +5,9 @@
     "icon": "cart",
     "items": [
       {
-        "t": "bread",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "burger buns",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "gf flour",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
         "t": "gf breadcrumbs",
         "d": false,
         "doneDate": null
-      },
-      {
-        "t": "gf pasta",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "string cheese",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "yogurt smoothie",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "tin foil",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "butter",
-        "d": true,
-        "doneDate": "2026-09-14"
-      },
-      {
-        "t": "cold cuts",
-        "d": true,
-        "doneDate": "2026-09-14"
       }
     ],
     "_history": [
