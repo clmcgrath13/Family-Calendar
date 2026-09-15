@@ -40,9 +40,14 @@
       {
         "t": "grappefrut",
         "d": false
+      },
+      {
+        "t": "green grapes",
+        "d": false
       }
     ],
     "_history": [
+      "green grapes",
       "grappefrut",
       "bananas",
       "kiwi",
