@@ -12,9 +12,14 @@
       {
         "t": "potatoes for baked  potat",
         "d": false
+      },
+      {
+        "t": "chili powder",
+        "d": false
       }
     ],
     "_history": [
+      "chili powder",
       "potatoes for baked  potat",
       "cold cuts",
       "butter",
