@@ -96,9 +96,14 @@
       {
         "t": "sheetrock",
         "d": false
+      },
+      {
+        "t": "interior door",
+        "d": false
       }
     ],
     "_history": [
+      "interior door",
       "2x4s",
       "sheetrock",
       "mirror clips",
