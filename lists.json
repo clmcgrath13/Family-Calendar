@@ -20,9 +20,14 @@
       {
         "t": "cilantro",
         "d": false
+      },
+      {
+        "t": "eggs",
+        "d": false
       }
     ],
     "_history": [
+      "eggs",
       "cilantro",
       "chili powder",
       "potatoes for baked  potat",
