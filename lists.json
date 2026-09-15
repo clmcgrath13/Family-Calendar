@@ -119,8 +119,14 @@
     "id": 1788976925581,
     "name": "BJs or Costco",
     "icon": "checklist",
-    "items": [],
+    "items": [
+      {
+        "t": "double cut pork chops",
+        "d": false
+      }
+    ],
     "_history": [
+      "double cut pork chops",
       "organic strawberries",
       "pork shoulder"
     ]
