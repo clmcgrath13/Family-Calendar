@@ -24,9 +24,14 @@
       {
         "t": "eggs",
         "d": false
+      },
+      {
+        "t": "avocado",
+        "d": false
       }
     ],
     "_history": [
+      "avocado",
       "eggs",
       "cilantro",
       "chili powder",
