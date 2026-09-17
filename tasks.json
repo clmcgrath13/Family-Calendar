@@ -1521,21 +1521,6 @@
     ]
   },
   {
-    "id": 1783291364818,
-    "title": "Journal Entry 5",
-    "done": true,
-    "doneOn": [],
-    "date": "2026-07-12",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "morning",
-    "stayUntilDone": true,
-    "who": [
-      "Collin"
-    ]
-  },
-  {
     "id": 1783291390011,
     "title": "Journal Entry 6",
     "done": true,
