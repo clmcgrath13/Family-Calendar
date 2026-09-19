@@ -1937,8 +1937,10 @@
   {
     "id": 1789821373819,
     "title": "Take Garbage Out",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-09-19"
+    ],
     "date": "2026-09-19",
     "recur": "weekly",
     "recurN": 1,
