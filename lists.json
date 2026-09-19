@@ -56,9 +56,14 @@
       {
         "t": "salad bags",
         "d": false
+      },
+      {
+        "t": "coffee filters",
+        "d": false
       }
     ],
     "_history": [
+      "coffee filters",
       "salad bags",
       "plastic forks",
       "bbq rub seasoning",
