@@ -64,9 +64,14 @@
       {
         "t": "sugar cubes",
         "d": false
+      },
+      {
+        "t": "wraps",
+        "d": false
       }
     ],
     "_history": [
+      "wraps",
       "sugar cubes",
       "coffee filters",
       "salad bags",
