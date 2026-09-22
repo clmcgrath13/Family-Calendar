@@ -31,7 +31,8 @@
       },
       {
         "t": "bananas",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-22"
       },
       {
         "t": "grappefrut",
