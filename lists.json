@@ -6,8 +6,8 @@
     "items": [
       {
         "t": "gf breadcrumbs",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-09-22"
       },
       {
         "t": "potatoes for baked  potat",
