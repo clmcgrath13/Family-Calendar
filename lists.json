@@ -72,9 +72,14 @@
       {
         "t": "wraps",
         "d": false
+      },
+      {
+        "t": "Sliced mushrooms",
+        "d": false
       }
     ],
     "_history": [
+      "Sliced mushrooms",
       "wraps",
       "sugar cubes",
       "coffee filters",
