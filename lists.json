@@ -5,11 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "gf breadcrumbs",
-        "d": true,
-        "doneDate": "2026-09-22"
-      },
-      {
         "t": "potatoes for baked  potat",
         "d": false
       },
@@ -30,11 +25,6 @@
         "d": false
       },
       {
-        "t": "bananas",
-        "d": true,
-        "doneDate": "2026-09-22"
-      },
-      {
         "t": "grappefrut",
         "d": false
       },
@@ -53,21 +43,6 @@
       {
         "t": "plastic forks",
         "d": false
-      },
-      {
-        "t": "salad bags",
-        "d": true,
-        "doneDate": "2026-09-22"
-      },
-      {
-        "t": "coffee filters",
-        "d": true,
-        "doneDate": "2026-09-22"
-      },
-      {
-        "t": "sugar cubes",
-        "d": true,
-        "doneDate": "2026-09-22"
       },
       {
         "t": "wraps",
