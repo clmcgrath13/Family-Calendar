@@ -100,9 +100,14 @@
       {
         "t": "sheetrock",
         "d": false
+      },
+      {
+        "t": "Wire staples",
+        "d": false
       }
     ],
     "_history": [
+      "Wire staples",
       "interior door",
       "2x4s",
       "sheetrock",
