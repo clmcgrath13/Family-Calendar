@@ -55,9 +55,14 @@
       {
         "t": "sweet italian sausage",
         "d": false
+      },
+      {
+        "t": "garlic powder",
+        "d": false
       }
     ],
     "_history": [
+      "garlic powder",
       "sweet italian sausage",
       "Sliced mushrooms",
       "wraps",
