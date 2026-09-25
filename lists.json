@@ -59,9 +59,14 @@
       {
         "t": "garlic powder",
         "d": false
+      },
+      {
+        "t": "mexican cheese",
+        "d": false
       }
     ],
     "_history": [
+      "mexican cheese",
       "garlic powder",
       "sweet italian sausage",
       "Sliced mushrooms",
