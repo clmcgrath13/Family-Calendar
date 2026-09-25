@@ -51,9 +51,14 @@
       {
         "t": "Sliced mushrooms",
         "d": false
+      },
+      {
+        "t": "sweet italian sausage",
+        "d": false
       }
     ],
     "_history": [
+      "sweet italian sausage",
       "Sliced mushrooms",
       "wraps",
       "sugar cubes",
