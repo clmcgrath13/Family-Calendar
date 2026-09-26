@@ -73,7 +73,8 @@
       },
       {
         "t": "mexican cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-26"
       },
       {
         "t": "organic strawberries",
