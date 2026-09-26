@@ -63,9 +63,14 @@
       {
         "t": "mexican cheese",
         "d": false
+      },
+      {
+        "t": "organic strawberries",
+        "d": false
       }
     ],
     "_history": [
+      "organic strawberries",
       "mexican cheese",
       "garlic powder",
       "sweet italian sausage",
