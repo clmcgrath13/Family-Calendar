@@ -50,7 +50,8 @@
       },
       {
         "t": "plastic forks",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-26"
       },
       {
         "t": "wraps",
