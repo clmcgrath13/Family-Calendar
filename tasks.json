@@ -401,7 +401,9 @@
     "who": [
       "Ava"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-09-27"
+    ]
   },
   {
     "id": 1775696663826,
@@ -658,9 +660,7 @@
     "id": 1775942849014,
     "title": "Put stuff back in the master bath",
     "done": true,
-    "doneOn": [
-      "2026-07-28"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
