@@ -7,9 +7,14 @@
       {
         "t": "beef broth",
         "d": false
+      },
+      {
+        "t": "chicken broth",
+        "d": false
       }
     ],
     "_history": [
+      "chicken broth",
       "beef broth",
       "organic strawberries",
       "mexican cheese",
