@@ -3,8 +3,14 @@
     "id": 1788976898065,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [],
+    "items": [
+      {
+        "t": "beef broth",
+        "d": false
+      }
+    ],
     "_history": [
+      "beef broth",
       "organic strawberries",
       "mexican cheese",
       "garlic powder",
