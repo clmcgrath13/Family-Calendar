@@ -27,9 +27,14 @@
       {
         "t": "iodized salt",
         "d": false
+      },
+      {
+        "t": "frozen veggies",
+        "d": false
       }
     ],
     "_history": [
+      "frozen veggies",
       "iodized salt",
       "chicken broth",
       "beef broth",
