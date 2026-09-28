@@ -31,9 +31,14 @@
       {
         "t": "frozen veggies",
         "d": false
+      },
+      {
+        "t": "tortellini",
+        "d": false
       }
     ],
     "_history": [
+      "tortellini",
       "frozen veggies",
       "iodized salt",
       "chicken broth",
