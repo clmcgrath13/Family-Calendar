@@ -67,7 +67,9 @@
     "id": 1776109398250,
     "title": "Change bronco oil",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-09-28"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -175,7 +177,6 @@
       "Mom"
     ],
     "doneOn": [
-      "2026-07-30",
       "2026-09-10",
       "2026-09-24"
     ]
@@ -1002,8 +1003,6 @@
     "title": "Take your pills",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01",
       "2026-08-16"
     ],
@@ -1023,8 +1022,6 @@
     "title": "Eat breakfast",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01",
       "2026-08-16"
     ],
@@ -1044,8 +1041,6 @@
     "title": "get dressed",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01"
     ],
     "date": "2026-06-12",
@@ -1064,8 +1059,6 @@
     "title": "Fill up your water bottle",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01"
     ],
     "date": "2026-06-11",
@@ -1084,8 +1077,6 @@
     "title": "Clean up your place",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01",
       "2026-08-16"
     ],
@@ -1105,8 +1096,6 @@
     "title": "Put sunscreen on your face",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01"
     ],
     "date": "2026-06-11",
@@ -1125,8 +1114,6 @@
     "title": "Put sunscreen on arms and neck",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01"
     ],
     "date": "2026-06-11",
@@ -1145,8 +1132,6 @@
     "title": "Read for 30 minutes",
     "done": true,
     "doneOn": [
-      "2026-07-29",
-      "2026-07-30",
       "2026-08-01"
     ],
     "date": "2026-06-11",
@@ -1448,9 +1433,7 @@
     "id": 1783291416957,
     "title": "Journal Entry 7",
     "done": true,
-    "doneOn": [
-      "2026-07-29"
-    ],
+    "doneOn": [],
     "date": "2026-07-26",
     "recur": "",
     "recurN": 1,
@@ -1533,9 +1516,7 @@
     "id": 1784043081372,
     "title": "cut down tree next to garage",
     "done": true,
-    "doneOn": [
-      "2026-07-30"
-    ],
+    "doneOn": [],
     "date": "2026-07-14",
     "recur": "",
     "recurN": 1,
@@ -1614,9 +1595,7 @@
     "id": 1785351021728,
     "title": "Pick up dog poop",
     "done": true,
-    "doneOn": [
-      "2026-07-29"
-    ],
+    "doneOn": [],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
@@ -1631,9 +1610,7 @@
     "id": 1785351036963,
     "title": "Clean up the driveway",
     "done": true,
-    "doneOn": [
-      "2026-07-29"
-    ],
+    "doneOn": [],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
@@ -1648,9 +1625,7 @@
     "id": 1785351049335,
     "title": "Bring up garbage cans",
     "done": true,
-    "doneOn": [
-      "2026-07-29"
-    ],
+    "doneOn": [],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
@@ -1665,9 +1640,7 @@
     "id": 1785351607270,
     "title": "Try on your football pads and jersey over the pads",
     "done": true,
-    "doneOn": [
-      "2026-07-29"
-    ],
+    "doneOn": [],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
