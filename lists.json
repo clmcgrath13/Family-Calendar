@@ -26,15 +26,18 @@
       },
       {
         "t": "iodized salt",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-29"
       },
       {
         "t": "frozen veggies",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-29"
       },
       {
         "t": "tortellini",
-        "d": false
+        "d": true,
+        "doneDate": "2026-09-29"
       }
     ],
     "_history": [
