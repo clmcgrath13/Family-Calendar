@@ -1483,21 +1483,6 @@
     ]
   },
   {
-    "id": 1784043081372,
-    "title": "cut down tree next to garage",
-    "done": true,
-    "doneOn": [],
-    "date": "2026-07-14",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": true,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
     "id": 1784043095390,
     "title": "trim bush by front door",
     "done": true,
