@@ -3,8 +3,14 @@
     "id": 1788976898065,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [],
+    "items": [
+      {
+        "t": "breakfast sausage",
+        "d": false
+      }
+    ],
     "_history": [
+      "breakfast sausage",
       "tortellini",
       "frozen veggies",
       "iodized salt",
