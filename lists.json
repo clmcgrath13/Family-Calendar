@@ -3,48 +3,7 @@
     "id": 1788976898065,
     "name": "Stop n Shop",
     "icon": "cart",
-    "items": [
-      {
-        "t": "beef broth",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "chicken broth",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "butter",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "tomato sauce",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "sweet italian sausage",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "iodized salt",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "frozen veggies",
-        "d": true,
-        "doneDate": "2026-09-29"
-      },
-      {
-        "t": "tortellini",
-        "d": true,
-        "doneDate": "2026-09-29"
-      }
-    ],
+    "items": [],
     "_history": [
       "tortellini",
       "frozen veggies",
