@@ -121,9 +121,14 @@
       {
         "t": "Fix Kids Bathroom Sink Area",
         "d": false
+      },
+      {
+        "t": "Run circuits for basement outlets",
+        "d": false
       }
     ],
     "_history": [
+      "Run circuits for basement outlets",
       "Fix Kids Bathroom Sink Area",
       "Paint Front Door",
       "Spackle Basement Closets"
