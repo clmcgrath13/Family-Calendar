@@ -89,13 +89,6 @@
     ]
   },
   {
-    "id": 1788976915764,
-    "name": "Vacation",
-    "icon": "beach",
-    "items": [],
-    "_history": []
-  },
-  {
     "id": 1788976925581,
     "name": "BJs or Costco",
     "icon": "checklist",
@@ -110,5 +103,11 @@
       "organic strawberries",
       "pork shoulder"
     ]
+  },
+  {
+    "id": 1790883524170,
+    "name": "Contractor Jobs (Paint, Electric, Spackle, etc.)",
+    "icon": "checklist",
+    "items": []
   }
 ]
