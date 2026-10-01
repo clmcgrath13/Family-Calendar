@@ -116,9 +116,14 @@
       {
         "t": "Paint Front Door",
         "d": false
+      },
+      {
+        "t": "Fix Kids Bathroom Sink Area",
+        "d": false
       }
     ],
     "_history": [
+      "Fix Kids Bathroom Sink Area",
       "Paint Front Door",
       "Spackle Basement Closets"
     ]
