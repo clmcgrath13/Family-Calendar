@@ -125,9 +125,14 @@
       {
         "t": "Run circuits for basement outlets",
         "d": false
+      },
+      {
+        "t": "fix slime spots on ceiling",
+        "d": false
       }
     ],
     "_history": [
+      "fix slime spots on ceiling",
       "Run circuits for basement outlets",
       "Fix Kids Bathroom Sink Area",
       "Paint Front Door",
