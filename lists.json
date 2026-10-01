@@ -108,6 +108,14 @@
     "id": 1790883524170,
     "name": "Contractor Jobs (Paint, Electric, Spackle, etc.)",
     "icon": "checklist",
-    "items": []
+    "items": [
+      {
+        "t": "Spackle Basement Closets",
+        "d": false
+      }
+    ],
+    "_history": [
+      "Spackle Basement Closets"
+    ]
   }
 ]
