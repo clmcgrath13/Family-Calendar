@@ -129,9 +129,14 @@
       {
         "t": "fix slime spots on ceiling",
         "d": false
+      },
+      {
+        "t": "Playroom Highhats",
+        "d": false
       }
     ],
     "_history": [
+      "Playroom Highhats",
       "fix slime spots on ceiling",
       "Run circuits for basement outlets",
       "Fix Kids Bathroom Sink Area",
