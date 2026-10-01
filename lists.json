@@ -112,9 +112,14 @@
       {
         "t": "Spackle Basement Closets",
         "d": false
+      },
+      {
+        "t": "Paint Front Door",
+        "d": false
       }
     ],
     "_history": [
+      "Paint Front Door",
       "Spackle Basement Closets"
     ]
   }
