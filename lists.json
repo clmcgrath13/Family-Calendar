@@ -27,9 +27,14 @@
       {
         "t": "organic strawberries",
         "d": false
+      },
+      {
+        "t": "milk",
+        "d": false
       }
     ],
     "_history": [
+      "milk",
       "pancake mix",
       "croissants",
       "breakfast sausage",
