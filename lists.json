@@ -15,9 +15,14 @@
       {
         "t": "croissants",
         "d": false
+      },
+      {
+        "t": "pancake mix",
+        "d": false
       }
     ],
     "_history": [
+      "pancake mix",
       "croissants",
       "breakfast sausage",
       "tortellini",
