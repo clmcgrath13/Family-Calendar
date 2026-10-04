@@ -23,6 +23,10 @@
       {
         "t": "bananas",
         "d": false
+      },
+      {
+        "t": "organic strawberries",
+        "d": false
       }
     ],
     "_history": [
