@@ -35,9 +35,14 @@
       {
         "t": "eggs",
         "d": false
+      },
+      {
+        "t": "plain  yogurt",
+        "d": false
       }
     ],
     "_history": [
+      "plain  yogurt",
       "milk",
       "pancake mix",
       "croissants",
