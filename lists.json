@@ -40,7 +40,8 @@
       },
       {
         "t": "plain  yogurt",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-04"
       },
       {
         "t": "turkey",
