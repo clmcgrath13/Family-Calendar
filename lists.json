@@ -55,9 +55,14 @@
       {
         "t": "wraps",
         "d": false
+      },
+      {
+        "t": "chickencutlets x2",
+        "d": false
       }
     ],
     "_history": [
+      "chickencutlets x2",
       "sweet potato",
       "turkey",
       "plain  yogurt",
