@@ -47,9 +47,14 @@
       {
         "t": "seltzer",
         "d": false
+      },
+      {
+        "t": "sweet potato",
+        "d": false
       }
     ],
     "_history": [
+      "sweet potato",
       "turkey",
       "plain  yogurt",
       "milk",
