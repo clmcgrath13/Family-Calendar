@@ -11,9 +11,14 @@
       {
         "t": "tortilla chips",
         "d": false
+      },
+      {
+        "t": "croissants",
+        "d": false
       }
     ],
     "_history": [
+      "croissants",
       "breakfast sausage",
       "tortellini",
       "frozen veggies",
