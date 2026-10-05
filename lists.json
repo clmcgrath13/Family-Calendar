@@ -13,11 +13,6 @@
         "d": false
       },
       {
-        "t": "croissants",
-        "d": true,
-        "doneDate": "2026-10-04"
-      },
-      {
         "t": "pancake mix",
         "d": false
       },
@@ -30,18 +25,8 @@
         "d": false
       },
       {
-        "t": "milk",
-        "d": true,
-        "doneDate": "2026-10-04"
-      },
-      {
         "t": "eggs",
         "d": false
-      },
-      {
-        "t": "plain  yogurt",
-        "d": true,
-        "doneDate": "2026-10-04"
       },
       {
         "t": "turkey",
