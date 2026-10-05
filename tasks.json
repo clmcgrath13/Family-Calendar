@@ -1358,7 +1358,8 @@
     "title": "Change Hot Tub Inline Cartridges",
     "done": true,
     "doneOn": [
-      "2026-09-12"
+      "2026-09-12",
+      "2026-10-05"
     ],
     "date": "2026-07-01",
     "recur": "monthly",
