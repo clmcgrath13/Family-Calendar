@@ -63,9 +63,14 @@
       {
         "t": "breakfast  sandwiches",
         "d": false
+      },
+      {
+        "t": "american cheese",
+        "d": false
       }
     ],
     "_history": [
+      "american cheese",
       "breakfast  sandwiches",
       "chicken noodle  soup",
       "chickencutlets x2",
