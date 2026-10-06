@@ -51,9 +51,14 @@
       {
         "t": "chickencutlets x2",
         "d": false
+      },
+      {
+        "t": "chicken noodle  soup",
+        "d": false
       }
     ],
     "_history": [
+      "chicken noodle  soup",
       "chickencutlets x2",
       "sweet potato",
       "turkey",
