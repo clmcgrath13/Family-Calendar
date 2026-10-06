@@ -71,9 +71,14 @@
       {
         "t": "string cheese",
         "d": false
+      },
+      {
+        "t": "apple sauce",
+        "d": false
       }
     ],
     "_history": [
+      "apple sauce",
       "american cheese",
       "breakfast  sandwiches",
       "chicken noodle  soup",
