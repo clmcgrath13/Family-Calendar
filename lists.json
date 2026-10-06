@@ -26,7 +26,8 @@
       },
       {
         "t": "eggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-06"
       },
       {
         "t": "turkey",
