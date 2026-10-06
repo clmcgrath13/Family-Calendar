@@ -67,6 +67,10 @@
       {
         "t": "american cheese",
         "d": false
+      },
+      {
+        "t": "string cheese",
+        "d": false
       }
     ],
     "_history": [
