@@ -59,9 +59,14 @@
       {
         "t": "tomato sauce",
         "d": false
+      },
+      {
+        "t": "chomps",
+        "d": false
       }
     ],
     "_history": [
+      "chomps",
       "apple sauce",
       "american cheese",
       "breakfast  sandwiches",
