@@ -25,28 +25,8 @@
         "d": false
       },
       {
-        "t": "eggs",
-        "d": true,
-        "doneDate": "2026-10-06"
-      },
-      {
-        "t": "turkey",
-        "d": true,
-        "doneDate": "2026-10-06"
-      },
-      {
         "t": "seltzer",
         "d": false
-      },
-      {
-        "t": "sweet potato",
-        "d": true,
-        "doneDate": "2026-10-06"
-      },
-      {
-        "t": "wraps",
-        "d": true,
-        "doneDate": "2026-10-06"
       },
       {
         "t": "chickencutlets x2",
