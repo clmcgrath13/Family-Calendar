@@ -1591,7 +1591,9 @@
     "id": 1785351900442,
     "title": "Windshield wiper fluid",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-10-08"
+    ],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
