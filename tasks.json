@@ -1769,5 +1769,20 @@
       "Dad",
       "Mom"
     ]
+  },
+  {
+    "id": 1791485085573,
+    "title": "Hang up camera in basement",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-10-08",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": false,
+    "who": [
+      "Dad"
+    ]
   }
 ]
