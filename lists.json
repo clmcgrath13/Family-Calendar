@@ -23,7 +23,8 @@
       },
       {
         "t": "organic strawberries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "seltzer",
@@ -31,7 +32,8 @@
       },
       {
         "t": "chickencutlets x2",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "chicken noodle  soup",
