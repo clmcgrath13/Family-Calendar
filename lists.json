@@ -67,6 +67,10 @@
       {
         "t": "cold cuts",
         "d": false
+      },
+      {
+        "t": "burritos",
+        "d": false
       }
     ],
     "_history": [
