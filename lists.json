@@ -46,11 +46,13 @@
       },
       {
         "t": "breakfast  sandwiches",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "american cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "string cheese",
