@@ -75,9 +75,14 @@
       {
         "t": "croissants",
         "d": false
+      },
+      {
+        "t": "Steak",
+        "d": false
       }
     ],
     "_history": [
+      "Steak",
       "chomps",
       "apple sauce",
       "american cheese",
