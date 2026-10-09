@@ -29,7 +29,8 @@
       },
       {
         "t": "seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "chickencutlets x2",
