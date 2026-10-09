@@ -73,11 +73,13 @@
       },
       {
         "t": "cold cuts",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "burritos",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-09"
       },
       {
         "t": "croissants",
