@@ -94,9 +94,14 @@
         "t": "Steak",
         "d": true,
         "doneDate": "2026-10-09"
+      },
+      {
+        "t": "popcorn",
+        "d": false
       }
     ],
     "_history": [
+      "popcorn",
       "cookies",
       "Steak",
       "chomps",
