@@ -5,95 +5,20 @@
     "icon": "cart",
     "items": [
       {
-        "t": "breakfast sausage",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "tortilla chips",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "pancake mix",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
         "t": "bananas",
         "d": false
-      },
-      {
-        "t": "organic strawberries",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "seltzer",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "chickencutlets x2",
-        "d": true,
-        "doneDate": "2026-10-09"
       },
       {
         "t": "chicken noodle  soup",
         "d": false
       },
       {
-        "t": "bread",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "breakfast  sandwiches",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "american cheese",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "string cheese",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
         "t": "apple sauce",
         "d": false
       },
       {
-        "t": "tomato sauce",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
         "t": "chomps",
         "d": false
-      },
-      {
-        "t": "cold cuts",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "burritos",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "croissants",
-        "d": true,
-        "doneDate": "2026-10-09"
-      },
-      {
-        "t": "Steak",
-        "d": true,
-        "doneDate": "2026-10-09"
       },
       {
         "t": "popcorn",
