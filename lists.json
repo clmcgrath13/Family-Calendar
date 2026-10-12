@@ -35,9 +35,14 @@
       {
         "t": "honey mustard",
         "d": false
+      },
+      {
+        "t": "chicken nuggets",
+        "d": false
       }
     ],
     "_history": [
+      "chicken nuggets",
       "honey mustard",
       "bbq sauce",
       "advil",
