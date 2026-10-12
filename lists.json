@@ -39,9 +39,14 @@
       {
         "t": "chicken nuggets",
         "d": false
+      },
+      {
+        "t": "pack of birthday  cards",
+        "d": false
       }
     ],
     "_history": [
+      "pack of birthday  cards",
       "chicken nuggets",
       "honey mustard",
       "bbq sauce",
