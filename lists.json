@@ -47,9 +47,14 @@
       {
         "t": "seltzer",
         "d": false
+      },
+      {
+        "t": "tissues",
+        "d": false
       }
     ],
     "_history": [
+      "tissues",
       "pack of birthday  cards",
       "chicken nuggets",
       "honey mustard",
