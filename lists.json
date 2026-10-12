@@ -43,7 +43,8 @@
       },
       {
         "t": "chicken nuggets",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-12"
       },
       {
         "t": "pack of birthday  cards",
@@ -51,7 +52,8 @@
       },
       {
         "t": "seltzer",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-12"
       },
       {
         "t": "tissues",
