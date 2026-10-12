@@ -27,9 +27,14 @@
       {
         "t": "advil",
         "d": false
+      },
+      {
+        "t": "bbq sauce",
+        "d": false
       }
     ],
     "_history": [
+      "bbq sauce",
       "advil",
       "popcorn",
       "cookies",
