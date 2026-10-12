@@ -10,7 +10,8 @@
       },
       {
         "t": "chicken noodle  soup",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-12"
       },
       {
         "t": "apple sauce",
