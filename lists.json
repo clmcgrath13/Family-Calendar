@@ -32,11 +32,13 @@
       },
       {
         "t": "bbq sauce",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-12"
       },
       {
         "t": "honey mustard",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-12"
       },
       {
         "t": "chicken nuggets",
