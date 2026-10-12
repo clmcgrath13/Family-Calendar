@@ -23,7 +23,8 @@
       },
       {
         "t": "popcorn",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-12"
       },
       {
         "t": "advil",
