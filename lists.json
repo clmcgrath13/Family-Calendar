@@ -5,16 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "bananas",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "chicken noodle  soup",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
         "t": "apple sauce",
         "d": false
       },
@@ -23,48 +13,8 @@
         "d": false
       },
       {
-        "t": "popcorn",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "advil",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "bbq sauce",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "honey mustard",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "chicken nuggets",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
         "t": "pack of birthday  cards",
         "d": false
-      },
-      {
-        "t": "seltzer",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "tissues",
-        "d": true,
-        "doneDate": "2026-10-12"
-      },
-      {
-        "t": "travel  tissues",
-        "d": true,
-        "doneDate": "2026-10-12"
       }
     ],
     "_history": [
