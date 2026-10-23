@@ -1259,6 +1259,21 @@
     ]
   },
   {
+    "id": 1792782494508,
+    "title": "set up dehumidifier in basement",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-10-23",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1783017406355,
     "title": "Review Finances",
     "done": true,
@@ -1774,21 +1789,6 @@
   {
     "id": 1792773784979,
     "title": "Finish cleaning basement half wall area",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-10-23",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": true,
-    "who": [
-      "Dad"
-    ]
-  },
-  {
-    "id": 1792782494508,
-    "title": "set up dehumidifier in basement",
     "done": false,
     "doneOn": [],
     "date": "2026-10-23",
