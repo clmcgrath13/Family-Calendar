@@ -27,9 +27,14 @@
       {
         "t": "chicken thighs",
         "d": false
+      },
+      {
+        "t": "wggs",
+        "d": false
       }
     ],
     "_history": [
+      "wggs",
       "chicken thighs",
       "mac and cheese KRAFT",
       "travel  tissues",
