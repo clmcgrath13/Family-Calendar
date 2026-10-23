@@ -1756,5 +1756,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1792773784979,
+    "title": "Finish cleaning basement half wall area",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-10-23",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
