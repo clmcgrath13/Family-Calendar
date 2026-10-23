@@ -35,6 +35,10 @@
       {
         "t": "milk",
         "d": false
+      },
+      {
+        "t": "organic strawberries",
+        "d": false
       }
     ],
     "_history": [
