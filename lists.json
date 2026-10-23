@@ -50,7 +50,8 @@
       },
       {
         "t": "Cold cuts",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-23"
       },
       {
         "t": "Bear fruit rollups",
