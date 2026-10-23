@@ -22,7 +22,8 @@
       },
       {
         "t": "Butter",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-23"
       },
       {
         "t": "chicken thighs",
