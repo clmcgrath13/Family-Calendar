@@ -31,15 +31,18 @@
       },
       {
         "t": "wggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-23"
       },
       {
         "t": "milk",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-23"
       },
       {
         "t": "organic strawberries",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-23"
       },
       {
         "t": "grapefruit x2",
