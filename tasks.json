@@ -11,17 +11,13 @@
     "who": [
       "Collin"
     ],
-    "doneOn": [
-      "2026-08-11"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776210385833,
     "title": "Call bug and lawn guys about May 9th party",
     "done": true,
-    "doneOn": [
-      "2026-08-16"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -260,9 +256,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-08-09"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776040445132,
@@ -379,10 +373,10 @@
     "title": "Clean Zorro's Water Bowl",
     "done": true,
     "doneOn": [
-      "2026-08-16",
       "2026-08-30",
       "2026-09-16",
-      "2026-10-05"
+      "2026-10-05",
+      "2026-10-23"
     ],
     "date": "2026-04-12",
     "recur": "weekly",
@@ -439,9 +433,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-08-14"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775756044638,
@@ -471,9 +463,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-08-14"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775826092780,
@@ -488,9 +478,7 @@
       "Mom",
       "Dad"
     ],
-    "doneOn": [
-      "2026-08-14"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775826152755,
@@ -504,20 +492,18 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-08-14"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775828477429,
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-08-10",
       "2026-08-30",
       "2026-09-10",
       "2026-09-20",
-      "2026-10-05"
+      "2026-10-05",
+      "2026-10-23"
     ],
     "date": "2026-04-19",
     "recur": "weekly",
@@ -581,9 +567,7 @@
     "id": 1775919233714,
     "title": "Move rocks from driveway to the woods",
     "done": true,
-    "doneOn": [
-      "2026-08-15"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -613,9 +597,7 @@
     "id": 1776107853789,
     "title": "Bring a box of seltzer up to the office",
     "done": true,
-    "doneOn": [
-      "2026-08-15"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -630,9 +612,7 @@
     "id": 1776042670985,
     "title": "Organize your sports drawer",
     "done": true,
-    "doneOn": [
-      "2026-08-15"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -647,9 +627,7 @@
     "id": 1775919246479,
     "title": "Throw away garbage in your workbench area in the garage",
     "done": true,
-    "doneOn": [
-      "2026-08-15"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -664,9 +642,7 @@
     "id": 1776002459364,
     "title": "Clean up the driveway",
     "done": true,
-    "doneOn": [
-      "2026-08-15"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -681,9 +657,7 @@
     "id": 1776002477717,
     "title": "fix fence for zorro",
     "done": true,
-    "doneOn": [
-      "2026-08-15"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -762,9 +736,7 @@
     "id": 1776127817480,
     "title": "Hang up your tools on your workbench in the garage",
     "done": true,
-    "doneOn": [
-      "2026-08-11"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -779,9 +751,7 @@
     "id": 1776127835922,
     "title": "put away your fishing stuff by your workbench in the garage",
     "done": true,
-    "doneOn": [
-      "2026-08-11"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -844,7 +814,6 @@
     "title": "Change Hot Tub Filter",
     "done": true,
     "doneOn": [
-      "2026-08-16",
       "2026-10-01"
     ],
     "date": "2026-05-15",
@@ -923,9 +892,7 @@
     "id": 1779115099860,
     "title": "Bug stickies in kitchen",
     "done": true,
-    "doneOn": [
-      "2026-08-19"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -974,9 +941,7 @@
     "id": 1779189547173,
     "title": "put your clothes away",
     "done": true,
-    "doneOn": [
-      "2026-08-17"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -991,9 +956,7 @@
     "id": 1781097595243,
     "title": "Take your pills",
     "done": true,
-    "doneOn": [
-      "2026-08-16"
-    ],
+    "doneOn": [],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
@@ -1009,9 +972,7 @@
     "id": 1781097571053,
     "title": "Eat breakfast",
     "done": true,
-    "doneOn": [
-      "2026-08-16"
-    ],
+    "doneOn": [],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
@@ -1059,9 +1020,7 @@
     "id": 1781097674636,
     "title": "Clean up your place",
     "done": true,
-    "doneOn": [
-      "2026-08-16"
-    ],
+    "doneOn": [],
     "date": "2026-06-11",
     "recur": "daily",
     "recurN": 1,
@@ -1608,9 +1567,7 @@
     "id": 1785351921494,
     "title": "Oil change",
     "done": true,
-    "doneOn": [
-      "2026-08-11"
-    ],
+    "doneOn": [],
     "date": "2026-07-29",
     "recur": "",
     "recurN": 1,
