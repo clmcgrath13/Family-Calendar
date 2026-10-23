@@ -47,9 +47,14 @@
       {
         "t": "Cold cuts",
         "d": false
+      },
+      {
+        "t": "Bear fruit rollups",
+        "d": false
       }
     ],
     "_history": [
+      "Bear fruit rollups",
       "grapefruit x2",
       "wggs",
       "chicken thighs",
