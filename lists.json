@@ -189,19 +189,5 @@
       "Paint Front Door",
       "Spackle Basement Closets"
     ]
-  },
-  {
-    "id": 1792844500784,
-    "name": "Christmas Ava",
-    "icon": "checklist",
-    "items": [
-      {
-        "t": "Slime kit",
-        "d": false
-      }
-    ],
-    "_history": [
-      "Slime kit"
-    ]
   }
 ]
