@@ -194,7 +194,15 @@
     "id": 1792844478517,
     "name": "Christmas Collin",
     "icon": "checklist",
-    "items": []
+    "items": [
+      {
+        "t": "Basketball",
+        "d": false
+      }
+    ],
+    "_history": [
+      "Basketball"
+    ]
   },
   {
     "id": 1792844500784,
