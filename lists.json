@@ -200,6 +200,14 @@
     "id": 1792844500784,
     "name": "Christmas Ava",
     "icon": "checklist",
-    "items": []
+    "items": [
+      {
+        "t": "Slime kit",
+        "d": false
+      }
+    ],
+    "_history": [
+      "Slime kit"
+    ]
   }
 ]
