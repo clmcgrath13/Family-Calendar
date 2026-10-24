@@ -1835,5 +1835,20 @@
     "who": [
       "Dad"
     ]
+  },
+  {
+    "id": 1792838700321,
+    "title": "Fix closet liyhysy",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-10-24",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
