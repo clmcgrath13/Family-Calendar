@@ -203,6 +203,10 @@
     "2026-10-23": {
       "name": "Bagel W/ Cream Cheese",
       "type": "custom"
+    },
+    "2026-10-26": {
+      "name": "Chicken Noodle Soup",
+      "type": "custom"
     }
   },
   "Ava": {
@@ -380,7 +384,7 @@
     "Chicken Parm": 1,
     "Pasta": 1,
     "Pasta With Red Sauce": 8,
-    "Chicken Noodle Soup": 8,
+    "Chicken Noodle Soup": 9,
     "Chicken Noodle  Soup": 1,
     "Burrito": 1
   }
