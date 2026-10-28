@@ -35,9 +35,14 @@
       {
         "t": "mexican cheese",
         "d": false
+      },
+      {
+        "t": "water bottles",
+        "d": false
       }
     ],
     "_history": [
+      "water bottles",
       "Bear fruit rollups",
       "grapefruit x2",
       "wggs",
