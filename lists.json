@@ -39,9 +39,14 @@
       {
         "t": "water bottles",
         "d": false
+      },
+      {
+        "t": "meatballs",
+        "d": false
       }
     ],
     "_history": [
+      "meatballs",
       "water bottles",
       "Bear fruit rollups",
       "grapefruit x2",
