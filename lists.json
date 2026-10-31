@@ -34,7 +34,8 @@
       },
       {
         "t": "mexican cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-10-31"
       },
       {
         "t": "water bottles",
