@@ -57,9 +57,14 @@
       {
         "t": "canned unsweetenned pumpkin puree",
         "d": false
+      },
+      {
+        "t": "ground cinnamon",
+        "d": false
       }
     ],
     "_history": [
+      "ground cinnamon",
       "canned unsweetenned pumpkin puree",
       "canned u sweetened pumpki puree",
       "canned unsweetened pumpkincree",
