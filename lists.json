@@ -71,9 +71,14 @@
       {
         "t": "brown sugar",
         "d": false
+      },
+      {
+        "t": "cream",
+        "d": false
       }
     ],
     "_history": [
+      "cream",
       "brown sugar",
       "ground  nutmeg",
       "ground cinnamon",
