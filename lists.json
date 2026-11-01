@@ -53,7 +53,8 @@
       },
       {
         "t": "baking  powder",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-01"
       },
       {
         "t": "canned unsweetenned pumpkin puree",
