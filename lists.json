@@ -53,9 +53,14 @@
       {
         "t": "baking  powder",
         "d": false
+      },
+      {
+        "t": "canned u sweetened pumpki puree",
+        "d": false
       }
     ],
     "_history": [
+      "canned u sweetened pumpki puree",
       "canned unsweetened pumpkincree",
       "baking  powder",
       "all purposeflour",
