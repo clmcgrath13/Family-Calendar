@@ -65,9 +65,14 @@
       {
         "t": "ground  nutmeg",
         "d": false
+      },
+      {
+        "t": "brown sugar",
+        "d": false
       }
     ],
     "_history": [
+      "brown sugar",
       "ground  nutmeg",
       "ground cinnamon",
       "canned unsweetenned pumpkin puree",
