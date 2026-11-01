@@ -48,8 +48,8 @@
       },
       {
         "t": "milk",
-        "d": false,
-        "doneDate": null
+        "d": true,
+        "doneDate": "2026-11-01"
       },
       {
         "t": "baking  powder",
