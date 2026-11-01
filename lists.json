@@ -38,11 +38,13 @@
       },
       {
         "t": "meatballs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-01"
       },
       {
         "t": "meatloaf",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-01"
       },
       {
         "t": "milk",
