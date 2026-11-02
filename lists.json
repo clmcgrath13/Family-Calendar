@@ -59,9 +59,14 @@
       {
         "t": "american cheese",
         "d": false
+      },
+      {
+        "t": "broth",
+        "d": false
       }
     ],
     "_history": [
+      "broth",
       "cream",
       "brown sugar",
       "ground  nutmeg",
