@@ -37,26 +37,6 @@
         "d": false
       },
       {
-        "t": "meatballs",
-        "d": true,
-        "doneDate": "2026-11-01"
-      },
-      {
-        "t": "meatloaf",
-        "d": true,
-        "doneDate": "2026-11-01"
-      },
-      {
-        "t": "milk",
-        "d": true,
-        "doneDate": "2026-11-01"
-      },
-      {
-        "t": "baking  powder",
-        "d": true,
-        "doneDate": "2026-11-01"
-      },
-      {
         "t": "canned unsweetenned pumpkin puree",
         "d": false
       },
