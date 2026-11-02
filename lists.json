@@ -34,7 +34,8 @@
       },
       {
         "t": "water bottles",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-02"
       },
       {
         "t": "canned unsweetenned pumpkin puree",
