@@ -54,15 +54,18 @@
       },
       {
         "t": "cream",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-02"
       },
       {
         "t": "american cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-02"
       },
       {
         "t": "broth",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-02"
       }
     ],
     "_history": [
