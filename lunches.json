@@ -215,6 +215,10 @@
     "2026-11-02": {
       "name": "Chicken Noodle Soup",
       "type": "custom"
+    },
+    "2026-11-03": {
+      "name": "Pasta With Red Sauce",
+      "type": "custom"
     }
   },
   "Ava": {
@@ -391,7 +395,7 @@
     "Chili & Chips": 9,
     "Chicken Parm": 1,
     "Pasta": 1,
-    "Pasta With Red Sauce": 8,
+    "Pasta With Red Sauce": 9,
     "Chicken Noodle Soup": 10,
     "Chicken Noodle  Soup": 1,
     "Burrito": 1
