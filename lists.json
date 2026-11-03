@@ -33,11 +33,6 @@
         "d": false
       },
       {
-        "t": "water bottles",
-        "d": true,
-        "doneDate": "2026-11-02"
-      },
-      {
         "t": "canned unsweetenned pumpkin puree",
         "d": false
       },
@@ -52,21 +47,6 @@
       {
         "t": "brown sugar",
         "d": false
-      },
-      {
-        "t": "cream",
-        "d": true,
-        "doneDate": "2026-11-02"
-      },
-      {
-        "t": "american cheese",
-        "d": true,
-        "doneDate": "2026-11-02"
-      },
-      {
-        "t": "broth",
-        "d": true,
-        "doneDate": "2026-11-02"
       }
     ],
     "_history": [
