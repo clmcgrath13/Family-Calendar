@@ -379,7 +379,6 @@
     "title": "Clean Zorro's Water Bowl",
     "done": true,
     "doneOn": [
-      "2026-08-30",
       "2026-09-16",
       "2026-10-05",
       "2026-10-23",
@@ -515,7 +514,6 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-08-30",
       "2026-09-10",
       "2026-09-20",
       "2026-10-05",
@@ -1859,6 +1857,21 @@
     "stayUntilDone": true,
     "who": [
       "Dad"
+    ]
+  },
+  {
+    "id": 1793821956604,
+    "title": "Clean basement carpet",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-11-04",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Collin"
     ]
   }
 ]
