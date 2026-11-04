@@ -51,9 +51,14 @@
       {
         "t": "breakfast  sandwiches",
         "d": false
+      },
+      {
+        "t": "cream cheese",
+        "d": false
       }
     ],
     "_history": [
+      "cream cheese",
       "broth",
       "cream",
       "brown sugar",
