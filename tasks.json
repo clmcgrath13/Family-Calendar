@@ -1801,6 +1801,21 @@
     ]
   },
   {
+    "id": 1793821971343,
+    "title": "Fix doorbell",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-11-04",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1792773764722,
     "title": "Clean garage floor",
     "done": false,
@@ -1875,21 +1890,6 @@
     "stayUntilDone": true,
     "who": [
       "Collin"
-    ]
-  },
-  {
-    "id": 1793821971343,
-    "title": "Fix doorbell",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-11-04",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": true,
-    "who": [
-      "Dad"
     ]
   }
 ]
