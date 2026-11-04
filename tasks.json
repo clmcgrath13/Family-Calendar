@@ -1337,6 +1337,21 @@
     ]
   },
   {
+    "id": 1793821971343,
+    "title": "Fix doorbell",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-11-04",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
+  },
+  {
     "id": 1783017508680,
     "title": "Clean Dishwasher Drain",
     "done": true,
@@ -1405,21 +1420,6 @@
     "who": [
       "Dad",
       "Mom"
-    ]
-  },
-  {
-    "id": 1793821971343,
-    "title": "Fix doorbell",
-    "done": false,
-    "doneOn": [],
-    "date": "2026-11-04",
-    "recur": "",
-    "recurN": 1,
-    "recurDays": [],
-    "timeOfDay": "",
-    "stayUntilDone": true,
-    "who": [
-      "Dad"
     ]
   },
   {
