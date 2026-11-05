@@ -55,9 +55,14 @@
       {
         "t": "cream cheese",
         "d": false
+      },
+      {
+        "t": "onions",
+        "d": false
       }
     ],
     "_history": [
+      "onions",
       "cream cheese",
       "broth",
       "cream",
