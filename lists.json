@@ -67,9 +67,14 @@
       {
         "t": "meatloaf",
         "d": false
+      },
+      {
+        "t": "gruyere cheese",
+        "d": false
       }
     ],
     "_history": [
+      "gruyere cheese",
       "gf  flour",
       "pepperoni",
       "mushrooms",
