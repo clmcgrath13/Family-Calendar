@@ -5,10 +5,6 @@
     "icon": "cart",
     "items": [
       {
-        "t": "chomps",
-        "d": false
-      },
-      {
         "t": "pack of birthday  cards",
         "d": false
       },
