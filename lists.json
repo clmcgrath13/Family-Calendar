@@ -86,11 +86,13 @@
       },
       {
         "t": "american cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-08"
       },
       {
         "t": "cold cuts",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-08"
       }
     ],
     "_history": [
