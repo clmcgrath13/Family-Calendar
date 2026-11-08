@@ -95,9 +95,14 @@
         "t": "cold cuts",
         "d": true,
         "doneDate": "2026-11-08"
+      },
+      {
+        "t": "worcestershire sauce",
+        "d": false
       }
     ],
     "_history": [
+      "worcestershire sauce",
       "gruyere cheese",
       "gf  flour",
       "pepperoni",
