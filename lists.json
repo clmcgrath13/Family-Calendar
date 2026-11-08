@@ -46,7 +46,8 @@
       },
       {
         "t": "mushrooms",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-08"
       },
       {
         "t": "wraps",
