@@ -71,9 +71,14 @@
       {
         "t": "burritos",
         "d": false
+      },
+      {
+        "t": "mushrooms",
+        "d": false
       }
     ],
     "_history": [
+      "mushrooms",
       "onions",
       "cream cheese",
       "broth",
