@@ -63,7 +63,8 @@
       },
       {
         "t": "pepperoni",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-08"
       },
       {
         "t": "gf  flour",
@@ -82,7 +83,8 @@
       },
       {
         "t": "gruyere cheese",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-08"
       },
       {
         "t": "american cheese",
