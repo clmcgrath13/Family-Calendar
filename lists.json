@@ -79,9 +79,14 @@
       {
         "t": "wraps",
         "d": false
+      },
+      {
+        "t": "pepperoni",
+        "d": false
       }
     ],
     "_history": [
+      "pepperoni",
       "mushrooms",
       "onions",
       "cream cheese",
