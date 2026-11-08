@@ -75,6 +75,10 @@
       {
         "t": "american cheese",
         "d": false
+      },
+      {
+        "t": "cold cuts",
+        "d": false
       }
     ],
     "_history": [
