@@ -59,6 +59,10 @@
       {
         "t": "gf  flour",
         "d": false
+      },
+      {
+        "t": "eggs",
+        "d": false
       }
     ],
     "_history": [
