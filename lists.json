@@ -23,9 +23,14 @@
       {
         "t": "vasoline",
         "d": false
+      },
+      {
+        "t": "instant rice",
+        "d": false
       }
     ],
     "_history": [
+      "instant rice",
       "vasoline",
       "worcestershire sauce",
       "gruyere cheese",
