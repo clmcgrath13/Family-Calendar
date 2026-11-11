@@ -27,9 +27,14 @@
       {
         "t": "a1",
         "d": false
+      },
+      {
+        "t": "vinegar white",
+        "d": false
       }
     ],
     "_history": [
+      "vinegar white",
       "a1",
       "instant rice",
       "vasoline",
