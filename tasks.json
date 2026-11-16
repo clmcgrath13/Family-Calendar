@@ -1654,7 +1654,9 @@
     "id": 1786974959748,
     "title": "Get gas for generator",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "2026-08-17",
     "recur": "",
     "recurN": 1,
