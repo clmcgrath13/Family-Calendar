@@ -85,9 +85,7 @@
     "id": 1776109390346,
     "title": "Get oil changed",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -110,9 +108,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-09-10"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775755993312,
@@ -126,17 +122,13 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-09-10"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776215179023,
     "title": "Empty ash from solo stove",
     "done": true,
-    "doneOn": [
-      "2026-09-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -151,9 +143,7 @@
     "id": 1776540855875,
     "title": "Fix 3D printer",
     "done": true,
-    "doneOn": [
-      "2026-09-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -178,7 +168,6 @@
       "Mom"
     ],
     "doneOn": [
-      "2026-09-10",
       "2026-09-24",
       "2026-10-08"
     ]
@@ -187,9 +176,7 @@
     "id": 1775957529123,
     "title": "Clean the grill",
     "done": true,
-    "doneOn": [
-      "2026-09-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -212,17 +199,13 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-09-10"
-    ]
+    "doneOn": []
   },
   {
     "id": 1776910891955,
     "title": "Set up movie screen and projector for Ava party",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -293,9 +276,7 @@
     "who": [
       "Mom"
     ],
-    "doneOn": [
-      "2026-09-12"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775688679226,
@@ -329,9 +310,7 @@
     "id": 1776340259012,
     "title": "Clean car",
     "done": true,
-    "doneOn": [
-      "2026-09-10"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -354,9 +333,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-09-10"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775668825266,
@@ -370,19 +347,17 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-09-10"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775828441251,
     "title": "Clean Zorro's Water Bowl",
     "done": true,
     "doneOn": [
-      "2026-09-16",
       "2026-10-05",
       "2026-10-23",
-      "2026-10-25"
+      "2026-10-25",
+      "2026-11-16"
     ],
     "date": "2026-04-12",
     "recur": "weekly",
@@ -424,7 +399,6 @@
       "Mom"
     ],
     "doneOn": [
-      "2026-09-16",
       "2026-10-28",
       "2026-11-04"
     ]
@@ -457,9 +431,7 @@
     "who": [
       "Dad"
     ],
-    "doneOn": [
-      "2026-09-12"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775756069942,
@@ -515,11 +487,11 @@
     "title": "Change Zorro's Water Filter",
     "done": true,
     "doneOn": [
-      "2026-09-10",
       "2026-09-20",
       "2026-10-05",
       "2026-10-23",
-      "2026-11-04"
+      "2026-11-04",
+      "2026-11-16"
     ],
     "date": "2026-04-19",
     "recur": "weekly",
@@ -700,9 +672,7 @@
     "id": 1776108698970,
     "title": "Put your clothes away",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -717,9 +687,7 @@
     "id": 1776117377000,
     "title": "Organize medicine cabinet",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -813,9 +781,7 @@
     "id": 1776128569327,
     "title": "Clean your room",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -960,9 +926,7 @@
     "id": 1779189523529,
     "title": "put your clothes away",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -1234,7 +1198,6 @@
     "title": "Test Generator",
     "done": true,
     "doneOn": [
-      "2026-09-12",
       "2026-10-01"
     ],
     "date": "2026-07-01",
@@ -1251,9 +1214,7 @@
     "id": 1783017340838,
     "title": "Sharpen Knives",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
@@ -1269,7 +1230,6 @@
     "title": "Rotate Couch Cushions",
     "done": true,
     "doneOn": [
-      "2026-09-12",
       "2026-10-01"
     ],
     "date": "2026-07-01",
@@ -1304,7 +1264,6 @@
     "title": "Review Finances",
     "done": true,
     "doneOn": [
-      "2026-09-12",
       "2026-11-04"
     ],
     "date": "2026-07-02",
@@ -1323,7 +1282,6 @@
     "title": "Clean Stove Exhaust Fan",
     "done": true,
     "doneOn": [
-      "2026-09-12",
       "2026-10-01"
     ],
     "date": "2026-07-01",
@@ -1355,9 +1313,7 @@
     "id": 1783017508680,
     "title": "Clean Dishwasher Drain",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
@@ -1373,7 +1329,6 @@
     "title": "Clean Bathroom Light",
     "done": true,
     "doneOn": [
-      "2026-09-12",
       "2026-10-01"
     ],
     "date": "2026-07-01",
@@ -1391,7 +1346,6 @@
     "title": "Change Hot Tub Inline Cartridges",
     "done": true,
     "doneOn": [
-      "2026-09-12",
       "2026-10-05"
     ],
     "date": "2026-07-01",
@@ -1408,9 +1362,7 @@
     "id": 1783017594726,
     "title": "Organize the Junk Drawer",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
@@ -1426,9 +1378,7 @@
     "id": 1783017615142,
     "title": "Organize the Medicine Cabinet",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-01",
     "recur": "monthly",
     "recurN": 3,
@@ -1444,9 +1394,7 @@
     "id": 1783343175276,
     "title": "Clean up squishies from the basement",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
@@ -1461,9 +1409,7 @@
     "id": 1783343196901,
     "title": "Vacuum the playroom carpet",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
@@ -1478,9 +1424,7 @@
     "id": 1783343220229,
     "title": "Clean up blankets from basement",
     "done": true,
-    "doneOn": [
-      "2026-09-12"
-    ],
+    "doneOn": [],
     "date": "2026-07-06",
     "recur": "",
     "recurN": 1,
@@ -1685,9 +1629,7 @@
     "id": 1786974959748,
     "title": "Get gas for generator",
     "done": true,
-    "doneOn": [
-      "2026-09-10"
-    ],
+    "doneOn": [],
     "date": "2026-08-17",
     "recur": "",
     "recurN": 1,
@@ -1717,9 +1659,7 @@
     "id": 1786984940744,
     "title": "Clean up the Legos in the Basement",
     "done": true,
-    "doneOn": [
-      "2026-09-10"
-    ],
+    "doneOn": [],
     "date": "2026-08-17",
     "recur": "",
     "recurN": 1,
@@ -1735,9 +1675,7 @@
     "id": 1789405873098,
     "title": "swap out bug stickies",
     "done": true,
-    "doneOn": [
-      "2026-09-16"
-    ],
+    "doneOn": [],
     "date": "2026-09-14",
     "recur": "",
     "recurN": 1,
@@ -1752,9 +1690,7 @@
     "id": 1789435772605,
     "title": "Throw out Ava’s humidifier",
     "done": true,
-    "doneOn": [
-      "2026-09-16"
-    ],
+    "doneOn": [],
     "date": "2026-09-14",
     "recur": "",
     "recurN": 1,
