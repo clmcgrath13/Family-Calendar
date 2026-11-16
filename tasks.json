@@ -1808,8 +1808,10 @@
   {
     "id": 1792838700321,
     "title": "Fix closet liyhysy",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "2026-10-24",
     "recur": "",
     "recurN": 1,
