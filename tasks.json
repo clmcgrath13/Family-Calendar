@@ -1774,8 +1774,10 @@
   {
     "id": 1792773784979,
     "title": "Finish cleaning basement half wall area",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "2026-10-23",
     "recur": "",
     "recurN": 1,
