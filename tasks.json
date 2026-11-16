@@ -101,7 +101,7 @@
   {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
-    "done": true,
+    "done": false,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -147,7 +147,9 @@
     "id": 1776540855875,
     "title": "Fix 3D printer",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -180,7 +182,9 @@
     "id": 1775957529123,
     "title": "Clean the grill",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
