@@ -18,7 +18,8 @@
       },
       {
         "t": "worcestershire sauce",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-16"
       },
       {
         "t": "instant rice",
