@@ -215,7 +215,9 @@
     "id": 1776910891955,
     "title": "Set up movie screen and projector for Ava party",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -361,7 +363,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-11-16"
+    ]
   },
   {
     "id": 1775828441251,
