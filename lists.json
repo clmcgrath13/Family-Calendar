@@ -23,7 +23,8 @@
       },
       {
         "t": "instant rice",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-16"
       },
       {
         "t": "a1",
