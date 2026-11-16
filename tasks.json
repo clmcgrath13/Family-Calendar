@@ -320,7 +320,9 @@
     "id": 1776340259012,
     "title": "Clean car",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "",
     "recur": "",
     "recurN": 1,
