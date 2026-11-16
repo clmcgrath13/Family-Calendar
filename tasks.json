@@ -1885,10 +1885,8 @@
   {
     "id": 1794831227831,
     "title": "Get firewood",
-    "done": true,
-    "doneOn": [
-      "2026-11-16"
-    ],
+    "done": false,
+    "doneOn": [],
     "date": "2026-11-16",
     "recur": "",
     "recurN": 1,
