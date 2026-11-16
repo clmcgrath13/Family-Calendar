@@ -1883,8 +1883,10 @@
   {
     "id": 1794831202064,
     "title": "Check Zorro gabapenton Rex",
-    "done": false,
-    "doneOn": [],
+    "done": true,
+    "doneOn": [
+      "2026-11-16"
+    ],
     "date": "2026-11-16",
     "recur": "",
     "recurN": 1,
