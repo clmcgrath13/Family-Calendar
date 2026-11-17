@@ -231,6 +231,10 @@
     "2026-11-10": {
       "name": "Chicken Noodle Soup",
       "type": "custom"
+    },
+    "2026-11-16": {
+      "name": "Chili & Chips",
+      "type": "custom"
     }
   },
   "Ava": {
@@ -420,7 +424,7 @@
   "_mealHistory": {
     "Lentil Soup": 6,
     "Bagel W/ Cream Cheese": 18,
-    "Chili & Chips": 9,
+    "Chili & Chips": 10,
     "Chicken Parm": 1,
     "Pasta": 1,
     "Pasta With Red Sauce": 10,
