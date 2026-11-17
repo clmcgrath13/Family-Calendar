@@ -121,12 +121,7 @@
     "id": 1788976903264,
     "name": "Home Depot",
     "icon": "tools",
-    "items": [
-      {
-        "t": "sheetrock",
-        "d": false
-      }
-    ],
+    "items": [],
     "_history": [
       "Wire staples",
       "interior door",
