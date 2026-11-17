@@ -235,6 +235,10 @@
     "2026-11-16": {
       "name": "Chili & Chips",
       "type": "custom"
+    },
+    "2026-11-17": {
+      "name": "Bagel W/ Cream Cheese",
+      "type": "custom"
     }
   },
   "Ava": {
@@ -427,7 +431,7 @@
   ],
   "_mealHistory": {
     "Lentil Soup": 6,
-    "Bagel W/ Cream Cheese": 18,
+    "Bagel W/ Cream Cheese": 19,
     "Chili & Chips": 10,
     "Chicken Parm": 1,
     "Pasta": 1,
