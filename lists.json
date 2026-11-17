@@ -5,37 +5,12 @@
     "icon": "cart",
     "items": [
       {
-        "t": "grapefruit x2",
-        "d": true,
-        "doneDate": "2026-11-16"
-      },
-      {
         "t": "Bear fruit rollups",
         "d": false
       },
       {
         "t": "canned unsweetenned pumpkin puree",
         "d": false
-      },
-      {
-        "t": "worcestershire sauce",
-        "d": true,
-        "doneDate": "2026-11-16"
-      },
-      {
-        "t": "instant rice",
-        "d": true,
-        "doneDate": "2026-11-16"
-      },
-      {
-        "t": "a1",
-        "d": true,
-        "doneDate": "2026-11-16"
-      },
-      {
-        "t": "vinegar white",
-        "d": true,
-        "doneDate": "2026-11-16"
       }
     ],
     "_history": [
