@@ -409,11 +409,15 @@
     "2026-11-23": {
       "name": "Twisted Cheesy Breadsticks with Marinara Sauce, Freshly Prepared Garden Salad",
       "type": "school"
+    },
+    "2026-11-17": {
+      "name": "Bagel W/ Cream Cheese",
+      "type": "custom"
     }
   },
   "_avaCustoms": [
-    "Pasta With Red Sauce",
     "Bagel W/ Cream Cheese",
+    "Pasta With Red Sauce",
     "Chili & Chips",
     "Chicken Noodle Soup",
     "Lentil Soup",
