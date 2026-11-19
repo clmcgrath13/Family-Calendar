@@ -50,7 +50,6 @@
     "title": "Take out Recycling (cardboard)",
     "done": true,
     "doneOn": [
-      "2026-09-17",
       "2026-10-01"
     ],
     "date": "2026-04-16",
@@ -175,7 +174,8 @@
     ],
     "doneOn": [
       "2026-09-24",
-      "2026-10-08"
+      "2026-10-08",
+      "2026-11-19"
     ]
   },
   {
@@ -1493,9 +1493,7 @@
     "id": 1784043095390,
     "title": "trim bush by front door",
     "done": true,
-    "doneOn": [
-      "2026-09-17"
-    ],
+    "doneOn": [],
     "date": "2026-07-14",
     "recur": "",
     "recurN": 1,
@@ -1748,9 +1746,7 @@
     "id": 1789595968799,
     "title": "Label Collin’s helmet",
     "done": true,
-    "doneOn": [
-      "2026-09-17"
-    ],
+    "doneOn": [],
     "date": "2026-09-16",
     "recur": "",
     "recurN": 1,
@@ -1765,9 +1761,7 @@
     "id": 1789821373819,
     "title": "Take Garbage Out",
     "done": true,
-    "doneOn": [
-      "2026-09-19"
-    ],
+    "doneOn": [],
     "date": "2026-09-19",
     "recur": "weekly",
     "recurN": 1,
