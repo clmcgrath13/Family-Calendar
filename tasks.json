@@ -1746,7 +1746,9 @@
     "id": 1789595968799,
     "title": "Label Collin’s helmet",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-19"
+    ],
     "date": "2026-09-16",
     "recur": "",
     "recurN": 1,
