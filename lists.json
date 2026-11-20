@@ -58,7 +58,8 @@
       },
       {
         "t": "sugar cubes",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-20"
       }
     ],
     "_history": [
