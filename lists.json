@@ -43,7 +43,8 @@
       },
       {
         "t": "salad bags",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-20"
       },
       {
         "t": "chicken broth",
