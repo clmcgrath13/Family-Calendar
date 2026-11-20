@@ -35,9 +35,14 @@
       {
         "t": "chicken noodle  soup",
         "d": false
+      },
+      {
+        "t": "chicken breast",
+        "d": false
       }
     ],
     "_history": [
+      "chicken breast",
       "vinegar white",
       "a1",
       "instant rice",
