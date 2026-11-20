@@ -48,11 +48,13 @@
       },
       {
         "t": "chicken broth",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-20"
       },
       {
         "t": "beef broth",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-20"
       },
       {
         "t": "sugar cubes",
