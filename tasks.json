@@ -1760,7 +1760,9 @@
     "id": 1789821373819,
     "title": "Take Garbage Out",
     "done": true,
-    "doneOn": [],
+    "doneOn": [
+      "2026-11-21"
+    ],
     "date": "2026-09-19",
     "recur": "weekly",
     "recurN": 1,
