@@ -47,9 +47,14 @@
       {
         "t": "kiwi",
         "d": false
+      },
+      {
+        "t": "halo oranges",
+        "d": false
       }
     ],
     "_history": [
+      "halo oranges",
       "apples",
       "vanilla ice cream",
       "chicken breast",
