@@ -1966,5 +1966,20 @@
     "who": [
       "Ava"
     ]
+  },
+  {
+    "id": 1795269782973,
+    "title": "Fix hot tub speakers",
+    "done": false,
+    "doneOn": [],
+    "date": "2026-11-21",
+    "recur": "",
+    "recurN": 1,
+    "recurDays": [],
+    "timeOfDay": "",
+    "stayUntilDone": true,
+    "who": [
+      "Dad"
+    ]
   }
 ]
