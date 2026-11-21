@@ -43,6 +43,10 @@
       {
         "t": "apples",
         "d": false
+      },
+      {
+        "t": "kiwi",
+        "d": false
       }
     ],
     "_history": [
