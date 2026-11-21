@@ -39,9 +39,14 @@
       {
         "t": "vanilla ice cream",
         "d": false
+      },
+      {
+        "t": "apples",
+        "d": false
       }
     ],
     "_history": [
+      "apples",
       "vanilla ice cream",
       "chicken breast",
       "vinegar white",
