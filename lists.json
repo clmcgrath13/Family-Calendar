@@ -33,33 +33,8 @@
         "d": false
       },
       {
-        "t": "chicken noodle  soup",
-        "d": true,
-        "doneDate": "2026-11-20"
-      },
-      {
         "t": "chicken breast",
         "d": false
-      },
-      {
-        "t": "salad bags",
-        "d": true,
-        "doneDate": "2026-11-20"
-      },
-      {
-        "t": "chicken broth",
-        "d": true,
-        "doneDate": "2026-11-20"
-      },
-      {
-        "t": "beef broth",
-        "d": true,
-        "doneDate": "2026-11-20"
-      },
-      {
-        "t": "sugar cubes",
-        "d": true,
-        "doneDate": "2026-11-20"
       }
     ],
     "_history": [
