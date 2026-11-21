@@ -35,9 +35,14 @@
       {
         "t": "chicken breast",
         "d": false
+      },
+      {
+        "t": "vanilla ice cream",
+        "d": false
       }
     ],
     "_history": [
+      "vanilla ice cream",
       "chicken breast",
       "vinegar white",
       "a1",
