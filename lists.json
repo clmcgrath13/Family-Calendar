@@ -22,15 +22,18 @@
       },
       {
         "t": "breakfast  sandwiches",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-22"
       },
       {
         "t": "milk",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-22"
       },
       {
         "t": "eggs",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-22"
       },
       {
         "t": "chicken breast",
