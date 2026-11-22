@@ -50,7 +50,8 @@
       },
       {
         "t": "halo oranges",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-22"
       }
     ],
     "_history": [
