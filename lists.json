@@ -34,7 +34,8 @@
       },
       {
         "t": "chicken breast",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-22"
       },
       {
         "t": "vanilla ice cream",
