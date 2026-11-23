@@ -21,42 +21,12 @@
         "d": false
       },
       {
-        "t": "breakfast  sandwiches",
-        "d": true,
-        "doneDate": "2026-11-22"
-      },
-      {
-        "t": "milk",
-        "d": true,
-        "doneDate": "2026-11-22"
-      },
-      {
-        "t": "eggs",
-        "d": true,
-        "doneDate": "2026-11-22"
-      },
-      {
-        "t": "chicken breast",
-        "d": true,
-        "doneDate": "2026-11-22"
-      },
-      {
         "t": "vanilla ice cream",
         "d": false
       },
       {
-        "t": "apples",
-        "d": true,
-        "doneDate": "2026-11-22"
-      },
-      {
         "t": "kiwi",
         "d": false
-      },
-      {
-        "t": "halo oranges",
-        "d": true,
-        "doneDate": "2026-11-22"
       }
     ],
     "_history": [
