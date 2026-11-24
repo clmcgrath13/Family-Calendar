@@ -23,9 +23,14 @@
       {
         "t": "Maple syrup",
         "d": false
+      },
+      {
+        "t": "white hand soap",
+        "d": false
       }
     ],
     "_history": [
+      "white hand soap",
       "Maple syrup",
       "Turkey roasting tray",
       "halo oranges",
