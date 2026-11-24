@@ -22,11 +22,13 @@
       },
       {
         "t": "vanilla ice cream",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-23"
       },
       {
         "t": "kiwi",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-23"
       },
       {
         "t": "Turkey roasting tray",
