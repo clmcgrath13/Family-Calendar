@@ -19,9 +19,14 @@
       {
         "t": "Turkey roasting tray",
         "d": false
+      },
+      {
+        "t": "Maple syrup",
+        "d": false
       }
     ],
     "_history": [
+      "Maple syrup",
       "Turkey roasting tray",
       "halo oranges",
       "apples",
