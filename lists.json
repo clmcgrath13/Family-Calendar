@@ -18,7 +18,8 @@
       },
       {
         "t": "kiwi",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-23"
       },
       {
         "t": "vanilla ice cream",
