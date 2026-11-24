@@ -30,9 +30,14 @@
         "t": "white hand soap",
         "d": true,
         "doneDate": "2026-11-24"
+      },
+      {
+        "t": "Gravy",
+        "d": false
       }
     ],
     "_history": [
+      "Gravy",
       "white hand soap",
       "Maple syrup",
       "Turkey roasting tray",
