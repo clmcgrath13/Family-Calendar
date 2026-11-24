@@ -18,7 +18,8 @@
       },
       {
         "t": "Turkey roasting tray",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-24"
       },
       {
         "t": "Maple syrup",
