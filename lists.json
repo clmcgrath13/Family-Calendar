@@ -26,7 +26,8 @@
       },
       {
         "t": "white hand soap",
-        "d": false
+        "d": true,
+        "doneDate": "2026-11-24"
       }
     ],
     "_history": [
