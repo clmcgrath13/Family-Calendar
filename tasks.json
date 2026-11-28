@@ -1770,7 +1770,8 @@
     "title": "Take Garbage Out",
     "done": true,
     "doneOn": [
-      "2026-11-21"
+      "2026-11-21",
+      "2026-11-28"
     ],
     "date": "2026-09-19",
     "recur": "weekly",
