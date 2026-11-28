@@ -67,9 +67,7 @@
     "id": 1776109398250,
     "title": "Change bronco oil",
     "done": true,
-    "doneOn": [
-      "2026-09-28"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -100,7 +98,7 @@
   {
     "id": 1775756024054,
     "title": "Clean out freezer ice bin",
-    "done": false,
+    "done": true,
     "date": "",
     "recur": "",
     "recurN": 1,
@@ -109,7 +107,9 @@
     "who": [
       "Dad"
     ],
-    "doneOn": []
+    "doneOn": [
+      "2026-11-28"
+    ]
   },
   {
     "id": 1775755993312,
@@ -398,9 +398,7 @@
     "who": [
       "Ava"
     ],
-    "doneOn": [
-      "2026-09-27"
-    ]
+    "doneOn": []
   },
   {
     "id": 1775696663826,
@@ -855,9 +853,7 @@
     "id": 1776994280617,
     "title": "cleanyour room",
     "done": true,
-    "doneOn": [
-      "2026-09-27"
-    ],
+    "doneOn": [],
     "date": "",
     "recur": "",
     "recurN": 1,
